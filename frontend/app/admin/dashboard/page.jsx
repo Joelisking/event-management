@@ -2,20 +2,20 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
 import { useAuth } from '@/lib/auth-context';
 import { toast } from 'sonner';
 import { API_URL } from '@/lib/constants';
+import { StatsOverview } from '@/components/admin/dashboard/StatsOverview';
+import { UsersByRole } from '@/components/admin/dashboard/UsersByRole';
+import { EventsByStatus } from '@/components/admin/dashboard/EventsByStatus';
+import { EventsByCategory } from '@/components/admin/dashboard/EventsByCategory';
+import { RecentUsers } from '@/components/admin/dashboard/RecentUsers';
+import { UpcomingEvents } from '@/components/admin/dashboard/UpcomingEvents';
+import { RecentRsvps } from '@/components/admin/dashboard/RecentRsvps';
 
 export default function AdminDashboardPage() {
   const router = useRouter();
-const { user, loading: authLoading, getToken } = useAuth();
+  const { user, loading: authLoading, getToken } = useAuth();
 
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -35,9 +35,8 @@ const { user, loading: authLoading, getToken } = useAuth();
     }
 
     fetchStats();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, authLoading]);
-
 
   const fetchStats = async () => {
     try {
@@ -62,16 +61,6 @@ const { user, loading: authLoading, getToken } = useAuth();
     }
   };
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
-
   if (authLoading || loading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
@@ -81,7 +70,6 @@ const { user, loading: authLoading, getToken } = useAuth();
       </div>
     );
   }
-
 
   if (!stats) {
     return (
@@ -103,215 +91,23 @@ const { user, loading: authLoading, getToken } = useAuth();
           </p>
         </div>
 
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className={'pt-6'}>
-            <CardHeader>
-              <CardTitle className="text-2xl">
-                {stats.totals.users}
-              </CardTitle>
-              <CardDescription>Total Users</CardDescription>
-            </CardHeader>
-          </Card>
-          <Card className={'pt-6'}>
-            <CardHeader>
-              <CardTitle className="text-2xl">
-                {stats.totals.events}
-              </CardTitle>
-              <CardDescription>Total Events</CardDescription>
-            </CardHeader>
-          </Card>
-          <Card className={'pt-6'}>
-            <CardHeader>
-              <CardTitle className="text-2xl">
-                {stats.totals.rsvps}
-              </CardTitle>
-              <CardDescription>Total RSVPs</CardDescription>
-            </CardHeader>
-          </Card>
-        </div>
+        <StatsOverview stats={stats} />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {/* Users by Role */}
-          <Card className={'pt-6'}>
-            <CardHeader>
-              <CardTitle>Users by Role</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {stats.usersByRole.map((item) => (
-                  <div
-                    key={item.role}
-                    className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-800 rounded">
-                    <span className="capitalize font-medium">{item.role}</span>
-                    <span className="text-gray-600 dark:text-gray-400">
-                      {item.count}
-                      </span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Events by Status */}
-          <Card className={'pt-6'}>
-            <CardHeader>
-              <CardTitle>Events by Status</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {stats.eventsByStatus.map((item) => (
-                  <div
-                    key={item.status}
-                    className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-800 rounded">
-                    <span className="capitalize font-medium">{item.status}</span>
-                    <span className="text-gray-600 dark:text-gray-400">
-                      {item.count}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          <UsersByRole usersByRole={stats.usersByRole} />
+          <EventsByStatus eventsByStatus={stats.eventsByStatus} />
         </div>
 
-        {/* Events by Category */}
-        {stats.eventsByCategory.length > 0 && (
-          <div className="mb-8">
-            <Card className={'pt-6'}>
-              <CardHeader>
-                <CardTitle>Events by Category</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {stats.eventsByCategory.map((item) => (
-                    <div
-                      key={item.category}
-                      className="p-3 bg-gray-50 dark:bg-gray-800 rounded text-center">
-                      <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                        {item.count}
-                      </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
-                        {item.category}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+        <EventsByCategory eventsByCategory={stats.eventsByCategory} />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Recent Users */}
-          <Card className={'pt-6'}>
-            <CardHeader>
-              <CardTitle>Recent Users</CardTitle>
-              <CardDescription>Latest 10 registered users</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {stats.recentUsers.map((user) => (
-                  <div
-                    key={user.id}
-                    className="flex justify-between items-start p-3 bg-gray-50 dark:bg-gray-800 rounded">
-                    <div>
-                      <div className="font-medium text-gray-900 dark:text-white">
-                        {user.name}
-                      </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
-                        {user.email}
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-xs capitalize px-2 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 rounded">
-                        {user.role}
-                      </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                        {formatDate(user.createdAt)}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Upcoming Events */}
-          <Card className={'pt-6'}>
-            <CardHeader>
-              <CardTitle>Upcoming Events</CardTitle>
-              <CardDescription>Next 10 active events</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {stats.upcomingEvents.length > 0 ? (
-                <div className="space-y-3">
-                  {stats.upcomingEvents.map((event) => (
-                    <div
-                      key={event.id}
-                      className="p-3 bg-gray-50 dark:bg-gray-800 rounded">
-                      <div className="font-medium text-gray-900 dark:text-white">
-                        {event.title}
-                      </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                        By {event.organizerName}
-                      </div>
-                      <div className="flex justify-between items-center mt-2">
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                          {formatDate(event.startDate)}
-                        </div>
-                        <div className="text-xs text-gray-600 dark:text-gray-400">
-                          👥 {event.attendeeCount} attendee{event.attendeeCount !== 1 ? 's' : ''}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-center py-8 text-gray-600 dark:text-gray-400">
-                  No upcoming events
-                </p>
-              )}
-            </CardContent>
-          </Card>
+          <RecentUsers recentUsers={stats.recentUsers} />
+          <UpcomingEvents upcomingEvents={stats.upcomingEvents} />
         </div>
 
-        {/* Recent RSVPs */}
-        {stats.recentRsvps.length > 0 && (
-          <div className="mt-6">
-            <Card className={'pt-6'}>
-              <CardHeader>
-                <CardTitle>Recent RSVPs</CardTitle>
-                <CardDescription>Latest 10 event registrations</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {stats.recentRsvps.map((rsvp) => (
-                    <div
-                      key={rsvp.id}
-                      className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded">
-                      <div>
-                        <span className="font-medium text-gray-900 dark:text-white">
-                          {rsvp.userName}
-                        </span>
-                        <span className="text-gray-600 dark:text-gray-400">
-                          {' '}registered for{' '}
-                        </span>
-                        <span className="font-medium text-gray-900 dark:text-white">
-                          {rsvp.eventTitle}
-                        </span>
-                      </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">
-                        {formatDate(rsvp.rsvpDate)}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+        <RecentRsvps recentRsvps={stats.recentRsvps} />
       </main>
     </div>
   );
 }
+

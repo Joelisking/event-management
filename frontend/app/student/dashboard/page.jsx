@@ -6,15 +6,13 @@ import Link from 'next/link';
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/lib/auth-context';
-import { Calendar, MapPin, Users, Tag, Clock } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import { API_URL } from '@/lib/constants';
+import { DashboardStats } from '@/components/student/DashboardStats';
+import { DashboardEventCard } from '@/components/student/DashboardEventCard';
 
 export default function StudentDashboardPage() {
   const router = useRouter();
@@ -29,6 +27,7 @@ export default function StudentDashboardPage() {
       return;
     }
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const fetchData = async () => {
@@ -86,9 +85,12 @@ export default function StudentDashboardPage() {
     });
   };
 
-  const upcomingRsvps = rsvps.filter(
-    (rsvp) => getEventStatus(rsvp.event.startDate, rsvp.event.endDate) === 'upcoming'
-  ).slice(0, 3);
+  const upcomingRsvps = rsvps
+    .filter(
+      (rsvp) =>
+        getEventStatus(rsvp.event.startDate, rsvp.event.endDate) === 'upcoming'
+    )
+    .slice(0, 3);
 
   const recommendedEvents = allEvents
     .filter((event) => {
@@ -103,10 +105,12 @@ export default function StudentDashboardPage() {
   const stats = {
     totalRsvps: rsvps.length,
     upcomingEvents: rsvps.filter(
-      (rsvp) => getEventStatus(rsvp.event.startDate, rsvp.event.endDate) === 'upcoming'
+      (rsvp) =>
+        getEventStatus(rsvp.event.startDate, rsvp.event.endDate) === 'upcoming'
     ).length,
     pastEvents: rsvps.filter(
-      (rsvp) => getEventStatus(rsvp.event.startDate, rsvp.event.endDate) === 'past'
+      (rsvp) =>
+        getEventStatus(rsvp.event.startDate, rsvp.event.endDate) === 'past'
     ).length,
   };
 
@@ -120,33 +124,6 @@ export default function StudentDashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <nav className="bg-white dark:bg-gray-800 shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <Link href="/">
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white cursor-pointer">
-                  Campus Connect
-                </h1>
-              </Link>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link href="/events">
-                <Button variant="outline">Browse Events</Button>
-              </Link>
-              <Link href="/student/my-events">
-                <Button variant="outline">My Events</Button>
-              </Link>
-              {user && (
-                <div className="text-sm text-gray-700 dark:text-gray-300">
-                  Welcome, {user.name}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </nav>
-
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
@@ -158,44 +135,7 @@ export default function StudentDashboardPage() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                Total RSVPs
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">{stats.totalRsvps}</div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                Upcoming Events
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-blue-600">
-                {stats.upcomingEvents}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                Past Events
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-gray-500">
-                {stats.pastEvents}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <DashboardStats stats={stats} />
 
         {/* Upcoming Events */}
         <div className="mb-8">
@@ -225,7 +165,11 @@ export default function StudentDashboardPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {upcomingRsvps.map((rsvp) => (
-                <EventCard key={rsvp.id} event={rsvp.event} formatDate={formatEventDate} />
+                <DashboardEventCard
+                  key={rsvp.id}
+                  event={rsvp.event}
+                  formatDate={formatEventDate}
+                />
               ))}
             </div>
           )}
@@ -255,63 +199,16 @@ export default function StudentDashboardPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {recommendedEvents.map((event) => (
-                <EventCard key={event.id} event={event} formatDate={formatEventDate} />
+                <DashboardEventCard
+                  key={event.id}
+                  event={event}
+                  formatDate={formatEventDate}
+                />
               ))}
             </div>
           )}
         </div>
       </main>
     </div>
-  );
-}
-
-function EventCard({ event, formatDate }) {
-  return (
-    <Card className="hover:shadow-lg transition-shadow">
-      <CardHeader>
-        <CardTitle className="text-lg line-clamp-1">{event.title}</CardTitle>
-        <CardDescription className="line-clamp-2">
-          {event.description || 'No description'}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="space-y-2 text-sm">
-          <div className="flex items-start gap-2">
-            <Calendar className="w-4 h-4 mt-0.5 text-gray-500" />
-            <span className="text-gray-700 dark:text-gray-300">
-              {formatDate(event.startDate)}
-            </span>
-          </div>
-
-          {event.location && (
-            <div className="flex items-start gap-2">
-              <MapPin className="w-4 h-4 mt-0.5 text-gray-500" />
-              <span className="text-gray-700 dark:text-gray-300 line-clamp-1">
-                {event.location}
-              </span>
-            </div>
-          )}
-
-          {event.category && (
-            <div className="flex items-start gap-2">
-              <Tag className="w-4 h-4 mt-0.5 text-gray-500" />
-              <Badge variant="secondary">{event.category}</Badge>
-            </div>
-          )}
-
-          <div className="flex items-center gap-2">
-            <Users className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-700 dark:text-gray-300">
-              {event.attendeeCount}{' '}
-              {event.capacity ? `/ ${event.capacity}` : ''} attending
-            </span>
-          </div>
-        </div>
-
-        <Link href={`/events/${event.id}`} className="block">
-          <Button className="w-full mt-2">View Details</Button>
-        </Link>
-      </CardContent>
-    </Card>
   );
 }

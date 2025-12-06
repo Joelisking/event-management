@@ -6,15 +6,11 @@ import Link from 'next/link';
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/lib/auth-context';
-import { Calendar, MapPin, Users, Tag } from 'lucide-react';
 import { API_URL } from '@/lib/constants';
+import { RsvpCard } from '@/components/student/RsvpCard';
 
 export default function MyEventsPage() {
   const router = useRouter();
@@ -28,6 +24,7 @@ export default function MyEventsPage() {
       return;
     }
     fetchMyRsvps();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const fetchMyRsvps = async () => {
@@ -103,13 +100,25 @@ export default function MyEventsPage() {
       endDay.setHours(0, 0, 0, 0);
 
       if (endDay > startDay) {
-        return `${start.toLocaleDateString('en-US', formatOptions)} - ${end.toLocaleDateString('en-US', formatOptions)}`;
+        return `${start.toLocaleDateString(
+          'en-US',
+          formatOptions
+        )} - ${end.toLocaleDateString('en-US', formatOptions)}`;
       } else {
-        return `${start.toLocaleDateString('en-US', formatOptions)} ${start.toLocaleTimeString('en-US', timeOptions)} - ${end.toLocaleTimeString('en-US', timeOptions)}`;
+        return `${start.toLocaleDateString(
+          'en-US',
+          formatOptions
+        )} ${start.toLocaleTimeString(
+          'en-US',
+          timeOptions
+        )} - ${end.toLocaleTimeString('en-US', timeOptions)}`;
       }
     }
 
-    return `${start.toLocaleDateString('en-US', formatOptions)} at ${start.toLocaleTimeString('en-US', timeOptions)}`;
+    return `${start.toLocaleDateString(
+      'en-US',
+      formatOptions
+    )} at ${start.toLocaleTimeString('en-US', timeOptions)}`;
   };
 
   const getEventStatus = (startDate, endDate) => {
@@ -164,33 +173,6 @@ export default function MyEventsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <nav className="bg-white dark:bg-gray-800 shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <Link href="/">
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white cursor-pointer">
-                  Campus Connect
-                </h1>
-              </Link>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link href="/events">
-                <Button variant="outline">Browse Events</Button>
-              </Link>
-              <Link href="/student/dashboard">
-                <Button variant="outline">Dashboard</Button>
-              </Link>
-              {user && (
-                <div className="text-sm text-gray-700 dark:text-gray-300">
-                  Welcome, {user.name}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </nav>
-
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
@@ -221,7 +203,7 @@ export default function MyEventsPage() {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {ongoing.map((rsvp) => (
-                    <EventCard
+                    <RsvpCard
                       key={rsvp.id}
                       rsvp={rsvp}
                       onCancel={handleCancelRsvp}
@@ -240,7 +222,7 @@ export default function MyEventsPage() {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {upcoming.map((rsvp) => (
-                    <EventCard
+                    <RsvpCard
                       key={rsvp.id}
                       rsvp={rsvp}
                       onCancel={handleCancelRsvp}
@@ -259,7 +241,7 @@ export default function MyEventsPage() {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {past.map((rsvp) => (
-                    <EventCard
+                    <RsvpCard
                       key={rsvp.id}
                       rsvp={rsvp}
                       onCancel={handleCancelRsvp}
@@ -274,78 +256,5 @@ export default function MyEventsPage() {
         )}
       </main>
     </div>
-  );
-}
-
-function EventCard({ rsvp, onCancel, formatDate, getStatus }) {
-  const { event } = rsvp;
-  const eventStatus = getStatus(event.startDate, event.endDate);
-
-  return (
-    <Card className="hover:shadow-lg transition-shadow">
-      <CardHeader>
-        <div className="flex justify-between items-start mb-2">
-          <CardTitle className="text-lg">{event.title}</CardTitle>
-          <Badge className={`${eventStatus.color} text-white`}>
-            {eventStatus.label}
-          </Badge>
-        </div>
-        <CardDescription className="line-clamp-2">
-          {event.description || 'No description'}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="space-y-2 text-sm">
-          <div className="flex items-start gap-2">
-            <Calendar className="w-4 h-4 mt-0.5 text-gray-500" />
-            <span className="text-gray-700 dark:text-gray-300">
-              {formatDate(event.startDate, event.endDate)}
-            </span>
-          </div>
-
-          {event.location && (
-            <div className="flex items-start gap-2">
-              <MapPin className="w-4 h-4 mt-0.5 text-gray-500" />
-              <span className="text-gray-700 dark:text-gray-300">
-                {event.location}
-              </span>
-            </div>
-          )}
-
-          {event.category && (
-            <div className="flex items-start gap-2">
-              <Tag className="w-4 h-4 mt-0.5 text-gray-500" />
-              <span className="text-gray-700 dark:text-gray-300">
-                {event.category}
-              </span>
-            </div>
-          )}
-
-          <div className="flex items-center gap-2">
-            <Users className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-700 dark:text-gray-300">
-              {event.attendeeCount}{' '}
-              {event.capacity ? `/ ${event.capacity}` : ''} attending
-            </span>
-          </div>
-        </div>
-
-        <div className="flex gap-2 pt-2">
-          <Link href={`/events/${event.id}`} className="flex-1">
-            <Button variant="outline" className="w-full">
-              View Details
-            </Button>
-          </Link>
-          {eventStatus.status !== 'past' && (
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => onCancel(event.id)}>
-              Cancel
-            </Button>
-          )}
-        </div>
-      </CardContent>
-    </Card>
   );
 }
