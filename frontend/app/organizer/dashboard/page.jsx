@@ -127,13 +127,8 @@ export default function OrganizerDashboard() {
 
   if (authLoading || (user && user.role === 'organizer' && loading)) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-14 h-14 rounded-full border-4 border-slate-700 border-t-blue-500 animate-spin" />
-          <p className="text-sm font-medium text-slate-300">
-            Loading dashboard...
-          </p>
-        </div>
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <p className="text-slate-400">Loading...</p>
       </div>
     );
   }
@@ -141,21 +136,12 @@ export default function OrganizerDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900">
       {/* Background Pattern */}
-      <div className="fixed inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-10" />
+      <div className="fixed inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-10 pointer-events-none" />
 
       <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-        <DashboardHeader />
+        <DashboardHeader user={user} />
 
-        {loading ? (
-          <div className="text-center py-20">
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-14 h-14 rounded-full border-4 border-slate-700 border-t-blue-500 animate-spin" />
-              <p className="text-sm font-medium text-slate-300">
-                Loading your events...
-              </p>
-            </div>
-          </div>
-        ) : events.length === 0 ? (
+        {events.length === 0 ? (
           <EmptyState />
         ) : (
           <EventsList
@@ -166,39 +152,38 @@ export default function OrganizerDashboard() {
             onDelete={handleDelete}
           />
         )}
+
+        {/* Postpone Dialog */}
+        {selectedEvent && (
+          <PostponeEventDialog
+            event={selectedEvent}
+            open={postponeDialogOpen}
+            onOpenChange={setPostponeDialogOpen}
+            onSuccess={handlePostponeSuccess}
+          />
+        )}
+
+        {/* Cancel Dialog */}
+        {selectedEvent && (
+          <CancelEventDialog
+            event={selectedEvent}
+            open={cancelDialogOpen}
+            onOpenChange={setCancelDialogOpen}
+            onSuccess={handleCancelSuccess}
+          />
+        )}
+
+        {/* Attendees Modal */}
+        {selectedEvent && (
+          <AttendeesModal
+            event={selectedEvent}
+            attendees={selectedEvent.attendees}
+            open={attendeesModalOpen}
+            onOpenChange={setAttendeesModalOpen}
+            getToken={getToken}
+          />
+        )}
       </main>
-
-      {/* Postpone Dialog */}
-      {selectedEvent && (
-        <PostponeEventDialog
-          event={selectedEvent}
-          open={postponeDialogOpen}
-          onOpenChange={setPostponeDialogOpen}
-          onSuccess={handlePostponeSuccess}
-        />
-      )}
-
-      {/* Cancel Dialog */}
-      {selectedEvent && (
-        <CancelEventDialog
-          event={selectedEvent}
-          open={cancelDialogOpen}
-          onOpenChange={setCancelDialogOpen}
-          onSuccess={handleCancelSuccess}
-        />
-      )}
-
-      {/* Attendees Modal */}
-      {selectedEvent && (
-        <AttendeesModal
-          event={selectedEvent}
-          attendees={selectedEvent.attendees}
-          open={attendeesModalOpen}
-          onOpenChange={setAttendeesModalOpen}
-          getToken={getToken}
-        />
-      )}
     </div>
   );
 }
-

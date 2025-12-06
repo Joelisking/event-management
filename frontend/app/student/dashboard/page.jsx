@@ -16,19 +16,22 @@ import { DashboardEventCard } from '@/components/student/DashboardEventCard';
 
 export default function StudentDashboardPage() {
   const router = useRouter();
-  const { user, getToken } = useAuth();
+  const { user, getToken, loading: authLoading } = useAuth();
   const [rsvps, setRsvps] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (authLoading) return;
+
     if (!user) {
       router.push('/signin');
       return;
     }
+
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user, authLoading]);
 
   const fetchData = async () => {
     try {
@@ -114,7 +117,7 @@ export default function StudentDashboardPage() {
     ).length,
   };
 
-  if (loading) {
+  if (authLoading || loading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <p className="text-gray-600 dark:text-gray-400">Loading...</p>
@@ -123,42 +126,65 @@ export default function StudentDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Student Dashboard
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400">
-            Welcome back, {user?.name}!
-          </p>
+    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900">
+      {/* Background Pattern */}
+      <div className="fixed inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-10 pointer-events-none" />
+
+      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+        <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <h2 className="text-3xl font-bold text-slate-50 mb-2">
+              Student Dashboard
+            </h2>
+            <p className="text-slate-400">
+              Welcome back, <span className="text-slate-200 font-medium">{user?.name}</span>!
+            </p>
+          </div>
+          <div className="flex gap-3">
+             <Link href="/events">
+                <Button variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white">
+                  Browse Events
+                </Button>
+              </Link>
+             <Link href="/student/my-events">
+                <Button variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white">
+                  My Events
+                </Button>
+              </Link>
+          </div>
         </div>
 
         {/* Stats Grid */}
         <DashboardStats stats={stats} />
 
         {/* Upcoming Events */}
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+        <div className="mb-12">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-xl font-bold text-slate-50 flex items-center gap-2">
+              <span className="w-2 h-8 bg-blue-500 rounded-full inline-block"></span>
               Your Upcoming Events
             </h3>
             <Link href="/student/my-events">
-              <Button variant="outline" size="sm">
+              <Button variant="ghost" size="sm" className="text-blue-400 hover:text-blue-300 hover:bg-blue-400/10">
                 View All
               </Button>
             </Link>
           </div>
 
           {upcomingRsvps.length === 0 ? (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <Clock className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                <p className="text-gray-600 dark:text-gray-400 mb-4">
-                  No upcoming events. Browse events to RSVP!
+            <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl">
+              <CardContent className="py-16 text-center">
+                <div className="w-16 h-16 bg-slate-900/80 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-800">
+                  <Clock className="w-8 h-8 text-slate-500" />
+                </div>
+                <h4 className="text-slate-200 font-semibold mb-2">No upcoming events</h4>
+                <p className="text-slate-400 max-w-sm mx-auto mb-6">
+                  You haven&apos;t RSVP&apos;d to any upcoming events yet. Browse the catalog to find something interesting!
                 </p>
                 <Link href="/events">
-                  <Button>Browse Events</Button>
+                  <Button className="bg-blue-600 hover:bg-blue-500 text-white rounded-full px-6">
+                    Browse Events
+                  </Button>
                 </Link>
               </CardContent>
             </Card>
@@ -177,23 +203,22 @@ export default function StudentDashboardPage() {
 
         {/* Recommended Events */}
         <div>
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-xl font-bold text-slate-50 flex items-center gap-2">
+              <span className="w-2 h-8 bg-purple-500 rounded-full inline-block"></span>
               Recommended Events
             </h3>
             <Link href="/events">
-              <Button variant="outline" size="sm">
+              <Button variant="ghost" size="sm" className="text-purple-400 hover:text-purple-300 hover:bg-purple-400/10">
                 Browse All
               </Button>
             </Link>
           </div>
 
           {recommendedEvents.length === 0 ? (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <p className="text-gray-600 dark:text-gray-400">
-                  No recommended events at this time.
-                </p>
+            <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl">
+              <CardContent className="py-12 text-center text-slate-400">
+                No recommended events at this time.
               </CardContent>
             </Card>
           ) : (

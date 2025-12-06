@@ -11,13 +11,13 @@ import { ProfileActivity } from '@/components/profile/ProfileActivity';
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { user, loading: authLoading, getToken, signout, updateUser } =
+  const { user, loading: authLoading, getToken, updateUser } =
     useAuth();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (authLoading) return; // wait until auth context finishes initializing
+    if (authLoading) return;
 
     if (!user) {
       router.push('/signin');

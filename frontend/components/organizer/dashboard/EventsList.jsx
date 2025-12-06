@@ -68,142 +68,130 @@ export function EventsList({
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      {events.map((event) => (
-        <Card
-          key={event.id}
-          className="group hover:shadow-2xl hover:shadow-blue-900/20 transition-all duration-300 overflow-hidden bg-slate-950/70 border-slate-800/70 backdrop-blur-xl rounded-2xl">
-          {event.imageUrl && (
-            <div className="w-full h-48 overflow-hidden">
-              <img
-                src={event.imageUrl}
-                alt={event.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-          )}
-          <CardHeader className="pb-3">
-            <div className="flex justify-between items-start gap-2">
-              <div className="flex-1">
-                <CardTitle className="text-slate-50 line-clamp-1">
-                  {event.title}
-                </CardTitle>
-                <CardDescription className="text-slate-400 mt-1">
-                  {formatEventDate(event.startDate, event.endDate)}
-                </CardDescription>
-              </div>
-              <div className="flex flex-col items-end gap-2">
-                <button
-                  onClick={() => onViewAttendees(event)}
-                  className="px-3 py-1 bg-blue-500/10 border border-blue-500/30 text-blue-300 rounded-full text-sm font-medium whitespace-nowrap hover:bg-blue-500/20 hover:border-blue-500/50 transition-colors cursor-pointer">
-                  {event.attendeeCount} RSVPs
-                </button>
-                {event.status && event.status !== 'active' && (
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${
-                      event.status === 'cancelled'
-                        ? 'bg-red-500/10 border border-red-500/30 text-red-300'
-                        : event.status === 'postponed'
-                        ? 'bg-yellow-500/10 border border-yellow-500/30 text-yellow-300'
-                        : 'bg-slate-500/10 border border-slate-500/30 text-slate-300'
-                    }`}>
-                    {event.status === 'cancelled'
-                      ? 'Cancelled'
-                      : event.status === 'postponed'
-                      ? 'Rescheduled'
-                      : event.status}
-                  </span>
-                )}
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {event.description && (
-                <p className="text-sm text-slate-400 line-clamp-2">
-                  {event.description}
-                </p>
-              )}
-
-              {event.attendees && event.attendees.length > 0 && (
-                <div>
-                  <h4 className="text-sm font-semibold mb-2 text-slate-300">
-                    Attendees:
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {event.attendees.slice(0, 5).map((attendee) => (
-                      <div
-                        key={attendee.id}
-                        className="flex items-center space-x-1 text-xs bg-slate-900/70 border border-slate-800/50 px-2 py-1 rounded-lg text-slate-300">
-                        <span>{attendee.user.name}</span>
-                      </div>
-                    ))}
-                    {event.attendees.length > 5 && (
-                      <span className="text-xs text-slate-500 px-2 py-1">
-                        +{event.attendees.length - 5} more
-                      </span>
-                    )}
+    <>
+      <div className="rounded-2xl border border-slate-800/70 bg-slate-950/70 backdrop-blur-xl overflow-hidden shadow-xl shadow-blue-900/5">
+        <Table>
+          <TableHeader className="bg-slate-900/50">
+            <TableRow className="border-b border-slate-800 hover:bg-transparent">
+              <TableHead className="text-slate-400 font-medium">Event</TableHead>
+              <TableHead className="text-slate-400 font-medium">Date & Time</TableHead>
+              <TableHead className="text-slate-400 font-medium">Status</TableHead>
+              <TableHead className="text-slate-400 font-medium">Stats</TableHead>
+              <TableHead className="text-right text-slate-400 font-medium">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {events.map((event) => (
+              <TableRow key={event.id} className="border-b border-slate-800/50 hover:bg-slate-900/30 transition-colors">
+                <TableCell className="font-medium">
+                  <div className="text-slate-200 font-semibold">{event.title}</div>
+                  {event.location && (
+                    <div className="text-sm text-slate-500 mt-1 flex items-center gap-1">
+                       <span className="truncate max-w-[200px]">{event.location}</span>
+                    </div>
+                  )}
+                </TableCell>
+                <TableCell>
+                  <div className="text-sm text-slate-300">
+                    {new Date(event.startDate).toLocaleDateString()}
                   </div>
-                </div>
-              )}
-
-              <div className="flex flex-col gap-2 pt-2">
-                <div className="flex gap-2">
-                  <Link href={`/events/${event.id}`} className="flex-1">
+                  <div className="text-xs text-slate-500 mt-1">
+                    {new Date(event.startDate).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Badge
+                    className={`
+                      ${
+                        event.status === 'active'
+                          ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                          : event.status === 'cancelled'
+                          ? 'bg-red-500/10 text-red-400 border-red-500/20'
+                          : 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'
+                      } border
+                    `}>
+                    {event.status}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-4 text-sm text-slate-400">
+                    <div className="flex items-center gap-1.5">
+                      <Users className="w-4 h-4 text-slate-500" />
+                      <span>
+                        <span className="text-slate-200">{event.attendeeCount}</span>
+                        <span className="text-slate-600 mx-1">/</span>
+                        {event.capacity || '∞'}
+                      </span>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell className="text-right space-x-2">
+                  <div className="flex items-center justify-end gap-2">
                     <Button
-                      variant="outline"
-                      className="w-full border-slate-700 text-slate-300 bg-slate-950/70 hover:bg-slate-900 hover:border-slate-600 hover:text-slate-100 rounded-full"
-                      size="sm">
-                      View
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-slate-400 hover:text-blue-400 hover:bg-blue-400/10 rounded-full"
+                      onClick={() => onViewAttendees(event)}>
+                      <Users className="w-4 h-4" />
                     </Button>
-                  </Link>
-                  {event.status !== 'cancelled' && (
-                    <Link
-                      href={`/organizer/events/edit/${event.id}`}
-                      className="flex-1">
+                    <Link href={`/organizer/events/edit/${event.id}`}>
                       <Button
-                        variant="outline"
-                        className="w-full border-slate-700 text-slate-300 bg-slate-950/70 hover:bg-slate-900 hover:border-slate-600 hover:text-slate-100 rounded-full"
-                        size="sm">
-                        Edit
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-slate-400 hover:text-slate-100 hover:bg-slate-800 rounded-full">
+                        <Edit2 className="w-4 h-4" />
                       </Button>
                     </Link>
-                  )}
-                </div>
-
-                {event.status !== 'cancelled' && (
-                  <div className="flex gap-2">
-                    <Button
-                      className="flex-1 bg-yellow-500 rounded-full text-white hover:bg-yellow-500/80"
-                      size="sm"
-                      onClick={() => onPostpone(event)}>
-                      Postpone
-                    </Button>
-                    <Button
-                      className="flex-1 bg-red-500 rounded-full hover:bg-red-500/80"
-                      size="sm"
-                      onClick={() => onCancel(event)}>
-                      Cancel Event
-                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-slate-400 hover:text-slate-100 hover:bg-slate-800 rounded-full">
+                          <MoreVertical className="w-4 h-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="bg-slate-950 border-slate-800 text-slate-200 w-48">
+                        <DropdownMenuItem className="text-slate-300 focus:bg-slate-900 focus:text-slate-100 cursor-pointer">
+                          <Link href={`/events/${event.id}`} className="flex w-full">
+                            View Public Page
+                          </Link>
+                        </DropdownMenuItem>
+                        {event.status === 'active' && (
+                          <>
+                            <DropdownMenuItem
+                              onClick={() => {
+                                if (onPostpone) onPostpone(event);
+                              }}
+                              className="focus:bg-slate-900 focus:text-slate-100 cursor-pointer">
+                              Postpone Event
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              className="text-red-400 focus:text-red-300 focus:bg-red-500/10 cursor-pointer"
+                              onClick={() => {
+                                if (onCancel) onCancel(event);
+                              }}>
+                              Cancel Event
+                            </DropdownMenuItem>
+                          </>
+                        )}
+                        <DropdownMenuItem
+                          className="text-red-400 focus:text-red-300 focus:bg-red-500/10 cursor-pointer"
+                          onClick={() => onDelete(event.id)}>
+                          Delete Event
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
-                )}
-
-                {event.status === 'cancelled' && (
-                  <Button
-                    variant="outline"
-                    className="w-full border-red-500/40 text-red-400 hover:bg-red-500/10 hover:text-red-300 hover:border-red-500/60 rounded-full"
-                    size="sm"
-                    onClick={() =>
-                      onDelete(event.id, event.title, event.status)
-                    }>
-                    Delete Permanently
-                  </Button>
-                )}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </>
   );
 }
