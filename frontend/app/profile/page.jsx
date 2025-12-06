@@ -15,12 +15,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/lib/auth-context';
 import { toast } from 'sonner';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+import { API_URL } from '@/lib/constants';
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { user, getToken, signout, updateUser } = useAuth();
+const { user, loading: authLoading, getToken, signout, updateUser } = useAuth();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
@@ -28,13 +27,18 @@ export default function ProfilePage() {
   const [organizationName, setOrganizationName] = useState('');
   const [updating, setUpdating] = useState(false);
 
-  useEffect(() => {
-    if (!user) {
-      router.push('/signin');
-      return;
-    }
-    fetchProfile();
-  }, [user]);
+useEffect(() => {
+  if (authLoading) return; // wait until auth context finishes initializing
+
+  if (!user) {
+    router.push('/signin');
+    return;
+  }
+
+  fetchProfile();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [user, authLoading]);
+
 
   const fetchProfile = async () => {
     try {
@@ -118,19 +122,18 @@ export default function ProfilePage() {
     });
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900 flex items-center justify-center">
-        <div className="fixed inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-10" />
-        <p className="text-slate-400 relative z-10">Loading profile...</p>
-      </div>
-    );
-  }
+if (authLoading || loading) {
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900 flex items-center justify-center">
+      <p className="text-slate-400 relative z-10">Loading profile...</p>
+    </div>
+  );
+}
+
 
   if (!profile) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900 flex items-center justify-center">
-        <div className="fixed inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-10" />
         <p className="text-slate-400 relative z-10">Profile not found</p>
       </div>
     );
@@ -138,47 +141,6 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900">
-      <div className="fixed inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-10" />
-      <nav className="bg-slate-950/70 border-b border-slate-800/70 backdrop-blur-xl shadow-2xl shadow-blue-900/10 relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <Link href="/events">
-                <h1 className="text-2xl font-bold text-slate-50 cursor-pointer">
-                  Campus Connect
-                </h1>
-              </Link>
-            </div>
-            <div className="flex items-center space-x-3">
-              <Link href="/events">
-                <Button className="bg-slate-800/70 text-slate-300 hover:bg-slate-800 hover:text-slate-100 border-slate-700 rounded-full">
-                  Events
-                </Button>
-              </Link>
-              {user?.role === 'organizer' && (
-                <Link href="/organizer/dashboard">
-                  <Button className="bg-slate-800/70 text-slate-300 hover:bg-slate-800 hover:text-slate-100 border-slate-700 rounded-full">
-                    Dashboard
-                  </Button>
-                </Link>
-              )}
-              {user?.role === 'admin' && (
-                <Link href="/admin/dashboard">
-                  <Button className="bg-slate-800/70 text-slate-300 hover:bg-slate-800 hover:text-slate-100 border-slate-700 rounded-full">
-                    Admin
-                  </Button>
-                </Link>
-              )}
-              <Button
-                onClick={handleSignOut}
-                className="bg-red-600/20 text-red-400 hover:bg-red-600/30 border-red-500/30 rounded-full">
-                Sign Out
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-slate-50 mb-2">
@@ -192,7 +154,7 @@ export default function ProfilePage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Profile Information */}
           <div className="lg:col-span-1">
-            <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl shadow-2xl shadow-blue-900/10 rounded-2xl">
+            <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl shadow-2xl shadow-blue-900/10 rounded-2xl pt-6">
               <CardHeader>
                 <CardTitle className="text-slate-50">Profile Information</CardTitle>
                 <CardDescription className="text-slate-400">Your account details</CardDescription>
@@ -289,8 +251,9 @@ export default function ProfilePage() {
                         Member Since
                       </p>
                       <p className="text-lg text-slate-50 mt-1">
-                        {formatDate(profile.created_at)}
-                      </p>
+  {profile.createdAt ? formatDate(profile.createdAt) : '—'}
+</p>
+
                     </div>
                     <Button
                       onClick={() => setEditing(true)}
@@ -306,7 +269,7 @@ export default function ProfilePage() {
           {/* Student RSVPs or Organizer Events */}
           <div className="lg:col-span-2">
             {profile.role === 'student' && (
-              <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl shadow-2xl shadow-blue-900/10 rounded-2xl">
+              <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl shadow-2xl shadow-blue-900/10 rounded-2xl pt-6">
                 <CardHeader>
                   <CardTitle className="text-slate-50">My RSVPs</CardTitle>
                   <CardDescription className="text-slate-400">
@@ -375,7 +338,7 @@ export default function ProfilePage() {
             )}
 
             {profile.role === 'organizer' && (
-              <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl shadow-2xl shadow-blue-900/10 rounded-2xl">
+              <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl shadow-2xl shadow-blue-900/10 rounded-2xl pt-6">
                 <CardHeader>
                   <CardTitle className="text-slate-50">My Events</CardTitle>
                   <CardDescription className="text-slate-400">
