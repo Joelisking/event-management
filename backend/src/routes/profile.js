@@ -1,11 +1,11 @@
 import express from 'express';
 import { query } from '../db.js';
-import { authenticateToken } from '../middleware/auth.js';
+import { authenticate } from '../middleware/auth.js';
 
 const router = express.Router();
 
 // Get current user's profile
-router.get('/me', authenticateToken, async (req, res) => {
+router.get('/me', authenticate, async (req, res) => {
   try {
     const userId = req.user.id;
 
@@ -36,7 +36,8 @@ router.get('/me', authenticateToken, async (req, res) => {
           e.category,
           e.image_url,
           e.status,
-          u.name as organizer_name
+          u.name as organizer_name,
+          u.organization_name
         FROM rsvps r
         JOIN events e ON r.event_id = e.id
         JOIN users u ON e.organizer_id = u.id
@@ -58,7 +59,7 @@ router.get('/me', authenticateToken, async (req, res) => {
           category: row.category,
           imageUrl: row.image_url,
           status: row.status,
-          organizerName: row.organizer_name
+          organizerName: row.organization_name || row.organizer_name
         }
       }));
     }
@@ -111,7 +112,7 @@ router.get('/me', authenticateToken, async (req, res) => {
 });
 
 // Update current user's profile
-router.put('/me', authenticateToken, async (req, res) => {
+router.put('/me', authenticate, async (req, res) => {
   try {
     const userId = req.user.id;
     const { name } = req.body;
