@@ -20,8 +20,7 @@ import { DateTimeRangePicker } from '@/components/ui/date-time-range-picker';
 import { ImageUpload } from '@/components/ui/image-upload';
 import { useAuth } from '@/lib/auth-context';
 import { toast } from 'sonner';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+import { API_URL } from '@/lib/constants';
 
 const eventSchema = yup.object().shape({
   title: yup

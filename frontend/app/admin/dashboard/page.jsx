@@ -13,27 +13,33 @@ import {
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/lib/auth-context';
 import { toast } from 'sonner';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+import { API_URL } from '@/lib/constants';
 
 export default function AdminDashboardPage() {
   const router = useRouter();
-  const { user, getToken, signout } = useAuth();
+const { user, loading: authLoading, getToken, signout } = useAuth();
+
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (authLoading) return; // wait for auth to initialize
+
     if (!user) {
       router.push('/signin');
       return;
     }
+
     if (user.role !== 'admin') {
       toast.error('Access denied');
       router.push('/events');
       return;
     }
+
     fetchStats();
-  }, [user]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, authLoading]);
+
 
   const fetchStats = async () => {
     try {
@@ -73,13 +79,16 @@ export default function AdminDashboardPage() {
     });
   };
 
-  if (loading) {
+  if (authLoading || loading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <p className="text-gray-600 dark:text-gray-400">Loading dashboard...</p>
+        <p className="text-gray-600 dark:text-gray-400">
+          Loading dashboard...
+        </p>
       </div>
     );
   }
+
 
   if (!stats) {
     return (
