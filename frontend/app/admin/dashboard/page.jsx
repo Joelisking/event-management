@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import {
   Card,
   CardContent,
@@ -10,14 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { useAuth } from '@/lib/auth-context';
 import { toast } from 'sonner';
 import { API_URL } from '@/lib/constants';
 
 export default function AdminDashboardPage() {
   const router = useRouter();
-const { user, loading: authLoading, getToken, signout } = useAuth();
+const { user, loading: authLoading, getToken } = useAuth();
 
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -64,11 +62,6 @@ const { user, loading: authLoading, getToken, signout } = useAuth();
     }
   };
 
-  const handleSignOut = () => {
-    signout();
-    router.push('/signin');
-  };
-
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -100,32 +93,7 @@ const { user, loading: authLoading, getToken, signout } = useAuth();
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <nav className="bg-white dark:bg-gray-800 shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <Link href="/events">
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white cursor-pointer">
-                  Campus Connect
-                </h1>
-              </Link>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link href="/events">
-                <Button variant="outline">Events</Button>
-              </Link>
-              <Link href="/profile">
-                <Button variant="outline">Profile</Button>
-              </Link>
-              <Button variant="outline" onClick={handleSignOut}>
-                Sign Out
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-0 py-8">
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
             Admin Dashboard
@@ -137,7 +105,7 @@ const { user, loading: authLoading, getToken, signout } = useAuth();
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card>
+          <Card className={'pt-6'}>
             <CardHeader>
               <CardTitle className="text-2xl">
                 {stats.totals.users}
@@ -145,7 +113,7 @@ const { user, loading: authLoading, getToken, signout } = useAuth();
               <CardDescription>Total Users</CardDescription>
             </CardHeader>
           </Card>
-          <Card>
+          <Card className={'pt-6'}>
             <CardHeader>
               <CardTitle className="text-2xl">
                 {stats.totals.events}
@@ -153,7 +121,7 @@ const { user, loading: authLoading, getToken, signout } = useAuth();
               <CardDescription>Total Events</CardDescription>
             </CardHeader>
           </Card>
-          <Card>
+          <Card className={'pt-6'}>
             <CardHeader>
               <CardTitle className="text-2xl">
                 {stats.totals.rsvps}
@@ -165,7 +133,7 @@ const { user, loading: authLoading, getToken, signout } = useAuth();
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {/* Users by Role */}
-          <Card>
+          <Card className={'pt-6'}>
             <CardHeader>
               <CardTitle>Users by Role</CardTitle>
             </CardHeader>
@@ -178,7 +146,7 @@ const { user, loading: authLoading, getToken, signout } = useAuth();
                     <span className="capitalize font-medium">{item.role}</span>
                     <span className="text-gray-600 dark:text-gray-400">
                       {item.count}
-                    </span>
+                      </span>
                   </div>
                 ))}
               </div>
@@ -186,7 +154,7 @@ const { user, loading: authLoading, getToken, signout } = useAuth();
           </Card>
 
           {/* Events by Status */}
-          <Card>
+          <Card className={'pt-6'}>
             <CardHeader>
               <CardTitle>Events by Status</CardTitle>
             </CardHeader>
@@ -210,7 +178,7 @@ const { user, loading: authLoading, getToken, signout } = useAuth();
         {/* Events by Category */}
         {stats.eventsByCategory.length > 0 && (
           <div className="mb-8">
-            <Card>
+            <Card className={'pt-6'}>
               <CardHeader>
                 <CardTitle>Events by Category</CardTitle>
               </CardHeader>
@@ -236,7 +204,7 @@ const { user, loading: authLoading, getToken, signout } = useAuth();
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Recent Users */}
-          <Card>
+          <Card className={'pt-6'}>
             <CardHeader>
               <CardTitle>Recent Users</CardTitle>
               <CardDescription>Latest 10 registered users</CardDescription>
@@ -270,7 +238,7 @@ const { user, loading: authLoading, getToken, signout } = useAuth();
           </Card>
 
           {/* Upcoming Events */}
-          <Card>
+          <Card className={'pt-6'}>
             <CardHeader>
               <CardTitle>Upcoming Events</CardTitle>
               <CardDescription>Next 10 active events</CardDescription>
@@ -311,7 +279,7 @@ const { user, loading: authLoading, getToken, signout } = useAuth();
         {/* Recent RSVPs */}
         {stats.recentRsvps.length > 0 && (
           <div className="mt-6">
-            <Card>
+            <Card className={'pt-6'}>
               <CardHeader>
                 <CardTitle>Recent RSVPs</CardTitle>
                 <CardDescription>Latest 10 event registrations</CardDescription>
