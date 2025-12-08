@@ -5,14 +5,40 @@ import { createEvent } from 'ics';
 dotenv.config();
 
 // Create reusable transporter
-const transporter = nodemailer.createTransport({
+// Create reusable transporter with diagnostic logging
+const transportConfig = {
   host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-  port: process.env.EMAIL_PORT || 587,
-  secure: false, // true for 465, false for other ports
+  port: Number(process.env.EMAIL_PORT) || 587,
+  // Use secure true for port 465 (SSL), otherwise false (TLS)
+  secure: Number(process.env.EMAIL_PORT) === 465,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASSWORD,
   },
+};
+
+// Log configuration (excluding sensitive password)
+console.log('Email transporter config:', {
+  host: transportConfig.host,
+  port: transportConfig.port,
+  secure: transportConfig.secure,
+  user: transportConfig.auth.user,
+  passLength: transportConfig.auth.pass ? transportConfig.auth.pass.length : 0,
+  tls: transportConfig.tls || 'default'
+});
+
+export const transporter = nodemailer.createTransport(transportConfig);
+
+// Verify connection configuration
+transporter.verify(function (error, success) {
+  if (error) {
+    console.error('CRITICAL: Email server connection failed:', error);
+  } else {
+    console.log('SUCCESS: Email server is ready to take our messages. Config:', {
+        host: transportConfig.host,
+        user: transportConfig.auth.user
+    });
+  }
 });
 
 /**
@@ -450,4 +476,113 @@ This is an automated notification from Campus Connect.
   `;
 
   return await sendEmail({ to: user.email, subject, html, text });
+}
+
+/**
+ * Send welcome email to new users
+ * @param {Object} user - User object with name, email, and role
+ */
+export async function sendWelcomeEmail(user) {
+  const roleMessages = {
+    student: {
+      greeting: 'Welcome to Campus Connect!',
+      message: 'You can now browse campus events, RSVP to activities, and manage your participation all in one place.',
+      features: [
+        'Browse all campus events',
+        'RSVP to events with one click',
+        'View your participation history',
+        'Add events to your calendar',
+        'Receive email notifications for event updates'
+      ]
+    },
+    organizer: {
+      greeting: 'Welcome to Campus Connect, Event Organizer!',
+      message: 'You now have access to powerful tools to create and manage campus events.',
+      features: [
+        'Create and manage events',
+        'Track attendee RSVPs',
+        'Send notifications to attendees',
+        'Edit, postpone, or cancel events',
+        'View detailed event analytics'
+      ]
+    },
+    admin: {
+      greeting: 'Welcome to Campus Connect, Administrator!',
+      message: 'You have full administrative access to manage the platform.',
+      features: [
+        'Manage all users and events',
+        'View platform analytics',
+        'Oversee event activities',
+        'Assign user roles',
+        'Monitor platform health'
+      ]
+    }
+  };
+
+  const roleInfo = roleMessages[user.role] || roleMessages.student;
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+
+  const subject = `${roleInfo.greeting}`;
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="color: #2563eb; margin: 0;">Campus Connect</h1>
+        <p style="color: #6b7280; margin-top: 5px;">Your Campus Event Hub</p>
+      </div>
+      
+      <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 12px; color: white; margin-bottom: 30px;">
+        <h2 style="margin: 0 0 10px 0;">${roleInfo.greeting}</h2>
+        <p style="margin: 0; font-size: 16px;">Hi ${user.name}! 👋</p>
+      </div>
+
+      <div style="background-color: #f9fafb; padding: 25px; border-radius: 8px; margin-bottom: 25px;">
+        <p style="margin-top: 0; color: #374151; font-size: 15px;">${roleInfo.message}</p>
+        
+        <h3 style="color: #1f2937; margin-top: 20px; margin-bottom: 15px;">What you can do:</h3>
+        <ul style="color: #4b5563; line-height: 1.8; padding-left: 20px;">
+          ${roleInfo.features.map(feature => `<li>${feature}</li>`).join('')}
+        </ul>
+      </div>
+
+      <div style="text-align: center; margin: 30px 0;">
+        <a href="${frontendUrl}/events" 
+           style="background-color: #2563eb; color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: 600;">
+          Get Started
+        </a>
+      </div>
+
+      <div style="border-top: 1px solid #e5e7eb; padding-top: 20px; margin-top: 30px;">
+        <p style="color: #6b7280; font-size: 14px; margin: 5px 0;">
+          Need help? Contact us at <a href="mailto:${process.env.EMAIL_USER}" style="color: #2563eb;">${process.env.EMAIL_USER}</a>
+        </p>
+        <p style="color: #9ca3af; font-size: 12px; margin-top: 15px;">
+          © ${new Date().getFullYear()} Campus Connect. All rights reserved.
+        </p>
+      </div>
+    </div>
+  `;
+
+  const text = `
+${roleInfo.greeting}
+
+Hi ${user.name}!
+
+${roleInfo.message}
+
+What you can do:
+${roleInfo.features.map((feature, index) => `${index + 1}. ${feature}`).join('\n')}
+
+Get started now: ${frontendUrl}/events
+
+Need help? Contact us at ${process.env.EMAIL_USER}
+
+© ${new Date().getFullYear()} Campus Connect. All rights reserved.
+  `;
+
+  return sendEmail({
+    to: user.email,
+    subject,
+    html,
+    text,
+  });
 }
