@@ -23,6 +23,7 @@ router.get('/', async (req, res) => {
       FROM events e
       JOIN users u ON e.user_id = u.id
       LEFT JOIN event_attendees ea ON e.id = ea.event_id
+      WHERE e.status != 'cancelled'
       GROUP BY e.id, u.id
       ORDER BY e.start_date ASC NULLS LAST
     `);
@@ -467,6 +468,16 @@ router.put(
       );
 
       // Send update notification emails to all attendees
+      const eventData = {
+        id: event.id,
+        title: event.title,
+        description: event.description,
+        startDate: event.start_date,
+        endDate: event.end_date,
+        location: event.location,
+        category: event.category,
+      };
+
       try {
         const emailPromises = attendeesResult.rows.map((attendee) => {
           const userData = {
@@ -518,10 +529,7 @@ router.put(
   }
 );
 
-/**
- * POST /api/events/:id/cancel
- * Cancel an event - sends notification emails to all attendees
- */
+//Cancel an event 
 router.post(
   '/:id/cancel',
   authenticate,
@@ -575,6 +583,16 @@ router.post(
       );
 
       // Send cancellation emails to all attendees
+      const eventData = {
+        id: event.id,
+        title: event.title,
+        description: event.description,
+        startDate: event.start_date,
+        endDate: event.end_date,
+        location: event.location,
+        category: event.category,
+      };
+
       try {
         const emailPromises = attendeesResult.rows.map((attendee) => {
           return sendEventCancellationEmail(attendee, eventData).catch((err) => {
@@ -607,10 +625,7 @@ router.post(
   }
 );
 
-/**
- * POST /api/events/:id/postpone
- * Postpone/reschedule an event - sends notification emails to all attendees
- */
+//Postpone/reschedule an event 
 router.post(
   '/:id/postpone',
   authenticate,
@@ -697,6 +712,16 @@ router.post(
       );
 
       // Send update emails to all attendees
+      const eventData = {
+        id: result.rows[0].id,
+        title: result.rows[0].title,
+        description: result.rows[0].description,
+        startDate: result.rows[0].start_date,
+        endDate: result.rows[0].end_date,
+        location: result.rows[0].location,
+        category: result.rows[0].category,
+      };
+
       try {
         const emailPromises = attendeesResult.rows.map((attendee) => {
           return sendEventUpdateEmail(attendee, eventData).catch((err) => {
