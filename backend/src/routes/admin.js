@@ -27,30 +27,34 @@ router.get('/users', authenticate, requireAdmin, async (req, res) => {
 });
 
 // Get user by ID (admin only)
-router.get('/users/:id', authenticate, requireAdmin, async (req, res) => {
-  try {
-    const { id } = req.params;
+router.get(
+  '/users/:id',
+  authenticate,
+  requireAdmin,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
 
-    const userResult = await query(
-      `
+      const userResult = await query(
+        `
       SELECT u.id, u.name, u.email, u.role, u."createdAt", u."updatedAt",
              up.bio
       FROM users u
       LEFT JOIN user_profiles up ON u.id = up.user_id
       WHERE u.id = $1
     `,
-      [id]
-    );
+        [id]
+      );
 
-    if (userResult.rows.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
-    }
+      if (userResult.rows.length === 0) {
+        return res.status(404).json({ error: 'User not found' });
+      }
 
-    const user = userResult.rows[0];
+      const user = userResult.rows[0];
 
-    // Get user's created events
-    const eventsResult = await query(
-      `
+      // Get user's created events
+      const eventsResult = await query(
+        `
       SELECT e.id, e.title, e.start_date, e.end_date,
              COUNT(ea.id)::int as attendee_count
       FROM events e
@@ -59,92 +63,189 @@ router.get('/users/:id', authenticate, requireAdmin, async (req, res) => {
       GROUP BY e.id
       ORDER BY e.start_date DESC
     `,
-      [id]
-    );
+        [id]
+      );
 
-    // Get user's RSVPs
-    const rsvpsResult = await query(
-      `
+      // Get user's RSVPs
+      const rsvpsResult = await query(
+        `
       SELECT ea.id, ea.status, e.id as event_id, e.title, e.start_date, e.end_date
       FROM event_attendees ea
       JOIN events e ON ea.event_id = e.id
       WHERE ea.user_id = $1
       ORDER BY e.start_date DESC
     `,
-      [id]
-    );
+        [id]
+      );
 
-    res.json({
-      ...user,
-      eventsCreated: eventsResult.rows,
-      eventsAttended: rsvpsResult.rows,
-    });
-  } catch (error) {
-    console.error('Error fetching user:', error);
-    res.status(500).json({ error: 'Failed to fetch user' });
+      res.json({
+        ...user,
+        eventsCreated: eventsResult.rows,
+        eventsAttended: rsvpsResult.rows,
+      });
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      res.status(500).json({ error: 'Failed to fetch user' });
+    }
   }
-});
+);
 
 // Update user role (admin only)
-router.put('/users/:id/role', authenticate, requireAdmin, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { role } = req.body;
+router.put(
+  '/users/:id/role',
+  authenticate,
+  requireAdmin,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { role } = req.body;
 
-    if (!['student', 'organizer', 'admin'].includes(role)) {
-      return res.status(400).json({ error: 'Invalid role' });
-    }
+      if (!['student', 'organizer', 'admin'].includes(role)) {
+        return res.status(400).json({ error: 'Invalid role' });
+      }
 
-    const result = await query(
-      `
+      const result = await query(
+        `
       UPDATE users
       SET role = $1, "updatedAt" = CURRENT_TIMESTAMP
       WHERE id = $2
       RETURNING id, name, email, role, "createdAt", "updatedAt"
     `,
-      [role, id]
-    );
+        [role, id]
+      );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      res.json(result.rows[0]);
+    } catch (error) {
+      console.error('Error updating user role:', error);
+      res.status(500).json({ error: 'Failed to update user role' });
     }
-
-    res.json(result.rows[0]);
-  } catch (error) {
-    console.error('Error updating user role:', error);
-    res.status(500).json({ error: 'Failed to update user role' });
   }
-});
+);
 
 // Delete user (admin only)
-router.delete('/users/:id', authenticate, requireAdmin, async (req, res) => {
-  try {
-    const { id } = req.params;
+router.delete(
+  '/users/:id',
+  authenticate,
+  requireAdmin,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
 
-    // Prevent admin from deleting themselves
-    if (parseInt(id) === req.user.id || parseInt(id) === req.user.userId) {
-      return res.status(400).json({ error: 'Cannot delete your own account' });
+      // Prevent admin from deleting themselves
+      if (
+        parseInt(id) === req.user.id ||
+        parseInt(id) === req.user.userId
+      ) {
+        return res
+          .status(400)
+          .json({ error: 'Cannot delete your own account' });
+      }
+
+      const userCheck = await query(
+        'SELECT id FROM users WHERE id = $1',
+        [id]
+      );
+
+      if (userCheck.rows.length === 0) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      await query('DELETE FROM users WHERE id = $1', [id]);
+
+      res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      res.status(500).json({ error: 'Failed to delete user' });
     }
-
-    const userCheck = await query('SELECT id FROM users WHERE id = $1', [id]);
-
-    if (userCheck.rows.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    await query('DELETE FROM users WHERE id = $1', [id]);
-
-    res.json({ message: 'User deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting user:', error);
-    res.status(500).json({ error: 'Failed to delete user' });
   }
-});
+);
+
+// Approve event
+router.post(
+  '/events/:id/approve',
+  authenticate,
+  requireAdmin,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      await query(
+        "UPDATE events SET status = 'active' WHERE id = $1",
+        [id]
+      );
+
+      // Notify organizer
+      const eventResult = await query(
+        'SELECT user_id, title FROM events WHERE id = $1',
+        [id]
+      );
+      if (eventResult.rows.length > 0) {
+        const { user_id, title } = eventResult.rows[0];
+        await query(
+          `INSERT INTO notifications (user_id, type, title, message)
+         VALUES ($1, 'admin', 'Event Approved', $2)`,
+          [user_id, `Your event "${title}" has been approved.`]
+        );
+      }
+
+      res.json({ message: 'Event approved' });
+    } catch (error) {
+      console.error('Error approving event:', error);
+      res.status(500).json({ error: 'Failed to approve event' });
+    }
+  }
+);
+
+// Reject event
+router.post(
+  '/events/:id/reject',
+  authenticate,
+  requireAdmin,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { reason } = req.body;
+      await query(
+        "UPDATE events SET status = 'rejected', rejection_reason = $1 WHERE id = $2",
+        [reason, id]
+      );
+
+      // Notify organizer
+      const eventResult = await query(
+        'SELECT user_id, title FROM events WHERE id = $1',
+        [id]
+      );
+      if (eventResult.rows.length > 0) {
+        const { user_id, title } = eventResult.rows[0];
+        await query(
+          `INSERT INTO notifications (user_id, type, title, message)
+         VALUES ($1, 'admin', 'Event Rejected', $2)`,
+          [
+            user_id,
+            `Your event "${title}" was rejected. Reason: ${reason}`,
+          ]
+        );
+      }
+
+      res.json({ message: 'Event rejected' });
+    } catch (error) {
+      console.error('Error rejecting event:', error);
+      res.status(500).json({ error: 'Failed to reject event' });
+    }
+  }
+);
 
 // Get all events (admin only)
-router.get('/events', authenticate, requireAdmin, async (req, res) => {
-  try {
-    const result = await query(`
+router.get(
+  '/events',
+  authenticate,
+  requireAdmin,
+  async (req, res) => {
+    try {
+      const result = await query(`
       SELECT
         e.id, e.title, e.description, e.start_date, e.end_date, e.capacity,
         e.location, e.category, e.image_url, e."createdAt", e."updatedAt",
@@ -157,56 +258,65 @@ router.get('/events', authenticate, requireAdmin, async (req, res) => {
       ORDER BY e."createdAt" DESC
     `);
 
-    const events = result.rows.map((row) => ({
-      id: row.id,
-      title: row.title,
-      description: row.description,
-      startDate: row.start_date,
-      endDate: row.end_date,
-      capacity: row.capacity,
-      location: row.location,
-      category: row.category,
-      imageUrl: row.image_url,
-      createdAt: row.createdAt,
-      updatedAt: row.updatedAt,
-      organizer: {
-        id: row.organizer_id,
-        name: row.organizer_name,
-        email: row.organizer_email,
-        role: row.organizer_role,
-      },
-      attendeeCount: row.attendee_count,
-    }));
+      const events = result.rows.map((row) => ({
+        id: row.id,
+        title: row.title,
+        description: row.description,
+        startDate: row.start_date,
+        endDate: row.end_date,
+        capacity: row.capacity,
+        location: row.location,
+        category: row.category,
+        imageUrl: row.image_url,
+        createdAt: row.createdAt,
+        updatedAt: row.updatedAt,
+        organizer: {
+          id: row.organizer_id,
+          name: row.organizer_name,
+          email: row.organizer_email,
+          role: row.organizer_role,
+        },
+        attendeeCount: row.attendee_count,
+      }));
 
-    res.json(events);
-  } catch (error) {
-    console.error('Error fetching events:', error);
-    res.status(500).json({ error: 'Failed to fetch events' });
+      res.json(events);
+    } catch (error) {
+      console.error('Error fetching events:', error);
+      res.status(500).json({ error: 'Failed to fetch events' });
+    }
   }
-});
+);
 
 // Delete any event (admin only)
-router.delete('/events/:id', authenticate, requireAdmin, async (req, res) => {
-  try {
-    const { id } = req.params;
+router.delete(
+  '/events/:id',
+  authenticate,
+  requireAdmin,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
 
-    const eventCheck = await query('SELECT id, title FROM events WHERE id = $1', [id]);
+      const eventCheck = await query(
+        'SELECT id, title FROM events WHERE id = $1',
+        [id]
+      );
 
-    if (eventCheck.rows.length === 0) {
-      return res.status(404).json({ error: 'Event not found' });
+      if (eventCheck.rows.length === 0) {
+        return res.status(404).json({ error: 'Event not found' });
+      }
+
+      await query('DELETE FROM events WHERE id = $1', [id]);
+
+      res.json({
+        message: 'Event deleted successfully',
+        eventTitle: eventCheck.rows[0].title,
+      });
+    } catch (error) {
+      console.error('Error deleting event:', error);
+      res.status(500).json({ error: 'Failed to delete event' });
     }
-
-    await query('DELETE FROM events WHERE id = $1', [id]);
-
-    res.json({
-      message: 'Event deleted successfully',
-      eventTitle: eventCheck.rows[0].title
-    });
-  } catch (error) {
-    console.error('Error deleting event:', error);
-    res.status(500).json({ error: 'Failed to delete event' });
   }
-});
+);
 
 // Get system statistics (admin only)
 router.get('/stats', authenticate, requireAdmin, async (req, res) => {
@@ -222,6 +332,13 @@ router.get('/stats', authenticate, requireAdmin, async (req, res) => {
 
     const totalRsvpsResult = await query(
       'SELECT COUNT(*)::int AS count FROM event_attendees'
+    );
+
+    const totalPointsResult = await query(
+      'SELECT SUM(total_points)::int as count FROM users'
+    );
+    const totalRedemptionsResult = await query(
+      'SELECT COUNT(*)::int as count FROM redemptions'
     );
 
     // Users by role
@@ -291,11 +408,25 @@ router.get('/stats', authenticate, requireAdmin, async (req, res) => {
       LIMIT 10
     `);
 
+    // Pending events
+    const pendingEventsResult = await query(`
+      SELECT 
+        e.id, e.title, e.start_date, e.status,
+        u.name as organizer_name, u.email as organizer_email,
+        u.id as organizer_id
+      FROM events e
+      JOIN users u ON e.user_id = u.id
+      WHERE e.status = 'pending'
+      ORDER BY e."createdAt" ASC
+    `);
+
     res.json({
       totals: {
         users: totalUsersResult.rows[0].count,
         events: totalEventsResult.rows[0].count,
         rsvps: totalRsvpsResult.rows[0].count,
+        points: totalPointsResult.rows[0].count || 0,
+        redemptions: totalRedemptionsResult.rows[0].count || 0,
       },
       usersByRole: usersByRoleResult.rows,
       eventsByStatus: eventsByStatusResult.rows,
@@ -322,12 +453,22 @@ router.get('/stats', authenticate, requireAdmin, async (req, res) => {
         userName: row.user_name,
         eventTitle: row.event_title,
       })),
+      pendingEvents: pendingEventsResult.rows.map((row) => ({
+        id: row.id,
+        title: row.title,
+        startDate: row.start_date,
+        status: row.status,
+        organizer: {
+          id: row.organizer_id,
+          name: row.organizer_name,
+          email: row.organizer_email,
+        },
+      })),
     });
   } catch (error) {
     console.error('Error fetching stats:', error);
     res.status(500).json({ error: 'Failed to fetch statistics' });
   }
 });
-
 
 export default router;

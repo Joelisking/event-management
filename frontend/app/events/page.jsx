@@ -70,7 +70,11 @@ export default function EventsPage() {
 
         if (response.ok) {
           const data = await response.json();
-          return { eventId: event.id, hasRsvp: data.hasRsvp };
+          return {
+            eventId: event.id,
+            hasRsvp: data.hasRsvp,
+            status: data.rsvp ? data.rsvp.status : null,
+          };
         }
       } catch (error) {
         console.error(
@@ -78,13 +82,15 @@ export default function EventsPage() {
           error
         );
       }
-      return { eventId: event.id, hasRsvp: false };
+      return { eventId: event.id, hasRsvp: false, status: null };
     });
 
     const results = await Promise.all(statusChecks);
     const statusMap = {};
     results.forEach((result) => {
-      statusMap[result.eventId] = result.hasRsvp;
+      statusMap[result.eventId] = result.hasRsvp
+        ? result.status
+        : false;
     });
     setRsvpStatus(statusMap);
   };
@@ -115,8 +121,19 @@ export default function EventsPage() {
       const data = await response.json();
 
       if (response.ok) {
-        toast.success('RSVP successful!');
-        setRsvpStatus((prev) => ({ ...prev, [eventId]: true }));
+        if (data.isWaitlist) {
+          toast.success('Joined waitlist!');
+          setRsvpStatus((prev) => ({
+            ...prev,
+            [eventId]: 'waitlist',
+          }));
+        } else {
+          toast.success('RSVP successful!');
+          setRsvpStatus((prev) => ({
+            ...prev,
+            [eventId]: 'confirmed',
+          }));
+        }
         fetchEvents();
       } else {
         toast.error(data.error || 'Failed to RSVP');
@@ -184,7 +201,6 @@ export default function EventsPage() {
     }
 
     const sameDay = start.toDateString() === end.toDateString();
-
 
     if (sameDay) {
       return `${start.toLocaleDateString(

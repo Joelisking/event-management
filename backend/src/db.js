@@ -8,17 +8,23 @@ const { Pool } = pg;
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   max: 20,
+  min: 5, // Keep minimum connections ready
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
+  connectionTimeoutMillis: 5000,
+  statement_timeout: 10000, // 10 second query timeout
+  query_timeout: 10000,
 });
 
 pool.on('connect', () => {
   console.log('Connected to PostgreSQL database');
 });
 
-pool.on('error', (err) => {
-  console.error('Unexpected error on idle client', err);
-  process.exit(-1);
+pool.on('error', (err, client) => {
+  console.error('Unexpected database error:', err);
+  // In production, send alert to monitoring service instead of killing process
+  if (process.env.NODE_ENV !== 'production') {
+    process.exit(-1);
+  }
 });
 
 export const query = async (text, params) => {

@@ -4,12 +4,28 @@ import jwt from 'jsonwebtoken';
 import { query } from '../db.js';
 import { authLimiter } from '../middleware/rate-limit.js';
 import { sendWelcomeEmail } from '../services/email.js';
+import {
+  validateEmail,
+  validatePassword,
+  validateName,
+  validateRole,
+  handleValidationErrors
+} from '../middleware/validation.js';
 
 const router = express.Router();
 
 
 
-router.post('/signup', authLimiter, async (req, res) => {
+router.post(
+  '/signup',
+  authLimiter,
+  validateName('firstName'),
+  validateName('lastName'),
+  validateEmail(),
+  validatePassword(),
+  validateRole(),
+  handleValidationErrors,
+  async (req, res) => {
   try {
     const { firstName, lastName, email, password, role, organizationName } = req.body;
 
@@ -74,7 +90,12 @@ router.post('/signup', authLimiter, async (req, res) => {
   }
 });
 
-router.post('/signin', authLimiter, async (req, res) => {
+router.post(
+  '/signin',
+  authLimiter,
+  validateEmail(),
+  handleValidationErrors,
+  async (req, res) => {
   try {
     const { email, password } = req.body;
 

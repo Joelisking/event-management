@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { LayoutDashboard, Users, Calendar, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, Calendar, Gift } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 
 export function AdminHeader({ title }) {
@@ -47,6 +47,17 @@ export function AdminHeader({ title }) {
                 >
                   <Calendar className="w-4 h-4 mr-2" />
                   Events
+                </Button>
+              </Link>
+              <Link href="/admin/rewards">
+                <Button
+                  variant="ghost"
+                  className={`text-slate-300 hover:text-white hover:bg-slate-800 ${
+                    isActive('/admin/rewards') ? 'bg-slate-800 text-white' : ''
+                  }`}
+                >
+                  <Gift className="w-4 h-4 mr-2" />
+                  Rewards
                 </Button>
               </Link>
             </div>

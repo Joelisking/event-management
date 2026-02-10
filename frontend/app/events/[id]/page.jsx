@@ -28,7 +28,7 @@ export default function EventDetailPage() {
   const { user, getToken } = useAuth();
 
   const [event, setEvent] = useState(null);
-  const [hasRsvp, setHasRsvp] = useState(false);
+  const [rsvpStatus, setRsvpStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [rsvpLoading, setRsvpLoading] = useState(false);
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
@@ -55,7 +55,9 @@ export default function EventDetailPage() {
 
   const fetchEvent = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/events/${eventId}`);
+      const response = await fetch(
+        `${API_URL}/api/events/${eventId}`
+      );
       if (response.ok) {
         const data = await response.json();
         setEvent(data);
@@ -84,7 +86,13 @@ export default function EventDetailPage() {
 
       if (response.ok) {
         const data = await response.json();
-        setHasRsvp(data.hasRsvp);
+        setRsvpStatus(
+          data.hasRsvp
+            ? data.rsvp
+              ? data.rsvp.status
+              : 'confirmed'
+            : null
+        );
       }
     } catch (error) {
       console.error('Error checking RSVP status:', error);
@@ -97,29 +105,29 @@ export default function EventDetailPage() {
       return;
     }
 
-    if (user.role !== 'student') {
-      toast.error('Only students can RSVP to events');
-      return;
-    }
-
     setRsvpLoading(true);
     try {
       const token = getToken();
-      const response = await fetch(
-        `${API_URL}/api/rsvp/${eventId}`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const response = await fetch(`${API_URL}/api/rsvp/${eventId}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
       if (response.ok) {
-        setHasRsvp(true);
+        const data = await response.json();
+        if (data.isWaitlist) {
+          toast.success('Joined waitlist!');
+          setRsvpStatus('waitlist');
+        } else {
+          toast.success(
+            'You have successfully RSVPed to this event!'
+          );
+          setRsvpStatus('confirmed');
+        }
         fetchEvent();
-        toast.success('You have successfully RSVPed to this event!');
       } else {
         const data = await response.json();
         toast.error(data.error || 'Failed to RSVP');
@@ -136,18 +144,15 @@ export default function EventDetailPage() {
     setRsvpLoading(true);
     try {
       const token = getToken();
-      const response = await fetch(
-        `${API_URL}/api/rsvp/${eventId}`,
-        {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${API_URL}/api/rsvp/${eventId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.ok) {
-        setHasRsvp(false);
+        setRsvpStatus(null);
         fetchEvent();
         toast.info('Your RSVP has been cancelled.');
         setIsCancelDialogOpen(false);
@@ -193,7 +198,7 @@ export default function EventDetailPage() {
 
     if (event?.timeSlots && event.timeSlots.length > 0) {
       if (end && start.toDateString() !== end.toDateString()) {
-         return `${start.toLocaleDateString('en-US', dateOptions)} - ${end.toLocaleDateString('en-US', dateOptions)}`;
+        return `${start.toLocaleDateString('en-US', dateOptions)} - ${end.toLocaleDateString('en-US', dateOptions)}`;
       }
       return start.toLocaleDateString('en-US', dateOptions);
     }
@@ -245,10 +250,7 @@ export default function EventDetailPage() {
     return <EventNotFound />;
   }
 
-  const status = getEventStatus(
-    event.startDate,
-    event.endDate
-  );
+  const status = getEventStatus(event.startDate, event.endDate);
   const organizerName =
     event.organizer?.organizationName ||
     event.organizer?.name ||
@@ -275,7 +277,7 @@ export default function EventDetailPage() {
             <EventSidebar
               event={event}
               user={user}
-              hasRsvp={hasRsvp}
+              rsvpStatus={rsvpStatus}
               rsvpLoading={rsvpLoading}
               attendeeCount={attendeeCount}
               capacity={capacity}
@@ -287,26 +289,27 @@ export default function EventDetailPage() {
         </div>
       </main>
 
-      <AlertDialog open={isCancelDialogOpen} onOpenChange={setIsCancelDialogOpen}>
+      <AlertDialog
+        open={isCancelDialogOpen}
+        onOpenChange={setIsCancelDialogOpen}>
         <AlertDialogContent className="bg-slate-950 border-slate-800 text-slate-100">
           <AlertDialogHeader>
             <AlertDialogTitle>Cancel RSVP?</AlertDialogTitle>
             <AlertDialogDescription className="text-slate-400">
-              Are you sure you want to cancel your RSVP for this event?
+              Are you sure you want to cancel your RSVP for this
+              event?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel 
+            <AlertDialogCancel
               onClick={() => setIsCancelDialogOpen(false)}
-              className="text-black"
-            >
+              className="text-black">
               Keep RSVP
             </AlertDialogCancel>
-            <AlertDialogAction 
+            <AlertDialogAction
               onClick={handleCancelRsvp}
               className="bg-red-600 hover:bg-red-700 text-white border-0"
-              disabled={rsvpLoading}
-            >
+              disabled={rsvpLoading}>
               {rsvpLoading ? 'Cancelling...' : 'Yes, Cancel RSVP'}
             </AlertDialogAction>
           </AlertDialogFooter>

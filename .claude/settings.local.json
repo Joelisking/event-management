@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(/Users/joel/Documents/event-management/frontend/.env.example << 'EOF'\n# API Configuration\nNEXT_PUBLIC_API_URL=http://localhost:4000\nEOF)",
+      "Bash(/Users/joel/Documents/event-management/backend/.env.production.example << 'EOF'\n# Production Environment Configuration\n\n# Server Configuration\nNODE_ENV=production\nPORT=4000\n\n# Database Configuration \\(Use production database URL\\)\nDATABASE_URL=postgresql://username:password@production-host:port/database_name\n\n# JWT Secret \\(MUST be different from development - Generate with: node -e \"console.log\\(require\\('crypto'\\).randomBytes\\(64\\).toString\\('hex'\\)\\)\"\\)\nJWT_SECRET=production-secret-key-here\n\n# Cloudinary Configuration \\(Production credentials\\)\nCLOUDINARY_CLOUD_NAME=production-cloud-name\nCLOUDINARY_API_KEY=production-api-key\nCLOUDINARY_API_SECRET=production-api-secret\nCLOUDINARY_URL=cloudinary://api_key:api_secret@cloud_name\n\n# Email Configuration \\(Production email service\\)\nEMAIL_HOST=smtp.gmail.com\nEMAIL_PORT=465\nEMAIL_USER=production-email@example.com\nEMAIL_PASSWORD=production-app-password\n\n# Frontend URL \\(Production domain - for CORS\\)\nFRONTEND_URL=https://your-app.vercel.app\n\n# Logging\nLOG_LEVEL=info\n\n# Monitoring \\(Optional - Sentry DSN\\)\n# SENTRY_DSN=your-sentry-dsn-here\nEOF)",
+      "Bash(/Users/joel/Documents/event-management/frontend/.env.production.example << 'EOF'\n# Production API Configuration\nNEXT_PUBLIC_API_URL=https://your-backend.railway.app\nEOF)",
+      "Bash(npm install:*)",
+      "Bash(psql:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(ipconfig getifaddr:*)",
+      "Bash(NEXT_PUBLIC_API_URL=https://placeholder.com npm run build:*)"
+    ]
+  }
+}

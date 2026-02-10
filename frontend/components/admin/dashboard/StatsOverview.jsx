@@ -9,23 +9,55 @@ export function StatsOverview({ stats }) {
   if (!stats) return null;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-8">
       <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl pt-6">
         <CardHeader>
-          <CardTitle className="text-2xl text-slate-50">{stats.totals.users}</CardTitle>
-          <CardDescription className="text-slate-400">Total Users</CardDescription>
+          <CardTitle className="text-2xl text-slate-50">
+            {stats.totals.users}
+          </CardTitle>
+          <CardDescription className="text-slate-400">
+            Total Users
+          </CardDescription>
         </CardHeader>
       </Card>
       <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl pt-6">
         <CardHeader>
-          <CardTitle className="text-2xl text-slate-50">{stats.totals.events}</CardTitle>
-          <CardDescription className="text-slate-400">Total Events</CardDescription>
+          <CardTitle className="text-2xl text-slate-50">
+            {stats.totals.events}
+          </CardTitle>
+          <CardDescription className="text-slate-400">
+            Total Events
+          </CardDescription>
         </CardHeader>
       </Card>
       <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl pt-6">
         <CardHeader>
-          <CardTitle className="text-2xl text-slate-50">{stats.totals.rsvps}</CardTitle>
-          <CardDescription className="text-slate-400">Total RSVPs</CardDescription>
+          <CardTitle className="text-2xl text-slate-50">
+            {stats.totals.rsvps}
+          </CardTitle>
+          <CardDescription className="text-slate-400">
+            Total RSVPs
+          </CardDescription>
+        </CardHeader>
+      </Card>
+      <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl pt-6">
+        <CardHeader>
+          <CardTitle className="text-2xl text-yellow-500">
+            {stats.totals.points || 0}
+          </CardTitle>
+          <CardDescription className="text-slate-400">
+            Points Awarded
+          </CardDescription>
+        </CardHeader>
+      </Card>
+      <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl pt-6">
+        <CardHeader>
+          <CardTitle className="text-2xl text-purple-500">
+            {stats.totals.redemptions || 0}
+          </CardTitle>
+          <CardDescription className="text-slate-400">
+            Redemptions
+          </CardDescription>
         </CardHeader>
       </Card>
     </div>

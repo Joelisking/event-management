@@ -51,7 +51,7 @@ export default function NewEventPage() {
 
       if (response.ok) {
         toast.success('Event created successfully!');
-        router.push('/organizer/dashboard');
+        router.push('/admin/dashboard');
       } else {
         setError(result.error || 'Failed to create event');
       }
@@ -87,7 +87,7 @@ export default function NewEventPage() {
               </h1>
             </div>
             <div className="flex items-center space-x-4">
-              <Link href="/organizer/dashboard">
+              <Link href="/admin/dashboard">
                 <Button variant="ghost" className="text-slate-400 hover:text-white hover:bg-slate-800">
                   Back to Dashboard
                 </Button>

@@ -7,27 +7,40 @@
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
     "start:prod": "NODE_ENV=production node src/index.js",
+    "migrate": "psql $DATABASE_URL -f db/complete_schema_with_updates.sql",
+    "migrate:features": "psql $DATABASE_URL -f db/migrations/03_add_features.sql",
+    "migrate:constraints": "psql $DATABASE_URL -f db/migrations/04_production_constraints.sql",
+    "migrate:indexes": "psql $DATABASE_URL -f db/migrations/05_performance_indexes.sql",
+    "migrate:all": "npm run migrate && npm run migrate:features && npm run migrate:constraints && npm run migrate:indexes",
     "lint": "eslint 'src/**/*.js'",
     "lint:fix": "eslint 'src/**/*.js' --fix",
     "test": "mocha"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@sentry/node": "^10.38.0",
+    "apicache": "^1.6.3",
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.8.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "express-rate-limit": "^8.2.1",
+    "express-validator": "^7.3.1",
     "helmet": "^8.1.0",
     "ics": "^3.8.1",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
     "nodemailer": "^7.0.11",
-    "pg": "^8.16.3"
+    "pg": "^8.16.3",
+    "qrcode": "^1.5.4",
+    "winston": "^3.19.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.37.0",

@@ -62,7 +62,7 @@ export default function EditEventPage() {
 
       if (!response.ok) {
         toast.error('Event not found.');
-        router.push('/organizer/dashboard');
+        router.push('/admin/dashboard');
         return;
       }
 
@@ -73,7 +73,7 @@ export default function EditEventPage() {
         data.userId?.toString() !== user.id?.toString()
       ) {
         toast.error('You can only edit your own events.');
-        router.push('/organizer/dashboard');
+        router.push('/admin/dashboard');
         return;
       }
 
@@ -92,7 +92,7 @@ export default function EditEventPage() {
     } catch (err) {
       console.error('Error fetching event:', err);
       toast.error('Failed to load event. Please try again.');
-      router.push('/organizer/dashboard');
+      router.push('/admin/dashboard');
     } finally {
       setFetchingEvent(false);
     }
@@ -128,7 +128,7 @@ export default function EditEventPage() {
       }
 
       toast.success('Event updated successfully.');
-      router.push('/organizer/dashboard');
+      router.push('/admin/dashboard');
     } catch (err) {
       console.error('Error updating event:', err);
       setError('Failed to update event');
@@ -164,7 +164,7 @@ export default function EditEventPage() {
             <h1 className="text-xl sm:text-2xl font-semibold text-slate-50">
               Edit event
             </h1>
-            <Link href="/organizer/dashboard">
+            <Link href="/admin/dashboard">
               <Button className="bg-slate-800/80 text-slate-200 hover:bg-slate-800 hover:text-slate-50 border-slate-700 rounded-full text-sm">
                 Back to dashboard
               </Button>
@@ -193,7 +193,7 @@ export default function EditEventPage() {
                 onSubmit={onSubmit}
                 loading={loading}
                 submitLabel="Update event"
-                cancelHref="/organizer/dashboard"
+                cancelHref="/admin/dashboard"
               />
             )}
           </CardContent>

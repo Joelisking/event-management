@@ -7,8 +7,9 @@ import {
   useEffect,
 } from 'react';
 
+import { API_URL } from '@/lib/constants';
+
 const AuthContext = createContext({});
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -44,21 +45,21 @@ export function AuthProvider({ children }) {
   }, []);
 
   const signin = async (email, password) => {
-    const response = await fetch(
-      `${API_URL}/api/auth/signin`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      }
-    );
+    const response = await fetch(`${API_URL}/api/auth/signin`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.error || 'Failed to sign in');
+      const message = data.details?.length
+        ? data.details.map((d) => d.msg).join('. ')
+        : data.error || 'Failed to sign in';
+      throw new Error(message);
     }
 
     localStorage.setItem('token', data.token);
@@ -74,28 +75,28 @@ export function AuthProvider({ children }) {
     role = 'student',
     organizationName = null
   ) => {
-    const response = await fetch(
-      `${API_URL}/api/auth/signup`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          firstName,
-          lastName,
-          email,
-          password,
-          role,
-          organizationName,
-        }),
-      }
-    );
+    const response = await fetch(`${API_URL}/api/auth/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        firstName,
+        lastName,
+        email,
+        password,
+        role,
+        organizationName,
+      }),
+    });
 
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.error || 'Failed to sign up');
+      const message = data.details?.length
+        ? data.details.map((d) => d.msg).join('. ')
+        : data.error || 'Failed to sign up';
+      throw new Error(message);
     }
 
     localStorage.setItem('token', data.token);
@@ -118,7 +119,15 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, signin, signup, signout, loading, getToken, updateUser }}>
+      value={{
+        user,
+        signin,
+        signup,
+        signout,
+        loading,
+        getToken,
+        updateUser,
+      }}>
       {children}
     </AuthContext.Provider>
   );

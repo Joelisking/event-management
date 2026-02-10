@@ -14,7 +14,11 @@ import {
   LayoutDashboard,
   Users,
   LogOut,
+  Trophy,
+  Coins,
+  QrCode,
 } from 'lucide-react';
+import { NotificationBell } from './NotificationBell';
 
 export function Navigation() {
   const router = useRouter();
@@ -45,25 +49,27 @@ export function Navigation() {
       href:
         user?.role === 'student'
           ? '/student/dashboard'
-          : '/organizer/dashboard',
+          : '/admin/dashboard',
       label: 'Dashboard',
       icon: LayoutDashboard,
       show:
         user &&
-        (user.role === 'student' || user.role === 'organizer'),
+        (user.role === 'student' || user.role === 'organizer' || user.role === 'admin'),
     },
     {
-      href: '/admin/dashboard',
-      label: 'Admin',
-      icon: Users,
-      show: user?.role === 'admin',
+      href: '/leaderboard',
+      label: 'Leaderboard',
+      icon: Trophy,
+      show: !!user,
     },
+    { href: '/rewards', label: 'Rewards', icon: Coins, show: !!user },
+    { href: '/scanner', label: 'Scan', icon: QrCode, show: !!user },
     { href: '/profile', label: 'Profile', icon: User, show: !!user },
   ].filter((link) => link.show);
 
   return (
-    <nav className="sticky top-0 z-50 bg-slate-950 border-b border-slate-800/70">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 py-2">
+    <nav className="sticky top-0 z-50 bg-slate-950/95 backdrop-blur-md border-b border-slate-800/70">
+      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link
@@ -78,7 +84,7 @@ export function Navigation() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-1">
+          <div className="hidden xl:flex items-center space-x-2">
             {navLinks.map((link) => {
               const Icon = link.icon;
               const active = isActive(link.href);
@@ -86,7 +92,7 @@ export function Navigation() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
                     active
                       ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30'
                       : 'text-slate-300 hover:bg-slate-800/70 hover:text-slate-100'
@@ -99,21 +105,24 @@ export function Navigation() {
           </div>
 
           {/* Desktop Auth Buttons */}
-          <div className="hidden lg:flex items-center space-x-3">
+          <div className="hidden xl:flex items-center space-x-4">
             {user ? (
               <>
-              <Link href="/profile">
-                <span className="text-sm text-slate-300 px-4 py-2 bg-slate-900/70 border border-slate-800/70 rounded-full backdrop-blur-sm" data-testid="user-name-display">
-                  {user.name}
-                </span>
-              </Link>
+                <NotificationBell user={user} />
+                {/* <Link href="/profile">
+                  <span
+                    className="text-sm text-slate-300 px-4 py-2 bg-slate-900/70 border border-slate-800/70 rounded-full backdrop-blur-sm"
+                    data-testid="user-name-display">
+                    {user.name}
+                  </span>
+                </Link> */}
                 <Button
                   size="sm"
                   onClick={handleSignOut}
                   data-testid="sign-out-button"
-                  className="rounded-full hover:bg-red-700 text-white hover:border-red-500/60 transition-all bg-red-800 px-4">
+                  className="rounded-lg hover:bg-red-700 text-white hover:border-red-500/60 transition-all bg-red-600 px-4 flex items-center gap-2">
+                  <LogOut className="w-4 h-4" />
                   Sign Out
-                  <LogOut />
                 </Button>
               </>
             ) : (
@@ -122,13 +131,13 @@ export function Navigation() {
                   variant="ghost"
                   size="sm"
                   onClick={() => router.push('/signin')}
-                  className="rounded-full text-slate-300 hover:bg-slate-800/70 hover:text-slate-100 px-6 py-1.5">
+                  className="rounded-lg text-slate-300 hover:bg-slate-800/70 hover:text-slate-100 px-5">
                   Sign In
                 </Button>
                 <Button
                   size="sm"
                   onClick={() => router.push('/signup')}
-                  className="rounded-full bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/30 transition-all hover:scale-105 px-6">
+                  className="rounded-lg bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/30 transition-all hover:shadow-blue-500/50 px-5">
                   Sign Up
                 </Button>
               </>
@@ -137,7 +146,7 @@ export function Navigation() {
 
           {/* Mobile Menu Button */}
           <button
-            className="lg:hidden p-2 rounded-xl hover:bg-slate-800/70 transition-colors"
+            className="xl:hidden p-2 rounded-xl hover:bg-slate-800/70 transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? (
               <X className="w-6 h-6 text-slate-300" />
@@ -174,14 +183,14 @@ export function Navigation() {
             <div className="pt-3 mt-3 border-t border-slate-800/70 space-y-2">
               {user ? (
                 <>
-                <Link href="/profile">
-                  <div className="px-4 py-3 text-sm text-slate-300 bg-slate-900/70 border border-slate-800/70 rounded-2xl backdrop-blur-sm">
-                    Signed in as{' '}
-                    <span className="font-semibold text-slate-100">
-                      {user.name}
-                    </span>
-                  </div>
-                </Link>
+                  <Link href="/profile">
+                    <div className="px-4 py-3 text-sm text-slate-300 bg-slate-900/70 border border-slate-800/70 rounded-2xl backdrop-blur-sm">
+                      Signed in as{' '}
+                      <span className="font-semibold text-slate-100">
+                        {user.name}
+                      </span>
+                    </div>
+                  </Link>
                   <Button
                     variant="outline"
                     data-testid="sign-out-button-mobile"

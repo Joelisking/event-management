@@ -6,72 +6,106 @@ import { rsvpLimiter } from '../middleware/rate-limit.js';
 
 const router = express.Router();
 
-router.post('/:eventId', authenticate, rsvpLimiter, async (req, res) => {
-  const client = await getClient();
-  
-  try {
-    const { eventId } = req.params;
-    const userId = req.user.userId;
+router.post(
+  '/:eventId',
+  authenticate,
+  rsvpLimiter,
+  async (req, res) => {
+    const client = await getClient();
 
-    // Start transaction
-    await client.query('BEGIN');
+    try {
+      const { eventId } = req.params;
+      const userId = req.user.userId;
 
-    // Check if event exists and get capacity info (with row lock)
-    const eventCheck = await client.query(
-      'SELECT id, capacity FROM events WHERE id = $1 FOR UPDATE',
-      [eventId]
-    );
+      // Start transaction
+      await client.query('BEGIN');
 
-    if (eventCheck.rows.length === 0) {
-      await client.query('ROLLBACK');
-      return res.status(404).json({ error: 'Event not found' });
-    }
-
-    const event = eventCheck.rows[0];
-
-    // Check if user already has an RSVP
-    const existingRsvp = await client.query(
-      'SELECT id FROM event_attendees WHERE user_id = $1 AND event_id = $2',
-      [userId, eventId]
-    );
-
-    if (existingRsvp.rows.length > 0) {
-      await client.query('ROLLBACK');
-      return res
-        .status(400)
-        .json({ error: "You have already RSVP'd to this event" });
-    }
-
-
-    if (event.capacity !== null) {
-      const attendeeCount = await client.query(
-        'SELECT COUNT(*)::int as count FROM event_attendees WHERE event_id = $1',
+      // Check if event exists and get capacity info (with row lock)
+      const eventCheck = await client.query(
+        'SELECT id, capacity, start_date, end_date FROM events WHERE id = $1 FOR UPDATE',
         [eventId]
       );
 
-      if (attendeeCount.rows[0].count >= event.capacity) {
+      if (eventCheck.rows.length === 0) {
+        await client.query('ROLLBACK');
+        return res.status(404).json({ error: 'Event not found' });
+      }
+
+      const event = eventCheck.rows[0];
+
+      // Block RSVP for past events
+      const now = new Date();
+      const endDate = event.end_date ? new Date(event.end_date) : null;
+      const startDate = event.start_date ? new Date(event.start_date) : null;
+      if ((endDate && endDate < now) || (!endDate && startDate && startDate < now)) {
+        await client.query('ROLLBACK');
+        return res.status(400).json({ error: 'This event has already ended' });
+      }
+
+      // Check if user already has an RSVP
+      const existingRsvp = await client.query(
+        'SELECT id FROM event_attendees WHERE user_id = $1 AND event_id = $2',
+        [userId, eventId]
+      );
+
+      if (existingRsvp.rows.length > 0) {
         await client.query('ROLLBACK');
         return res
           .status(400)
-          .json({ error: 'This event is at full capacity', isFull: true });
+          .json({ error: "You have already RSVP'd to this event" });
       }
-    }
 
-    // Insert RSVP
-    const result = await client.query(
-      `
+      if (event.capacity !== null) {
+        const attendeeCount = await client.query(
+          'SELECT COUNT(*)::int as count FROM event_attendees WHERE event_id = $1',
+          [eventId]
+        );
+
+        if (attendeeCount.rows[0].count >= event.capacity) {
+          // Join Waitlist
+          const result = await client.query(
+            `
+            INSERT INTO event_attendees (user_id, event_id, status, is_waitlist)
+            VALUES ($1, $2, 'waitlist', true)
+            RETURNING id, user_id, event_id, status, is_waitlist
+          `,
+            [userId, eventId]
+          );
+          await client.query('COMMIT');
+
+          // Notify
+          await query(
+            `INSERT INTO notifications (user_id, type, title, message)
+              VALUES ($1, 'event', 'Waitlist Joined', $2)`,
+            [
+              userId,
+              `You have been added to the waitlist for this event.`,
+            ]
+          );
+
+          return res.status(201).json({
+            message: 'Added to waitlist',
+            rsvp: result.rows[0],
+            isWaitlist: true,
+          });
+        }
+      }
+
+      // Insert RSVP
+      const result = await client.query(
+        `
       INSERT INTO event_attendees (user_id, event_id, status)
       VALUES ($1, $2, $3)
       RETURNING id, user_id, event_id, status
     `,
-      [userId, eventId, 'confirmed']
-    );
+        [userId, eventId, 'confirmed']
+      );
 
-    const rsvp = result.rows[0];
+      const rsvp = result.rows[0];
 
-    // Get event details for response
-    const eventResult = await client.query(
-      `
+      // Get event details for response
+      const eventResult = await client.query(
+        `
       SELECT
         e.id, e.title, e.description, e.start_date, e.end_date, e.capacity, e.location, e.category, e.image_url, e.user_id,
         u.id as organizer_id, u.name as organizer_name, u.email as organizer_email
@@ -79,96 +113,126 @@ router.post('/:eventId', authenticate, rsvpLimiter, async (req, res) => {
       JOIN users u ON e.user_id = u.id
       WHERE e.id = $1
     `,
-      [eventId]
-    );
+        [eventId]
+      );
 
-    await client.query('COMMIT');
+      await client.query('COMMIT');
 
-    const userResult = await query(
-      'SELECT id, name, email FROM users WHERE id = $1',
-      [userId]
-    );
+      const userResult = await query(
+        'SELECT id, name, email FROM users WHERE id = $1',
+        [userId]
+      );
 
-    const eventData = {
-      id: eventResult.rows[0].id,
-      title: eventResult.rows[0].title,
-      description: eventResult.rows[0].description,
-      startDate: eventResult.rows[0].start_date,
-      endDate: eventResult.rows[0].end_date,
-      location: eventResult.rows[0].location,
-      category: eventResult.rows[0].category,
-    };
+      const eventData = {
+        id: eventResult.rows[0].id,
+        title: eventResult.rows[0].title,
+        description: eventResult.rows[0].description,
+        startDate: eventResult.rows[0].start_date,
+        endDate: eventResult.rows[0].end_date,
+        location: eventResult.rows[0].location,
+        category: eventResult.rows[0].category,
+      };
 
-    const userData = {
-      name: userResult.rows[0].name,
-      email: userResult.rows[0].email,
-    };
+      const userData = {
+        name: userResult.rows[0].name,
+        email: userResult.rows[0].email,
+      };
 
-    try {
-      await sendRsvpConfirmationEmail(userData, eventData);
-    } catch (err) {
-      console.error('Failed to send RSVP confirmation email:', err);
-    }
+      try {
+        await sendRsvpConfirmationEmail(userData, eventData);
+      } catch (err) {
+        console.error('Failed to send RSVP confirmation email:', err);
+      }
 
-    res.status(201).json({
-      message: 'RSVP successful',
-      rsvp: {
-        id: rsvp.id,
-        userId: rsvp.user_id,
-        eventId: rsvp.event_id,
-        status: rsvp.status,
-        event: {
-          id: eventResult.rows[0].id,
-          title: eventResult.rows[0].title,
-          description: eventResult.rows[0].description,
-          startDate: eventResult.rows[0].start_date,
-          endDate: eventResult.rows[0].end_date,
-          capacity: eventResult.rows[0].capacity,
-          location: eventResult.rows[0].location,
-          category: eventResult.rows[0].category,
-          imageUrl: eventResult.rows[0].image_url,
-          userId: eventResult.rows[0].user_id,
-          user: {
-            id: eventResult.rows[0].organizer_id,
-            name: eventResult.rows[0].organizer_name,
-            email: eventResult.rows[0].organizer_email,
+      res.status(201).json({
+        message: 'RSVP successful',
+        rsvp: {
+          id: rsvp.id,
+          userId: rsvp.user_id,
+          eventId: rsvp.event_id,
+          status: rsvp.status,
+          event: {
+            id: eventResult.rows[0].id,
+            title: eventResult.rows[0].title,
+            description: eventResult.rows[0].description,
+            startDate: eventResult.rows[0].start_date,
+            endDate: eventResult.rows[0].end_date,
+            capacity: eventResult.rows[0].capacity,
+            location: eventResult.rows[0].location,
+            category: eventResult.rows[0].category,
+            imageUrl: eventResult.rows[0].image_url,
+            userId: eventResult.rows[0].user_id,
+            user: {
+              id: eventResult.rows[0].organizer_id,
+              name: eventResult.rows[0].organizer_name,
+              email: eventResult.rows[0].organizer_email,
+            },
           },
         },
-      },
-    });
-  } catch (error) {
-    await client.query('ROLLBACK');
-    console.error('Error creating RSVP:', error);
-    res.status(500).json({ error: 'Failed to RSVP to event' });
-  } finally {
-    client.release();
-  }
-});
-
-router.delete('/:eventId', authenticate, rsvpLimiter, async (req, res) => {
-  try {
-    const { eventId } = req.params;
-    const userId = req.user.userId;
-
-    const existingRsvp = await query(
-      'SELECT id FROM event_attendees WHERE user_id = $1 AND event_id = $2',
-      [userId, eventId]
-    );
-
-    if (existingRsvp.rows.length === 0) {
-      return res.status(404).json({ error: 'RSVP not found' });
+      });
+    } catch (error) {
+      await client.query('ROLLBACK');
+      console.error('Error creating RSVP:', error);
+      res.status(500).json({ error: 'Failed to RSVP to event' });
+    } finally {
+      client.release();
     }
-
-    await query('DELETE FROM event_attendees WHERE id = $1', [
-      existingRsvp.rows[0].id,
-    ]);
-
-    res.json({ message: 'RSVP cancelled successfully' });
-  } catch (error) {
-    console.error('Error cancelling RSVP:', error);
-    res.status(500).json({ error: 'Failed to cancel RSVP' });
   }
-});
+);
+
+router.delete(
+  '/:eventId',
+  authenticate,
+  rsvpLimiter,
+  async (req, res) => {
+    try {
+      const { eventId } = req.params;
+      const userId = req.user.userId;
+
+      const existingRsvp = await query(
+        'SELECT id FROM event_attendees WHERE user_id = $1 AND event_id = $2',
+        [userId, eventId]
+      );
+
+      if (existingRsvp.rows.length === 0) {
+        return res.status(404).json({ error: 'RSVP not found' });
+      }
+
+      await query('DELETE FROM event_attendees WHERE id = $1', [
+        existingRsvp.rows[0].id,
+      ]);
+
+      // Check for waitlist
+      const waitlistResult = await query(
+        `SELECT * FROM event_attendees WHERE event_id = $1 AND is_waitlist = true ORDER BY "createdAt" ASC LIMIT 1`,
+        [eventId]
+      );
+
+      if (waitlistResult.rows.length > 0) {
+        const waitlisted = waitlistResult.rows[0];
+        await query(
+          `UPDATE event_attendees SET status = 'confirmed', is_waitlist = false WHERE id = $1`,
+          [waitlisted.id]
+        );
+
+        // Notify promoted user
+        await query(
+          `INSERT INTO notifications (user_id, type, title, message)
+         VALUES ($1, 'event', 'Spot Opened!', $2)`,
+          [
+            waitlisted.user_id,
+            `A spot opened up for event! You have been automatically registered.`,
+          ]
+        );
+      }
+
+      res.json({ message: 'RSVP cancelled successfully' });
+    } catch (error) {
+      console.error('Error cancelling RSVP:', error);
+      res.status(500).json({ error: 'Failed to cancel RSVP' });
+    }
+  }
+);
 
 router.get('/my-rsvps', authenticate, async (req, res) => {
   try {

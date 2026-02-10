@@ -42,7 +42,9 @@ export function ProfileInfo({
   return (
     <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl shadow-2xl shadow-blue-900/10 rounded-2xl pt-6">
       <CardHeader>
-        <CardTitle className="text-slate-50">Profile Information</CardTitle>
+        <CardTitle className="text-slate-50">
+          Profile Information
+        </CardTitle>
         <CardDescription className="text-slate-400">
           Your account details
         </CardDescription>
@@ -76,7 +78,9 @@ export function ProfileInfo({
                 <Input
                   id="organizationName"
                   value={organizationName}
-                  onChange={(e) => setOrganizationName(e.target.value)}
+                  onChange={(e) =>
+                    setOrganizationName(e.target.value)
+                  }
                   placeholder="e.g., Computer Science Club"
                   className="h-11 bg-slate-900/70 border-slate-800/70 text-slate-100 placeholder:text-slate-500 rounded-xl focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
                 />
@@ -105,8 +109,12 @@ export function ProfileInfo({
         ) : (
           <>
             <div>
-              <p className="text-sm font-medium text-slate-400">Name</p>
-              <p className="text-lg text-slate-50 mt-1">{profile.name}</p>
+              <p className="text-sm font-medium text-slate-400">
+                Name
+              </p>
+              <p className="text-lg text-slate-50 mt-1">
+                {profile.name}
+              </p>
             </div>
             {profile.role === 'organizer' && (
               <div>
@@ -115,20 +123,46 @@ export function ProfileInfo({
                 </p>
                 <p className="text-lg text-slate-50 mt-1">
                   {profile.organization_name || (
-                    <span className="text-slate-500 italic">Not set</span>
+                    <span className="text-slate-500 italic">
+                      Not set
+                    </span>
                   )}
                 </p>
               </div>
             )}
             <div>
-              <p className="text-sm font-medium text-slate-400">Email</p>
-              <p className="text-lg text-slate-50 mt-1">{profile.email}</p>
+              <p className="text-sm font-medium text-slate-400">
+                Email
+              </p>
+              <p className="text-lg text-slate-50 mt-1">
+                {profile.email}
+              </p>
             </div>
             <div>
-              <p className="text-sm font-medium text-slate-400">Role</p>
+              <p className="text-sm font-medium text-slate-400">
+                Role
+              </p>
               <p className="text-lg text-slate-50 mt-1 capitalize">
                 {profile.role}
               </p>
+            </div>
+            <div className="grid grid-cols-2 gap-4 bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+              <div>
+                <p className="text-xs font-medium text-slate-400">
+                  Points
+                </p>
+                <p className="text-xl text-yellow-500 font-bold">
+                  {profile.total_points || 0}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs font-medium text-slate-400">
+                  Attended
+                </p>
+                <p className="text-xl text-blue-400 font-bold">
+                  {profile.events_attended || 0}
+                </p>
+              </div>
             </div>
             <div>
               <p className="text-sm font-medium text-slate-400">

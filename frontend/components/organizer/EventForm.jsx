@@ -43,6 +43,14 @@ const eventSchema = yup.object().shape({
   category: yup
     .string()
     .max(100, 'Category must be less than 100 characters'),
+  points: yup
+    .number()
+    .transform((value, originalValue) =>
+      originalValue === '' ? 0 : value
+    )
+    .min(0, 'Points cannot be negative')
+    .integer('Points must be a whole number')
+    .default(10),
   imageUrl: yup
     .string()
     .nullable()
@@ -58,7 +66,7 @@ export function EventForm({
   onSubmit,
   loading,
   submitLabel = 'Save',
-  cancelHref = '/organizer/dashboard',
+  cancelHref = '/admin/dashboard',
 }) {
   const [useTimeSlots, setUseTimeSlots] = useState(false);
   const [timeSlots, setTimeSlots] = useState([]);
@@ -80,6 +88,7 @@ export function EventForm({
       capacity: '',
       location: '',
       category: '',
+      points: 10,
       imageUrl: '',
     },
   });
@@ -89,24 +98,45 @@ export function EventForm({
   const endDate = watch('endDate');
 
   // Handle multi-day logic
-  const isMultiDay = startDate && endDate && (() => {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const startDay = new Date(start.getFullYear(), start.getMonth(), start.getDate());
-    const endDay = new Date(end.getFullYear(), end.getMonth(), end.getDate());
-    return endDay > startDay;
-  })();
+  const isMultiDay =
+    startDate &&
+    endDate &&
+    (() => {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      const startDay = new Date(
+        start.getFullYear(),
+        start.getMonth(),
+        start.getDate()
+      );
+      const endDay = new Date(
+        end.getFullYear(),
+        end.getMonth(),
+        end.getDate()
+      );
+      return endDay > startDay;
+    })();
 
-  // time slots 
+  // time slots
   useEffect(() => {
     if (useTimeSlots && startDate && endDate) {
       const start = new Date(startDate);
       const end = new Date(endDate);
 
       // Check if event spans multiple days
-      const startDay = new Date(start.getFullYear(), start.getMonth(), start.getDate());
-      const endDay = new Date(end.getFullYear(), end.getMonth(), end.getDate());
-      const daysDiff = Math.ceil((endDay - startDay) / (1000 * 60 * 60 * 24));
+      const startDay = new Date(
+        start.getFullYear(),
+        start.getMonth(),
+        start.getDate()
+      );
+      const endDay = new Date(
+        end.getFullYear(),
+        end.getMonth(),
+        end.getDate()
+      );
+      const daysDiff = Math.ceil(
+        (endDay - startDay) / (1000 * 60 * 60 * 24)
+      );
 
       if (daysDiff > 0) {
         // slots for each day
@@ -116,10 +146,15 @@ export function EventForm({
           currentDay.setDate(startDay.getDate() + i);
 
           const year = currentDay.getFullYear();
-          const month = String(currentDay.getMonth() + 1).padStart(2, '0');
+          const month = String(currentDay.getMonth() + 1).padStart(
+            2,
+            '0'
+          );
           const day = String(currentDay.getDate()).padStart(2, '0');
           const dateStr = `${year}-${month}-${day}`;
-          const existingSlot = timeSlots.find(s => s.date === dateStr);
+          const existingSlot = timeSlots.find(
+            (s) => s.date === dateStr
+          );
 
           slots.push({
             date: dateStr,
@@ -133,8 +168,8 @@ export function EventForm({
         setTimeSlots([]);
       }
     } else if (!isMultiDay && useTimeSlots) {
-       setUseTimeSlots(false);
-       setTimeSlots([]);
+      setUseTimeSlots(false);
+      setTimeSlots([]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [useTimeSlots, startDate, endDate, isMultiDay]);
@@ -157,7 +192,9 @@ export function EventForm({
     <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-7">
       {/* Title */}
       <div className="space-y-1.5">
-        <FieldLabel htmlFor="title" className="text-slate-200 text-sm">
+        <FieldLabel
+          htmlFor="title"
+          className="text-slate-200 text-sm">
           Event title *
         </FieldLabel>
         <Input
@@ -167,12 +204,16 @@ export function EventForm({
           className="h-11 bg-slate-900/80 border-slate-800/80 text-slate-100 placeholder:text-slate-500 rounded-xl focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/25"
           {...register('title')}
         />
-        {errors.title && <FieldError>{errors.title.message}</FieldError>}
+        {errors.title && (
+          <FieldError>{errors.title.message}</FieldError>
+        )}
       </div>
 
       {/* Description */}
       <div className="space-y-1.5">
-        <FieldLabel htmlFor="description" className="text-slate-200 text-sm">
+        <FieldLabel
+          htmlFor="description"
+          className="text-slate-200 text-sm">
           Description
         </FieldLabel>
         <Textarea
@@ -193,8 +234,8 @@ export function EventForm({
           Event date &amp; time *
         </FieldLabel>
         <p className="text-xs text-slate-400 mb-1">
-          Choose a start time. Optionally select an end time or span multiple
-          days.
+          Choose a start time. Optionally select an end time or span
+          multiple days.
         </p>
 
         <div className="rounded-xl border border-slate-800/80 bg-slate-900/80 px-3 py-3 sm:px-4 sm:py-4">
@@ -206,15 +247,15 @@ export function EventForm({
                 name="endDate"
                 control={control}
                 render={({ field: endField }) => (
-                    <DateTimeRangePicker
-                      startValue={startField.value}
-                      endValue={endField.value}
-                      onStartChange={startField.onChange}
-                      onEndChange={endField.onChange}
-                      startError={errors.startDate?.message}
-                      endError={errors.endDate?.message}
-                      timeDisabled={useTimeSlots}
-                    />
+                  <DateTimeRangePicker
+                    startValue={startField.value}
+                    endValue={endField.value}
+                    onStartChange={startField.onChange}
+                    onEndChange={endField.onChange}
+                    startError={errors.startDate?.message}
+                    endError={errors.endDate?.message}
+                    timeDisabled={useTimeSlots}
+                  />
                 )}
               />
             )}
@@ -238,7 +279,9 @@ export function EventForm({
         <div className="space-y-4 p-4 border border-slate-800 rounded-xl bg-slate-900/50">
           <div className="flex items-center justify-between">
             <div>
-              <FieldLabel className="text-slate-200">Different Times for Each Day</FieldLabel>
+              <FieldLabel className="text-slate-200">
+                Different Times for Each Day
+              </FieldLabel>
               <p className="text-xs text-slate-400 mt-1">
                 Specify different time ranges for each day
               </p>
@@ -264,9 +307,13 @@ export function EventForm({
                   key={slot.date}
                   className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 bg-slate-950/50 rounded-lg border border-slate-800">
                   <div>
-                    <FieldLabel className="text-xs text-slate-400">Date</FieldLabel>
+                    <FieldLabel className="text-xs text-slate-400">
+                      Date
+                    </FieldLabel>
                     <div className="text-sm font-medium text-slate-200 mt-1">
-                      {new Date(`${slot.date}T00:00:00`).toLocaleDateString('en-US', {
+                      {new Date(
+                        `${slot.date}T00:00:00`
+                      ).toLocaleDateString('en-US', {
                         weekday: 'short',
                         month: 'short',
                         day: 'numeric',
@@ -284,7 +331,11 @@ export function EventForm({
                       type="time"
                       value={slot.startTime}
                       onChange={(e) =>
-                        updateTimeSlot(index, 'startTime', e.target.value)
+                        updateTimeSlot(
+                          index,
+                          'startTime',
+                          e.target.value
+                        )
                       }
                       className="mt-1 h-9 bg-slate-900 border-slate-700 text-slate-200"
                     />
@@ -300,7 +351,11 @@ export function EventForm({
                       type="time"
                       value={slot.endTime}
                       onChange={(e) =>
-                        updateTimeSlot(index, 'endTime', e.target.value)
+                        updateTimeSlot(
+                          index,
+                          'endTime',
+                          e.target.value
+                        )
                       }
                       className="mt-1 h-9 bg-slate-900 border-slate-700 text-slate-200"
                     />
@@ -314,7 +369,9 @@ export function EventForm({
 
       {/* Location */}
       <div className="space-y-1.5">
-        <FieldLabel htmlFor="location" className="text-slate-200 text-sm">
+        <FieldLabel
+          htmlFor="location"
+          className="text-slate-200 text-sm">
           Location / venue
         </FieldLabel>
         <Input
@@ -324,13 +381,17 @@ export function EventForm({
           className="h-11 bg-slate-900/80 border-slate-800/80 text-slate-100 placeholder:text-slate-500 rounded-xl focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/25"
           {...register('location')}
         />
-        {errors.location && <FieldError>{errors.location.message}</FieldError>}
+        {errors.location && (
+          <FieldError>{errors.location.message}</FieldError>
+        )}
       </div>
 
       {/* Capacity & Category */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-1.5">
-          <FieldLabel htmlFor="capacity" className="text-slate-200 text-sm">
+          <FieldLabel
+            htmlFor="capacity"
+            className="text-slate-200 text-sm">
             Capacity (optional)
           </FieldLabel>
           <Input
@@ -350,7 +411,9 @@ export function EventForm({
         </div>
 
         <div className="space-y-1.5">
-          <FieldLabel htmlFor="category" className="text-slate-200 text-sm">
+          <FieldLabel
+            htmlFor="category"
+            className="text-slate-200 text-sm">
             Category (optional)
           </FieldLabel>
           <Input
@@ -366,9 +429,34 @@ export function EventForm({
         </div>
       </div>
 
+      {/* Points */}
+      <div className="space-y-1.5">
+        <FieldLabel
+          htmlFor="points"
+          className="text-slate-200 text-sm">
+          Event Points
+        </FieldLabel>
+        <Input
+          id="points"
+          type="number"
+          min="0"
+          placeholder="Points awarded for attendance"
+          className="h-11 bg-slate-900/80 border-slate-800/80 text-slate-100 placeholder:text-slate-500 rounded-xl focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/25"
+          {...register('points')}
+        />
+        {errors.points && (
+          <FieldError>{errors.points.message}</FieldError>
+        )}
+        <p className="text-[11px] text-slate-400">
+          Points earned by students for checking in.
+        </p>
+      </div>
+
       {/* Image */}
       <div className="space-y-1.5">
-        <FieldLabel htmlFor="imageUrl" className="text-slate-200 text-sm">
+        <FieldLabel
+          htmlFor="imageUrl"
+          className="text-slate-200 text-sm">
           Event image (optional)
         </FieldLabel>
         <p className="text-[11px] text-slate-400 mb-1">
@@ -379,7 +467,9 @@ export function EventForm({
           onChange={(url) => setValue('imageUrl', url)}
           disabled={loading}
         />
-        {errors.imageUrl && <FieldError>{errors.imageUrl.message}</FieldError>}
+        {errors.imageUrl && (
+          <FieldError>{errors.imageUrl.message}</FieldError>
+        )}
       </div>
 
       {/* Actions */}

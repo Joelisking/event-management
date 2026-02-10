@@ -15,7 +15,12 @@ import {
 } from '@/components/ui/dialog';
 import { API_URL } from '@/lib/constants';
 
-export function CancelEventDialog({ event, open, onOpenChange, onSuccess }) {
+export function CancelEventDialog({
+  event,
+  open,
+  onOpenChange,
+  onSuccess,
+}) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [reason, setReason] = useState('');
@@ -26,14 +31,17 @@ export function CancelEventDialog({ event, open, onOpenChange, onSuccess }) {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_URL}/api/events/${event.id}/cancel`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ reason: reason || null }),
-      });
+      const response = await fetch(
+        `${API_URL}/api/events/${event.id}/cancel`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ reason: reason || null }),
+        }
+      );
 
       const result = await response.json();
 
@@ -56,15 +64,15 @@ export function CancelEventDialog({ event, open, onOpenChange, onSuccess }) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] bg-slate-900 border-slate-800 text-slate-50">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-red-600">
+          <DialogTitle className="flex items-center gap-2 text-red-500">
             <AlertTriangle className="h-5 w-5" />
             Cancel Event
           </DialogTitle>
-          <DialogDescription className='text-white'>
-            Are you sure you want to cancel &quot;{event?.title}&quot;? This action will
-            notify all attendees via email.
+          <DialogDescription className="text-slate-400">
+            Are you sure you want to cancel &quot;{event?.title}
+            &quot;? This action will notify all attendees via email.
           </DialogDescription>
         </DialogHeader>
 
@@ -76,7 +84,9 @@ export function CancelEventDialog({ event, open, onOpenChange, onSuccess }) {
           )}
 
           <div>
-            <FieldLabel htmlFor="reason">Reason for Cancellation (Optional)</FieldLabel>
+            <FieldLabel htmlFor="reason" className="text-slate-200">
+              Reason for Cancellation (Optional)
+            </FieldLabel>
             <Textarea
               id="reason"
               placeholder="Let attendees know why this event is being cancelled..."
@@ -84,18 +94,19 @@ export function CancelEventDialog({ event, open, onOpenChange, onSuccess }) {
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               disabled={loading}
-              className='text-white'
+              className="bg-slate-800 border-slate-700 text-slate-100 placeholder:text-slate-500"
             />
             <p className="text-xs text-gray-500 mt-1">
               This message will be included in the cancellation email.
             </p>
           </div>
 
-          <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-md text-sm">
-            <p className="text-yellow-800 dark:text-yellow-200">
-              <strong>Warning:</strong> All {event?.attendeeCount || 0} attendees will be
-              notified about this cancellation. The event will be marked as cancelled and
-              can be deleted afterward.
+          <div className="p-3 bg-yellow-900/20 border border-yellow-900/50 rounded-md text-sm">
+            <p className="text-yellow-200">
+              <strong>Warning:</strong> All{' '}
+              {event?.attendeeCount || 0} attendees will be notified
+              about this cancellation. The event will be marked as
+              cancelled and can be deleted afterward.
             </p>
           </div>
         </div>
@@ -105,7 +116,8 @@ export function CancelEventDialog({ event, open, onOpenChange, onSuccess }) {
             type="button"
             variant="outline"
             onClick={() => onOpenChange(false)}
-            disabled={loading} className='text-white hover:text-white'>
+            disabled={loading}
+            className="border-slate-700 bg-transparent text-slate-300 hover:bg-slate-800 hover:text-white">
             Keep Event
           </Button>
           <Button

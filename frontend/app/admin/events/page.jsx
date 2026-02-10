@@ -35,7 +35,7 @@ export default function AdminEventsPage() {
     if (!authLoading) {
       if (!user) {
         router.push('/signin');
-      } else if (user.role !== 'admin') {
+      } else if (user.role !== 'admin' && user.role !== 'organizer') {
         toast.error('Admin access required');
         router.push('/');
       } else {

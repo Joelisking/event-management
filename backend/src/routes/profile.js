@@ -9,10 +9,9 @@ router.get('/me', authenticate, async (req, res) => {
   try {
     const userId = req.user.id || req.user.userId;
 
-
     // Get user details
     const userResult = await query(
-      'SELECT id, email, name, role, organization_name, "createdAt" FROM users WHERE id = $1',
+      'SELECT id, email, name, role, organization_name, "createdAt", total_points, events_attended FROM users WHERE id = $1',
       [userId]
     );
 
@@ -24,8 +23,8 @@ router.get('/me', authenticate, async (req, res) => {
 
     // Get user's RSVPs if student
     if (user.role === 'student') {
-  const rsvpResult = await query(
-    `SELECT
+      const rsvpResult = await query(
+        `SELECT
       ea.id,
       ea.status as rsvp_status,
       e.id as event_id,
@@ -44,33 +43,32 @@ router.get('/me', authenticate, async (req, res) => {
     JOIN users u ON e.user_id = u.id
     WHERE ea.user_id = $1
     ORDER BY e.start_date ASC`,
-    [userId]
-  );
+        [userId]
+      );
 
-  user.rsvps = rsvpResult.rows.map((row) => ({
-    id: row.id,
-    rsvpDate: null,
-    status: row.rsvp_status,
-    event: {
-      id: row.event_id,
-      title: row.event_title,
-      description: row.event_description,
-      startDate: row.start_date,
-      endDate: row.end_date,
-      location: row.location,
-      category: row.category,
-      imageUrl: row.image_url,
-      status: row.event_status,
-      organizerName: row.organization_name || row.organizer_name,
-    },
-  }));
-}
-
+      user.rsvps = rsvpResult.rows.map((row) => ({
+        id: row.id,
+        rsvpDate: null,
+        status: row.rsvp_status,
+        event: {
+          id: row.event_id,
+          title: row.event_title,
+          description: row.event_description,
+          startDate: row.start_date,
+          endDate: row.end_date,
+          location: row.location,
+          category: row.category,
+          imageUrl: row.image_url,
+          status: row.event_status,
+          organizerName: row.organization_name || row.organizer_name,
+        },
+      }));
+    }
 
     // Get user's created events if organizer
     if (user.role === 'organizer') {
-  const eventsResult = await query(
-    `SELECT
+      const eventsResult = await query(
+        `SELECT
       e.id,
       e.title,
       e.description,
@@ -88,25 +86,24 @@ router.get('/me', authenticate, async (req, res) => {
     WHERE e.user_id = $1
     GROUP BY e.id
     ORDER BY e.start_date DESC`,
-    [userId]
-  );
+        [userId]
+      );
 
-  user.events = eventsResult.rows.map((row) => ({
-    id: row.id,
-    title: row.title,
-    description: row.description,
-    startDate: row.start_date,
-    endDate: row.end_date,
-    location: row.location,
-    category: row.category,
-    capacity: row.capacity,
-    imageUrl: row.image_url,
-    status: row.status,
-    createdAt: row.createdAt,
-    attendeeCount: Number(row.attendee_count) || 0,
-  }));
-}
-
+      user.events = eventsResult.rows.map((row) => ({
+        id: row.id,
+        title: row.title,
+        description: row.description,
+        startDate: row.start_date,
+        endDate: row.end_date,
+        location: row.location,
+        category: row.category,
+        capacity: row.capacity,
+        imageUrl: row.image_url,
+        status: row.status,
+        createdAt: row.createdAt,
+        attendeeCount: Number(row.attendee_count) || 0,
+      }));
+    }
 
     res.json(user);
   } catch (error) {
@@ -122,7 +119,9 @@ router.put('/me', authenticate, async (req, res) => {
     const { name, organizationName } = req.body;
 
     if (!name || name.trim().length < 2) {
-      return res.status(400).json({ error: 'Name must be at least 2 characters' });
+      return res
+        .status(400)
+        .json({ error: 'Name must be at least 2 characters' });
     }
 
     let updateQuery = 'UPDATE users SET name = $1';
@@ -130,7 +129,11 @@ router.put('/me', authenticate, async (req, res) => {
 
     if (organizationName !== undefined) {
       updateQuery += ', organization_name = $2';
-      params.push(organizationName && organizationName.trim() ? organizationName.trim() : null);
+      params.push(
+        organizationName && organizationName.trim()
+          ? organizationName.trim()
+          : null
+      );
     }
 
     updateQuery += ` WHERE id = $${params.length + 1} RETURNING id, email, name, role, organization_name, "createdAt"`;

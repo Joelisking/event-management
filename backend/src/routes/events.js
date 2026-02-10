@@ -1,5 +1,6 @@
 import express from 'express';
-import { query } from '../db.js';
+import { query, getClient } from '../db.js';
+import pool from '../db.js';
 import {
   authenticate,
   requireOrganizer,
@@ -8,7 +9,10 @@ import {
   sendEventUpdateEmail,
   sendEventCancellationEmail,
 } from '../services/email.js';
-import { validateEventDates, validateCapacity } from '../utils/validation.js';
+import {
+  validateEventDates,
+  validateCapacity,
+} from '../utils/validation.js';
 
 const router = express.Router();
 
@@ -22,35 +26,42 @@ router.get('/', async (req, res) => {
         COUNT(ea.id)::int as attendee_count
       FROM events e
       JOIN users u ON e.user_id = u.id
-      LEFT JOIN event_attendees ea ON e.id = ea.event_id
-      WHERE e.status != 'cancelled'
+      LEFT JOIN event_attendees ea ON e.id = ea.event_id AND ea.status = 'confirmed'
+      WHERE e.status = 'active'
       GROUP BY e.id, u.id
       ORDER BY e.start_date ASC NULLS LAST
     `);
 
-    const events = result.rows.map((row) => ({
-      id: row.id,
-      title: row.title,
-      description: row.description,
-      startDate: row.start_date,
-      endDate: row.end_date,
-      capacity: row.capacity,
-      location: row.location,
-      category: row.category,
-      imageUrl: row.image_url,
-      status: row.status,
-      userId: row.user_id,
-      createdAt: row.createdAt,
-      updatedAt: row.updatedAt,
-      user: {
-        id: row.organizer_id,
-        name: row.organizer_name,
-        email: row.organizer_email,
-        organizationName: row.organization_name,
-      },
-      attendeeCount: row.attendee_count,
-      attendees: [],
-    }));
+    const now = new Date();
+    const events = result.rows.map((row) => {
+      const endDate = row.end_date ? new Date(row.end_date) : null;
+      const startDate = row.start_date ? new Date(row.start_date) : null;
+      const isPast = (endDate && endDate < now) || (!endDate && startDate && startDate < now);
+
+      return {
+        id: row.id,
+        title: row.title,
+        description: row.description,
+        startDate: row.start_date,
+        endDate: row.end_date,
+        capacity: row.capacity,
+        location: row.location,
+        category: row.category,
+        imageUrl: row.image_url,
+        status: isPast ? 'past' : row.status,
+        userId: row.user_id,
+        createdAt: row.createdAt,
+        updatedAt: row.updatedAt,
+        user: {
+          id: row.organizer_id,
+          name: row.organizer_name,
+          email: row.organizer_email,
+          organizationName: row.organization_name,
+        },
+        attendeeCount: row.attendee_count,
+        attendees: [],
+      };
+    });
 
     res.json(events);
   } catch (error) {
@@ -103,6 +114,11 @@ router.get('/:id', async (req, res) => {
       [id]
     );
 
+    const now = new Date();
+    const eventEndDate = eventRow.end_date ? new Date(eventRow.end_date) : null;
+    const eventStartDate = eventRow.start_date ? new Date(eventRow.start_date) : null;
+    const isPast = eventRow.status === 'active' && ((eventEndDate && eventEndDate < now) || (!eventEndDate && eventStartDate && eventStartDate < now));
+
     const event = {
       id: eventRow.id,
       title: eventRow.title,
@@ -113,7 +129,7 @@ router.get('/:id', async (req, res) => {
       location: eventRow.location,
       category: eventRow.category,
       imageUrl: eventRow.image_url,
-      status: eventRow.status,
+      status: isPast ? 'past' : eventRow.status,
       cancelledAt: eventRow.cancelled_at,
       cancellationReason: eventRow.cancellation_reason,
       userId: eventRow.user_id,
@@ -141,7 +157,9 @@ router.get('/:id', async (req, res) => {
           email: a.user_email,
         },
       })),
-      attendeeCount: attendeesResult.rows.length,
+      attendeeCount: attendeesResult.rows.filter(
+        (a) => a.status === 'confirmed'
+      ).length,
     };
 
     res.json(event);
@@ -169,7 +187,9 @@ router.get('/:id/attendees', authenticate, async (req, res) => {
 
     const event = eventResult.rows[0];
     if (event.user_id !== userId && req.user.role !== 'admin') {
-      return res.status(403).json({ error: 'Not authorized to view attendees' });
+      return res
+        .status(403)
+        .json({ error: 'Not authorized to view attendees' });
     }
 
     // Fetch all attendees
@@ -224,6 +244,7 @@ router.get(
         [req.user.userId]
       );
 
+      const now = new Date();
       const events = await Promise.all(
         result.rows.map(async (event) => {
           const attendeesResult = await query(
@@ -238,6 +259,10 @@ router.get(
             [event.id]
           );
 
+          const endDate = event.end_date ? new Date(event.end_date) : null;
+          const startDate = event.start_date ? new Date(event.start_date) : null;
+          const isPast = event.status === 'active' && ((endDate && endDate < now) || (!endDate && startDate && startDate < now));
+
           return {
             id: event.id,
             title: event.title,
@@ -249,7 +274,7 @@ router.get(
             category: event.category,
             imageUrl: event.image_url,
             userId: event.user_id,
-            status: event.status,
+            status: isPast ? 'past' : event.status,
             cancelledAt: event.cancelled_at,
             cancellationReason: event.cancellation_reason,
             createdAt: event.createdAt,
@@ -289,6 +314,7 @@ router.post('/', authenticate, requireOrganizer, async (req, res) => {
       category,
       imageUrl,
       timeSlots,
+      points,
     } = req.body;
 
     if (!title) {
@@ -307,11 +333,22 @@ router.post('/', authenticate, requireOrganizer, async (req, res) => {
       return res.status(400).json({ error: capacityError });
     }
 
+    const initialStatus = 'active';
+    // QR Code URL points to the check-in page for this event
+    // The checking page needs to be handled by the frontend
+    // We can't generate the ID based URL until we have the ID, but we do the insert first.
+    // However, we can update it after, or just let 'id' be generated.
+    // Actually, Postgres 'RETURNING id' gives us the ID.
+    // So we do insert first, then update with QR code? Or just construct it dynamically in GET?
+    // Requirement says "Store qrCodeUrl field".
+
+    // Let's insert first then update.
+
     const result = await query(
       `
-      INSERT INTO events (title, description, start_date, end_date, capacity, location, category, image_url, user_id)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-      RETURNING id, title, description, start_date, end_date, capacity, location, category, image_url, user_id, "createdAt", "updatedAt"
+      INSERT INTO events (title, description, start_date, end_date, capacity, location, category, image_url, user_id, points, status)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+      RETURNING id, title, description, start_date, end_date, capacity, location, category, image_url, user_id, points, status, "createdAt", "updatedAt"
     `,
       [
         title,
@@ -323,13 +360,26 @@ router.post('/', authenticate, requireOrganizer, async (req, res) => {
         category || null,
         imageUrl || null,
         req.user.userId,
+        points || 10,
+        initialStatus,
       ]
     );
 
     const event = result.rows[0];
+    const qrCodeUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/scanner?eventId=${event.id}`;
+
+    await query('UPDATE events SET qr_code_url = $1 WHERE id = $2', [
+      qrCodeUrl,
+      event.id,
+    ]);
+    event.qr_code_url = qrCodeUrl;
 
     // Insert time slots if provided
-    if (timeSlots && Array.isArray(timeSlots) && timeSlots.length > 0) {
+    if (
+      timeSlots &&
+      Array.isArray(timeSlots) &&
+      timeSlots.length > 0
+    ) {
       for (const slot of timeSlots) {
         await query(
           `INSERT INTO event_time_slots (event_id, day_date, start_time, end_time)
@@ -436,7 +486,10 @@ router.put(
       // Update time slots if provided
       if (timeSlots !== undefined) {
         // Delete existing time slots
-        await query('DELETE FROM event_time_slots WHERE event_id = $1', [id]);
+        await query(
+          'DELETE FROM event_time_slots WHERE event_id = $1',
+          [id]
+        );
 
         // Insert new time slots
         if (Array.isArray(timeSlots) && timeSlots.length > 0) {
@@ -485,12 +538,14 @@ router.put(
             name: attendee.user_name,
             email: attendee.user_email,
           };
-          return sendEventUpdateEmail(userData, eventData).catch((err) => {
-            console.error(
-              `Failed to send update email to ${attendee.user_email}:`,
-              err
-            );
-          });
+          return sendEventUpdateEmail(userData, eventData).catch(
+            (err) => {
+              console.error(
+                `Failed to send update email to ${attendee.user_email}:`,
+                err
+              );
+            }
+          );
         });
         await Promise.all(emailPromises);
       } catch (err) {
@@ -529,7 +584,7 @@ router.put(
   }
 );
 
-//Cancel an event 
+//Cancel an event
 router.post(
   '/:id/cancel',
   authenticate,
@@ -558,7 +613,9 @@ router.post(
       }
 
       if (event.status === 'cancelled') {
-        return res.status(400).json({ error: 'Event is already cancelled' });
+        return res
+          .status(400)
+          .json({ error: 'Event is already cancelled' });
       }
 
       // Update event status to cancelled
@@ -595,7 +652,10 @@ router.post(
 
       try {
         const emailPromises = attendeesResult.rows.map((attendee) => {
-          return sendEventCancellationEmail(attendee, eventData).catch((err) => {
+          return sendEventCancellationEmail(
+            attendee,
+            eventData
+          ).catch((err) => {
             console.error(
               `Failed to send cancellation email to ${attendee.email}:`,
               err
@@ -625,7 +685,7 @@ router.post(
   }
 );
 
-//Postpone/reschedule an event 
+//Postpone/reschedule an event
 router.post(
   '/:id/postpone',
   authenticate,
@@ -636,7 +696,9 @@ router.post(
       const { newStartDate, newEndDate } = req.body;
 
       if (!newStartDate) {
-        return res.status(400).json({ error: 'New start date is required' });
+        return res
+          .status(400)
+          .json({ error: 'New start date is required' });
       }
 
       // Validate that new end date is after new start date
@@ -645,7 +707,7 @@ router.post(
         const end = new Date(newEndDate);
         if (end <= start) {
           return res.status(400).json({
-            error: 'End date/time must be after start date/time'
+            error: 'End date/time must be after start date/time',
           });
         }
       }
@@ -680,7 +742,9 @@ router.post(
           ? event.postponed_from_start
           : event.start_date;
       const postponedFromEnd =
-        event.status === 'postponed' ? event.postponed_from_end : event.end_date;
+        event.status === 'postponed'
+          ? event.postponed_from_end
+          : event.end_date;
 
       // Update event with new dates and mark as postponed
       const result = await query(
@@ -724,12 +788,14 @@ router.post(
 
       try {
         const emailPromises = attendeesResult.rows.map((attendee) => {
-          return sendEventUpdateEmail(attendee, eventData).catch((err) => {
-            console.error(
-              `Failed to send update email to ${attendee.email}:`,
-              err
-            );
-          });
+          return sendEventUpdateEmail(attendee, eventData).catch(
+            (err) => {
+              console.error(
+                `Failed to send update email to ${attendee.email}:`,
+                err
+              );
+            }
+          );
         });
         await Promise.all(emailPromises);
       } catch (err) {
@@ -799,5 +865,89 @@ router.delete(
     }
   }
 );
+
+// Check-in endpoint (with transaction and row locking to prevent race conditions)
+router.post('/:id/check-in', authenticate, async (req, res) => {
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    const { id } = req.params;
+    const userId = req.user.userId;
+
+    // Lock event_attendees row (prevents concurrent check-ins)
+    const attendeeResult = await client.query(
+      'SELECT * FROM event_attendees WHERE event_id = $1 AND user_id = $2 FOR UPDATE',
+      [id, userId]
+    );
+
+    if (attendeeResult.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return res
+        .status(400)
+        .json({ error: 'User is not registered for this event' });
+    }
+
+    const attendee = attendeeResult.rows[0];
+
+    // Idempotency check: prevent duplicate check-ins
+    if (attendee.checked_in_at) {
+      await client.query('ROLLBACK');
+      return res
+        .status(400)
+        .json({ error: 'User already checked in' });
+    }
+
+    // Get event points
+    const eventResult = await client.query(
+      'SELECT points FROM events WHERE id = $1',
+      [id]
+    );
+    const points = eventResult.rows[0].points || 0;
+
+    // Lock user row (prevents concurrent point modifications)
+    await client.query(
+      'SELECT id FROM users WHERE id = $1 FOR UPDATE',
+      [userId]
+    );
+
+    // Mark checked in
+    await client.query(
+      'UPDATE event_attendees SET checked_in_at = CURRENT_TIMESTAMP WHERE id = $1',
+      [attendee.id]
+    );
+
+    // Award points atomically
+    const userUpdate = await client.query(
+      'UPDATE users SET total_points = total_points + $1, events_attended = events_attended + 1 WHERE id = $2 RETURNING total_points',
+      [points, userId]
+    );
+
+    // Create notification
+    await client.query(
+      `INSERT INTO notifications (user_id, type, title, message, is_read)
+       VALUES ($1, 'points', 'Points Earned!', $2, false)`,
+      [
+        userId,
+        `You earned ${points} points for checking in to the event.`,
+      ]
+    );
+
+    await client.query('COMMIT');
+
+    res.json({
+      message: 'Check-in successful',
+      pointsEarned: points,
+      totalPoints: userUpdate.rows[0].total_points,
+    });
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Error checking in:', error);
+    res.status(500).json({ error: 'Failed to check in' });
+  } finally {
+    client.release();
+  }
+});
 
 export default router;

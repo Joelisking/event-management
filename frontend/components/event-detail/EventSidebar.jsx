@@ -8,11 +8,12 @@ import {
 import { Button } from '@/components/ui/button';
 import { Calendar, MapPin, Tag, Users } from 'lucide-react';
 import { AddToCalendar } from '@/components/add-to-calendar';
+import { QRCodeSVG } from 'qrcode.react';
 
 export function EventSidebar({
   event,
   user,
-  hasRsvp,
+  rsvpStatus,
   rsvpLoading,
   attendeeCount,
   capacity,
@@ -36,7 +37,9 @@ export function EventSidebar({
               <Calendar className="w-4 h-4 text-blue-400" />
             </div>
             <div className="space-y-1 flex-1">
-              <h4 className="font-medium text-slate-100">Date &amp; time</h4>
+              <h4 className="font-medium text-slate-100">
+                Date &amp; time
+              </h4>
               {event.timeSlots && event.timeSlots.length > 0 ? (
                 <div className="space-y-2">
                   <p className="text-xs text-slate-400">
@@ -45,7 +48,10 @@ export function EventSidebar({
                   {event.timeSlots.map((slot, index) => {
                     if (!slot.date) return null;
                     let dateStr = slot.date;
-                    if (typeof dateStr === 'string' && dateStr.includes('T')) {
+                    if (
+                      typeof dateStr === 'string' &&
+                      dateStr.includes('T')
+                    ) {
                       dateStr = dateStr.split('T')[0];
                     }
                     const dateObj = new Date(`${dateStr}T00:00:00`);
@@ -63,12 +69,16 @@ export function EventSidebar({
                           })}
                         </div>
                         <div className="text-slate-400 mt-0.5">
-                          {new Date(`2000-01-01T${slot.startTime}`).toLocaleTimeString('en-US', {
+                          {new Date(
+                            `2000-01-01T${slot.startTime}`
+                          ).toLocaleTimeString('en-US', {
                             hour: 'numeric',
                             minute: '2-digit',
                           })}
                           {' - '}
-                          {new Date(`2000-01-01T${slot.endTime}`).toLocaleTimeString('en-US', {
+                          {new Date(
+                            `2000-01-01T${slot.endTime}`
+                          ).toLocaleTimeString('en-US', {
                             hour: 'numeric',
                             minute: '2-digit',
                           })}
@@ -92,7 +102,9 @@ export function EventSidebar({
                 <MapPin className="w-4 h-4 text-emerald-400" />
               </div>
               <div className="space-y-1">
-                <h4 className="font-medium text-slate-100">Location</h4>
+                <h4 className="font-medium text-slate-100">
+                  Location
+                </h4>
                 <p className="text-xs sm:text-sm text-slate-300">
                   {event.location}
                 </p>
@@ -107,7 +119,9 @@ export function EventSidebar({
                 <Tag className="w-4 h-4 text-fuchsia-400" />
               </div>
               <div className="space-y-1">
-                <h4 className="font-medium text-slate-100">Category</h4>
+                <h4 className="font-medium text-slate-100">
+                  Category
+                </h4>
                 <p className="text-xs sm:text-sm text-slate-300">
                   {event.category}
                 </p>
@@ -121,7 +135,9 @@ export function EventSidebar({
               <Users className="w-4 h-4 text-amber-400" />
             </div>
             <div className="space-y-1">
-              <h4 className="font-medium text-slate-100">Attendance</h4>
+              <h4 className="font-medium text-slate-100">
+                Attendance
+              </h4>
               <p className="text-xs sm:text-sm text-slate-300">
                 {capacity
                   ? `${attendeeCount} / ${capacity} ${
@@ -146,21 +162,36 @@ export function EventSidebar({
       {/* Actions */}
       <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl shadow-xl rounded-2xl">
         <CardContent className="py-5 space-y-4">
-          {user && user.role === 'student' ? (
-            hasRsvp ? (
+          {event.status === 'past' ? (
+            <div className="text-center py-2">
+              <p className="text-sm font-medium text-slate-400">
+                This event has ended
+              </p>
+            </div>
+          ) : user ? (
+            rsvpStatus ? (
               <Button
                 variant="outline"
                 onClick={onCancelRsvp}
                 disabled={rsvpLoading}
                 data-testid="cancel-rsvp-button"
-                className="w-full h-11 rounded-full border-red-500/40 bg-red-500 hover:bg-red-500/10 text-white hover:text-red-300">
-                {rsvpLoading ? 'Cancelling…' : 'Cancel RSVP'}
+                className={`w-full h-11 rounded-full border-2 ${
+                  rsvpStatus === 'waitlist'
+                    ? 'border-amber-500/40 bg-transparent text-amber-500 hover:bg-amber-500/10 hover:text-amber-400'
+                    : 'border-red-500/40 bg-red-500 hover:bg-red-500/10 text-white hover:text-red-300'
+                }`}>
+                {rsvpLoading
+                  ? 'Processing...'
+                  : rsvpStatus === 'waitlist'
+                    ? 'Leave Waitlist'
+                    : 'Cancel RSVP'}
               </Button>
             ) : capacity && attendeeCount >= capacity ? (
               <Button
-                disabled
-                className="w-full h-11 rounded-full bg-slate-800 text-slate-400 cursor-not-allowed">
-                Event full
+                onClick={onRsvp}
+                disabled={rsvpLoading}
+                className="w-full h-11 rounded-full bg-amber-600 hover:bg-amber-500 text-white">
+                {rsvpLoading ? 'joining...' : 'Join Waitlist'}
               </Button>
             ) : (
               <Button
@@ -171,10 +202,6 @@ export function EventSidebar({
                 {rsvpLoading ? 'RSVPing…' : 'RSVP to event'}
               </Button>
             )
-          ) : user ? (
-            <div className="rounded-2xl border border-blue-500/30 bg-blue-500/5 px-4 py-3 text-center text-xs text-blue-200">
-              Only students can RSVP to events.
-            </div>
           ) : (
             <div className="space-y-3">
               <p className="text-xs text-center text-slate-400">
@@ -195,6 +222,32 @@ export function EventSidebar({
           )}
         </CardContent>
       </Card>
+
+      {(user?.role === 'admin' ||
+        (user && user.id === event.organizer?.id) ||
+        (user && user.id === event.userId)) && (
+        <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl shadow-xl rounded-2xl">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base font-semibold text-slate-50">
+              Check-in QR Code
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col items-center gap-4">
+            <div className="bg-white p-4 rounded-xl">
+              <QRCodeSVG
+                value={
+                  event.qrCodeUrl ||
+                  `https://campus-connect.com/scanner?eventId=${event.id}`
+                }
+                size={200}
+              />
+            </div>
+            <p className="text-xs text-slate-400 text-center">
+              Scan this code to check in attendees
+            </p>
+          </CardContent>
+        </Card>
+      )}
     </aside>
   );
 }

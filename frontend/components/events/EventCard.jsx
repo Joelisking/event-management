@@ -75,12 +75,12 @@ export function EventCard({
               {formatEventDate(event.startDate, event.endDate)}
             </span>
             {event.timeSlots && event.timeSlots.length > 0 && (
-                <div className="mt-1.5 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20">
-                  <Calendar className="w-3 h-3 text-blue-400" />
-                  <span className="text-[10px] text-blue-300 font-medium">
-                    Different times daily
-                  </span>
-                </div>
+              <div className="mt-1.5 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20">
+                <Calendar className="w-3 h-3 text-blue-400" />
+                <span className="text-[10px] text-blue-300 font-medium">
+                  Different times daily
+                </span>
+              </div>
             )}
           </div>
         </div>
@@ -104,20 +104,37 @@ export function EventCard({
 
           <div className="flex gap-2">
             {user &&
-              user.role === 'student' &&
               (rsvpStatus ? (
                 <button
                   onClick={() => onCancelRsvp(event.id)}
                   disabled={rsvpLoading}
-                  className="px-3 py-1.5 text-xs font-medium rounded-full border border-red-500/40 text-red-400 hover:bg-red-500/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-                  {rsvpLoading ? 'Cancelling...' : 'Cancel'}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-full border disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${
+                    rsvpStatus === 'waitlist'
+                      ? 'border-amber-500/40 text-amber-400 hover:bg-amber-500/10'
+                      : 'border-red-500/40 text-red-400 hover:bg-red-500/10'
+                  }`}>
+                  {rsvpLoading
+                    ? 'Processing...'
+                    : rsvpStatus === 'waitlist'
+                      ? 'Leave Waitlist'
+                      : 'Cancel RSVP'}
                 </button>
               ) : (
                 <button
                   onClick={() => onRsvp(event.id)}
                   disabled={rsvpLoading}
-                  className="px-3 py-1.5 text-xs font-medium rounded-full bg-blue-600 text-white hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-                  {rsvpLoading ? 'RSVPing...' : 'RSVP'}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-full text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${
+                    event.capacity &&
+                    event.attendeeCount >= event.capacity
+                      ? 'bg-amber-600 hover:bg-amber-500'
+                      : 'bg-blue-600 hover:bg-blue-500'
+                  }`}>
+                  {rsvpLoading
+                    ? 'Processing...'
+                    : event.capacity &&
+                        event.attendeeCount >= event.capacity
+                      ? 'Join Waitlist'
+                      : 'RSVP'}
                 </button>
               ))}
             <Link href={`/events/${event.id}`}>
