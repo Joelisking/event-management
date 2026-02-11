@@ -6,12 +6,13 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "start:prod": "NODE_ENV=production node src/index.js",
-    "migrate": "psql $DATABASE_URL -f db/complete_schema_with_updates.sql",
+    "start:prod": "node scripts/run-migrations.js && NODE_ENV=production node src/index.js",
+    "migrate": "node scripts/run-migrations.js",
+    "migrate:manual": "psql $DATABASE_URL -f db/complete_schema_with_updates.sql",
     "migrate:features": "psql $DATABASE_URL -f db/migrations/03_add_features.sql",
     "migrate:constraints": "psql $DATABASE_URL -f db/migrations/04_production_constraints.sql",
     "migrate:indexes": "psql $DATABASE_URL -f db/migrations/05_performance_indexes.sql",
-    "migrate:all": "npm run migrate && npm run migrate:features && npm run migrate:constraints && npm run migrate:indexes",
+    "migrate:all": "npm run migrate:manual && npm run migrate:features && npm run migrate:constraints && npm run migrate:indexes",
     "lint": "eslint 'src/**/*.js'",
     "lint:fix": "eslint 'src/**/*.js' --fix",
     "test": "mocha"

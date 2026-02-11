@@ -9,12 +9,10 @@ import {
   validatePassword,
   validateName,
   validateRole,
-  handleValidationErrors
+  handleValidationErrors,
 } from '../middleware/validation.js';
 
 const router = express.Router();
-
-
 
 router.post(
   '/signup',
@@ -26,69 +24,111 @@ router.post(
   validateRole(),
   handleValidationErrors,
   async (req, res) => {
-  try {
-    const { firstName, lastName, email, password, role, organizationName } = req.body;
-
-    if (!firstName || !lastName || !email || !password) {
-      return res
-        .status(400)
-        .json({ error: 'All fields are required' });
-    }
-
-    const existingUser = await query(
-      'SELECT id FROM users WHERE email = $1',
-      [email]
-    );
-
-    if (existingUser.rows.length > 0) {
-      return res
-        .status(400)
-        .json({ error: 'User already exists with this email' });
-    }
-
-    const passwordHash = await bcrypt.hash(password, 10);
-
-    const result = await query(
-      'INSERT INTO users (name, email, "passwordHash", role, organization_name) VALUES ($1, $2, $3, $4, $5) RETURNING id, name, email, role, organization_name',
-      [
-        `${firstName} ${lastName}`,
+    try {
+      const {
+        firstName,
+        lastName,
         email,
-        passwordHash,
-        role || 'student',
-        organizationName || null,
-      ]
-    );
+        password,
+        role,
+        organizationName,
+        userCategory,
+        countryOfResidence,
+        countryOfOrigin,
+      } = req.body;
 
-    const user = result.rows[0];
+      if (!firstName || !lastName || !email || !password) {
+        return res
+          .status(400)
+          .json({ error: 'All fields are required' });
+      }
 
-    const secret = process.env.JWT_SECRET || 'my-secret-123';
-    const token = jwt.sign(
-      { userId: user.id, email: user.email, role: user.role },
-      secret,
-      { expiresIn: '7d' }
-    );
+      // Validate user category
+      const validCategories = [
+        'pfw_student',
+        'pfw_alumni',
+        'community',
+        'international',
+      ];
+      if (userCategory && !validCategories.includes(userCategory)) {
+        return res
+          .status(400)
+          .json({ error: 'Invalid user category' });
+      }
 
-    // Send welcome email asynchronously (don't wait for it)
-    sendWelcomeEmail(user).catch((err) => {
-      console.error('Failed to send welcome email:', err);
-    });
+      // Validate location fields for international users
+      if (userCategory === 'international') {
+        if (!countryOfResidence) {
+          return res
+            .status(400)
+            .json({
+              error:
+                'Country of residence is required for international users',
+            });
+        }
+      }
 
-    res.status(201).json({
-      message: 'User created successfully',
-      token,
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        organizationName: user.organization_name,
-      },
-    });
-  } catch (error) {
-    console.error('Signup error:', error);
-    res.status(500).json({ error: 'Failed to create user' });
+      const existingUser = await query(
+        'SELECT id FROM users WHERE email = $1',
+        [email]
+      );
+
+      if (existingUser.rows.length > 0) {
+        return res
+          .status(400)
+          .json({ error: 'User already exists with this email' });
+      }
+
+      const passwordHash = await bcrypt.hash(password, 10);
+
+      const result = await query(
+        'INSERT INTO users (name, email, "passwordHash", role, organization_name, user_category, country_of_residence, country_of_origin) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id, name, email, role, organization_name, user_category, country_of_residence, country_of_origin',
+        [
+          `${firstName} ${lastName}`,
+          email,
+          passwordHash,
+          role || 'student',
+          organizationName || null,
+          userCategory || null,
+          countryOfResidence || null,
+          countryOfOrigin || null,
+        ]
+      );
+
+      const user = result.rows[0];
+
+      const secret = process.env.JWT_SECRET || 'my-secret-123';
+      const token = jwt.sign(
+        { userId: user.id, email: user.email, role: user.role },
+        secret,
+        { expiresIn: '7d' }
+      );
+
+      // Send welcome email asynchronously (don't wait for it)
+      sendWelcomeEmail(user).catch((err) => {
+        console.error('Failed to send welcome email:', err);
+      });
+
+      res.status(201).json({
+        message: 'User created successfully',
+        token,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          organizationName: user.organization_name,
+          userCategory: user.user_category,
+          countryOfResidence: user.country_of_residence,
+          countryOfOrigin: user.country_of_origin,
+        },
+      });
+    } catch (error) {
+      console.error('Signup error:', error);
+      res.status(500).json({ error: 'Failed to create user' });
+    }
   }
-});
+);
 
 router.post(
   '/signin',
@@ -96,62 +136,66 @@ router.post(
   validateEmail(),
   handleValidationErrors,
   async (req, res) => {
-  try {
-    const { email, password } = req.body;
+    try {
+      const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ error: 'Email and password are required' });
+      if (!email || !password) {
+        return res
+          .status(400)
+          .json({ error: 'Email and password are required' });
+      }
+
+      const result = await query(
+        'SELECT id, name, email, "passwordHash", role, organization_name, user_category, country_of_residence, country_of_origin FROM users WHERE email = $1',
+        [email]
+      );
+
+      if (result.rows.length === 0) {
+        return res
+          .status(401)
+          .json({ error: 'Invalid email or password' });
+      }
+
+      const user = result.rows[0];
+
+      const isValidPassword = await bcrypt.compare(
+        password,
+        user.passwordHash
+      );
+
+      if (!isValidPassword) {
+        return res
+          .status(401)
+          .json({ error: 'Invalid email or password' });
+      }
+
+      const secret = process.env.JWT_SECRET || 'my-secret-123';
+      const token = jwt.sign(
+        { userId: user.id, email: user.email, role: user.role },
+        secret,
+        { expiresIn: '7d' }
+      );
+
+      res.json({
+        message: 'Signed in successfully',
+        token,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          organizationName: user.organization_name,
+          userCategory: user.user_category,
+          countryOfResidence: user.country_of_residence,
+          countryOfOrigin: user.country_of_origin,
+        },
+      });
+    } catch (error) {
+      console.error('Signin error:', error);
+      res.status(500).json({ error: 'Failed to sign in' });
     }
-
-    const result = await query(
-      'SELECT id, name, email, "passwordHash", role, organization_name FROM users WHERE email = $1',
-      [email]
-    );
-
-    if (result.rows.length === 0) {
-      return res
-        .status(401)
-        .json({ error: 'Invalid email or password' });
-    }
-
-    const user = result.rows[0];
-
-    const isValidPassword = await bcrypt.compare(
-      password,
-      user.passwordHash
-    );
-
-    if (!isValidPassword) {
-      return res
-        .status(401)
-        .json({ error: 'Invalid email or password' });
-    }
-
-    const secret = process.env.JWT_SECRET || 'my-secret-123';
-    const token = jwt.sign(
-      { userId: user.id, email: user.email, role: user.role },
-      secret,
-      { expiresIn: '7d' }
-    );
-
-    res.json({
-      message: 'Signed in successfully',
-      token,
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        organizationName: user.organization_name,
-      },
-    });
-  } catch (error) {
-    console.error('Signin error:', error);
-    res.status(500).json({ error: 'Failed to sign in' });
   }
-});
+);
 
 router.get('/me', async (req, res) => {
   try {
@@ -165,7 +209,7 @@ router.get('/me', async (req, res) => {
     const decoded = jwt.verify(token, secret);
 
     const result = await query(
-      'SELECT id, name, email, role, organization_name FROM users WHERE id = $1',
+      'SELECT id, name, email, role, organization_name, user_category, country_of_residence, country_of_origin FROM users WHERE id = $1',
       [decoded.userId]
     );
 
@@ -182,6 +226,9 @@ router.get('/me', async (req, res) => {
         email: user.email,
         role: user.role,
         organizationName: user.organization_name,
+        userCategory: user.user_category,
+        countryOfResidence: user.country_of_residence,
+        countryOfOrigin: user.country_of_origin,
       },
     });
   } catch (error) {

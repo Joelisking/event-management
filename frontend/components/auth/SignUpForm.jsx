@@ -36,8 +36,23 @@ const signUpSchema = yup.object({
     .string()
     .oneOf(['student', 'organizer'], 'Invalid role')
     .required('Please select a role'),
-  organizationName: yup
-    .string().optional(),
+  organizationName: yup.string().optional(),
+  userCategory: yup
+    .string()
+    .oneOf(
+      ['pfw_student', 'pfw_alumni', 'community', 'international'],
+      'Invalid category'
+    )
+    .required('Please select a category'),
+  countryOfResidence: yup.string().when('userCategory', {
+    is: 'international',
+    then: (schema) =>
+      schema.required(
+        'Country of residence is required for international users'
+      ),
+    otherwise: (schema) => schema.notRequired(),
+  }),
+  countryOfOrigin: yup.string().optional(),
 });
 
 export function SignUpForm() {
@@ -46,7 +61,8 @@ export function SignUpForm() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState(false);
 
   const {
     register,
@@ -58,6 +74,7 @@ export function SignUpForm() {
   });
 
   const selectedRole = watch('role');
+  const selectedCategory = watch('userCategory');
 
   const onSubmit = async (data) => {
     setError('');
@@ -70,7 +87,10 @@ export function SignUpForm() {
         data.email,
         data.password,
         data.role,
-        data.organizationName
+        data.organizationName,
+        data.userCategory,
+        data.countryOfResidence,
+        data.countryOfOrigin
       );
       router.push('/events');
     } catch (err) {
@@ -200,7 +220,9 @@ export function SignUpForm() {
               />
               <button
                 type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                onClick={() =>
+                  setShowConfirmPassword(!showConfirmPassword)
+                }
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300 focus:outline-none transition-colors">
                 {showConfirmPassword ? (
                   <EyeOff className="w-5 h-5" />
@@ -226,13 +248,19 @@ export function SignUpForm() {
               id="role"
               {...register('role')}
               className="flex h-11 w-full rounded-xl border border-slate-800/70 bg-slate-900/70 px-3 py-2 text-sm text-slate-100 ring-offset-background placeholder:text-slate-500 focus:border-blue-500/50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 disabled:cursor-not-allowed disabled:opacity-50">
-              <option value="" className="bg-slate-900 text-slate-400">
+              <option
+                value=""
+                className="bg-slate-900 text-slate-400">
                 Select role...
               </option>
-              <option value="student" className="bg-slate-900 text-slate-100">
+              <option
+                value="student"
+                className="bg-slate-900 text-slate-100">
                 Student
               </option>
-              <option value="organizer" className="bg-slate-900 text-slate-100">
+              <option
+                value="organizer"
+                className="bg-slate-900 text-slate-100">
                 Event Organizer
               </option>
             </select>
@@ -249,7 +277,9 @@ export function SignUpForm() {
                 htmlFor="organizationName"
                 className="text-sm font-medium text-slate-300">
                 Organization Name{' '}
-                <span className="text-slate-500 font-normal">(Optional)</span>
+                <span className="text-slate-500 font-normal">
+                  (Optional)
+                </span>
               </FieldLabel>
               <Input
                 id="organizationName"
@@ -264,10 +294,107 @@ export function SignUpForm() {
                 </FieldError>
               )}
               <p className="text-xs text-slate-400">
-                This name will be displayed as the event organizer instead of
-                your personal name
+                This name will be displayed as the event organizer
+                instead of your personal name
               </p>
             </div>
+          )}
+
+          <div className="space-y-2">
+            <FieldLabel
+              htmlFor="userCategory"
+              className="text-sm font-medium text-slate-300">
+              User Category
+            </FieldLabel>
+            <select
+              id="userCategory"
+              {...register('userCategory')}
+              className="flex h-11 w-full rounded-xl border border-slate-800/70 bg-slate-900/70 px-3 py-2 text-sm text-slate-100 ring-offset-background placeholder:text-slate-500 focus:border-blue-500/50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 disabled:cursor-not-allowed disabled:opacity-50">
+              <option
+                value=""
+                className="bg-slate-900 text-slate-400">
+                Select category...
+              </option>
+              <option
+                value="pfw_student"
+                className="bg-slate-900 text-slate-100">
+                PFW Student
+              </option>
+              <option
+                value="pfw_alumni"
+                className="bg-slate-900 text-slate-100">
+                PFW Alumni
+              </option>
+              <option
+                value="community"
+                className="bg-slate-900 text-slate-100">
+                Community Member
+              </option>
+              <option
+                value="international"
+                className="bg-slate-900 text-slate-100">
+                International
+              </option>
+            </select>
+            {errors.userCategory && (
+              <FieldError className="text-red-400 text-xs">
+                {errors.userCategory.message}
+              </FieldError>
+            )}
+          </div>
+
+          {selectedCategory === 'international' && (
+            <>
+              <div className="space-y-2">
+                <FieldLabel
+                  htmlFor="countryOfResidence"
+                  className="text-sm font-medium text-slate-300">
+                  Country of Residence{' '}
+                  <span className="text-red-400">*</span>
+                </FieldLabel>
+                <Input
+                  id="countryOfResidence"
+                  type="text"
+                  {...register('countryOfResidence')}
+                  placeholder="e.g., United States"
+                  className="h-11 bg-slate-900/70 border-slate-800/70 text-slate-100 placeholder:text-slate-500 rounded-xl focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
+                />
+                {errors.countryOfResidence && (
+                  <FieldError className="text-red-400 text-xs">
+                    {errors.countryOfResidence.message}
+                  </FieldError>
+                )}
+                <p className="text-xs text-slate-400">
+                  Where do you currently reside?
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <FieldLabel
+                  htmlFor="countryOfOrigin"
+                  className="text-sm font-medium text-slate-300">
+                  Country of Origin{' '}
+                  <span className="text-slate-500 font-normal">
+                    (Optional)
+                  </span>
+                </FieldLabel>
+                <Input
+                  id="countryOfOrigin"
+                  type="text"
+                  {...register('countryOfOrigin')}
+                  placeholder="e.g., Mexico"
+                  className="h-11 bg-slate-900/70 border-slate-800/70 text-slate-100 placeholder:text-slate-500 rounded-xl focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
+                />
+                {errors.countryOfOrigin && (
+                  <FieldError className="text-red-400 text-xs">
+                    {errors.countryOfOrigin.message}
+                  </FieldError>
+                )}
+                <p className="text-xs text-slate-400">
+                  If different from your country of residence
+                </p>
+              </div>
+            </>
           )}
 
           <Button
