@@ -75,34 +75,26 @@ export default function NewEventPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900">
-      <div className="fixed inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-5 pointer-events-none" />
-
-      <nav className="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
+    <div className="min-h-screen bg-cream-50">
+      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <h1 className="text-xl font-bold bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
-                Create New Event
-              </h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link href="/admin/dashboard">
-                <Button
-                  variant="ghost"
-                  className="text-gray-600 hover:text-white hover:bg-slate-800">
-                  Back to Dashboard
-                </Button>
-              </Link>
-            </div>
+          <div className="flex justify-between h-16 items-center">
+            <h1 className="text-xl font-bold text-black">
+              Create New Event
+            </h1>
+            <Link href="/admin/dashboard">
+              <Button className="bg-gray-100 text-gray-900 hover:bg-gray-200 hover:text-black border-gray-300 rounded-full text-sm">
+                Back to Dashboard
+              </Button>
+            </Link>
           </div>
         </div>
       </nav>
 
-      <main className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <Card className="bg-white border-gray-200 shadow-lg">
-          <CardHeader className="border-b border-slate-800/70 pb-6">
-            <CardTitle className="text-2xl text-slate-50">
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <Card className="bg-white border-gray-200 shadow-lg rounded-2xl pt-6">
+          <CardHeader className="border-b border-gray-200 pb-6">
+            <CardTitle className="text-2xl text-black">
               Event Details
             </CardTitle>
             <p className="text-gray-600">

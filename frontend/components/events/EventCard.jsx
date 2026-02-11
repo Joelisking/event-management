@@ -39,7 +39,6 @@ export function EventCard({
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-pfw-gold via-pfw-gold to-pfw-gold" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent"></div>
 
         {/* Status Badge */}
         <div className="absolute top-3 right-3 z-10">

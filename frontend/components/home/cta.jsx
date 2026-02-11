@@ -5,7 +5,7 @@ import { Button } from '../ui/button';
 
 function Cta() {
   return (
-    <section className="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-b from-slate-950 to-slate-900">
+    <section className="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-white">
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-10" />
 

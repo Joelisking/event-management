@@ -152,9 +152,8 @@ export default function EditEventPage() {
   if (authLoading || fetchingEvent) {
     return (
       <div className="min-h-screen bg-cream-50 flex items-center justify-center">
-        <div className="fixed inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-10" />
-        <div className="flex flex-col items-center gap-4 relative z-10">
-          <div className="w-14 h-14 rounded-full border-4 border-slate-700 border-t-blue-500 animate-spin" />
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-14 h-14 rounded-full border-4 border-gray-200 border-t-pfw-gold animate-spin" />
           <p className="text-sm font-medium text-gray-700">
             Loading event...
           </p>
@@ -164,12 +163,8 @@ export default function EditEventPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900">
-      {/* Subtle grid background */}
-      <div className="fixed inset-0 bg-[linear-gradient(to_right,#1f2937_1px,transparent_1px),linear-gradient(to_bottom,#1f2937_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-10" />
-
-      {/* Top nav */}
-      <nav className="bg-slate-950/80 border-b border-slate-800/70 backdrop-blur-xl shadow-2xl shadow-blue-900/10 relative z-10">
+    <div className="min-h-screen bg-cream-50">
+      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <h1 className="text-xl sm:text-2xl font-semibold text-black">
@@ -184,10 +179,9 @@ export default function EditEventPage() {
         </div>
       </nav>
 
-      {/* Main */}
-      <main className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Card className="bg-white border-gray-200 shadow-lg rounded-2xl pt-6">
-          <CardHeader className="border-b border-slate-800/70 pb-4">
+          <CardHeader className="border-b border-gray-200 pb-4">
             <CardTitle className="text-black text-lg">
               Event details
             </CardTitle>

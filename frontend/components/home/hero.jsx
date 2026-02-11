@@ -6,7 +6,7 @@ import { Button } from '../ui/button';
 
 function Hero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900">
+    <section className="relative overflow-hidden bg-white">
       {/* Hero Banner Image Section */}
       <div className="relative w-full h-[400px] sm:h-[500px] lg:h-[80vh]">
         <Image
@@ -16,7 +16,6 @@ function Hero() {
           priority
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/20 via-slate-950/30 to-slate-950" />
       </div>
 
       {/* Content Section Below Banner */}
