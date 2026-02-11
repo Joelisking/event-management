@@ -408,17 +408,8 @@ router.get('/stats', authenticate, requireAdmin, async (req, res) => {
       LIMIT 10
     `);
 
-    // Pending events
-    const pendingEventsResult = await query(`
-      SELECT 
-        e.id, e.title, e.start_date, e.status,
-        u.name as organizer_name, u.email as organizer_email,
-        u.id as organizer_id
-      FROM events e
-      JOIN users u ON e.user_id = u.id
-      WHERE e.status = 'pending'
-      ORDER BY e."createdAt" ASC
-    `);
+    // Pending events (no 'pending' status in current schema)
+    const pendingEventsResult = { rows: [] };
 
     res.json({
       totals: {
