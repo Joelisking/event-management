@@ -89,7 +89,7 @@ export function UsersTable({
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="text-gray-600 hover:text-white hover:bg-gray-100"
+                        className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
                         onClick={() => handleChangeRole(u.id, u.role)}
                         title="Change Role">
                         <Edit className="w-4 h-4" />

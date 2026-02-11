@@ -125,7 +125,7 @@ export function EventsTable({
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="text-gray-600 hover:text-white hover:bg-gray-100"
+                            className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
                             title="View Event">
                             <Eye className="w-4 h-4" />
                           </Button>
