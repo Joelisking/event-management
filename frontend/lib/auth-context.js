@@ -123,6 +123,25 @@ export function AuthProvider({ children }) {
     setUser(updatedUser);
   };
 
+  const refreshUser = async () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const res = await fetch(`${API_URL}/api/auth/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await res.json();
+        if (data.user) {
+          setUser(data.user);
+        }
+      } catch (error) {
+        console.error('Failed to refresh user:', error);
+      }
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -133,6 +152,7 @@ export function AuthProvider({ children }) {
         loading,
         getToken,
         updateUser,
+        refreshUser,
       }}>
       {children}
     </AuthContext.Provider>

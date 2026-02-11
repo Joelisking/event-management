@@ -1,11 +1,23 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft, Calendar, UserCircle, MapPin, Tag } from 'lucide-react';
+import {
+  ArrowLeft,
+  Calendar,
+  UserCircle,
+  MapPin,
+  Tag,
+} from 'lucide-react';
 
-export function EventHero({ event, status, organizerName, formatEventDate }) {
+export function EventHero({
+  event,
+  status,
+  organizerName,
+  formatEventDate,
+}) {
   const statusStyles = {
-    upcoming: 'bg-blue-500/90 text-white ring-2 ring-blue-400/60',
-    ongoing: 'bg-emerald-500/90 text-white ring-2 ring-emerald-400/60',
+    upcoming: 'bg-gold-dark/90 text-white ring-2 ring-blue-400/60',
+    ongoing:
+      'bg-emerald-500/90 text-white ring-2 ring-emerald-400/60',
     past: 'bg-zinc-500/90 text-white ring-2 ring-zinc-400/60',
   };
 
@@ -23,50 +35,51 @@ export function EventHero({ event, status, organizerName, formatEventDate }) {
               className="object-cover scale-105 blur-[0.5px]"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-blue-700 via-indigo-600 to-slate-900" />
+            <div className="w-full h-full bg-gradient-to-br from-gray-800 via-gray-900 to-black" />
           )}
         </div>
 
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/90 to-slate-900/10" />
+        {/* Dark Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/60 to-black/20" />
 
         {/* Content */}
         <div className="relative max-w-6xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex items-end pb-8">
           <div className="flex flex-col gap-4 w-full">
             <div className="flex items-center justify-between gap-4">
               <Link href="/events">
-                <div className="flex gap-1 items-center px-3 py-1 border rounded-full border-slate-700 bg-slate-950/60 text-slate-100 hover:bg-slate-900 hover:border-slate-600 hover:text-white">
+                <div className="flex gap-1 items-center px-3 py-1.5 border rounded-full border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 hover:border-white/50">
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back
                 </div>
               </Link>
 
               <span
-                className={`px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-full backdrop-blur-md shadow-lg flex items-center gap-2 ${statusStyles[status]}`}
-              >
+                className={`px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-full backdrop-blur-md shadow-lg flex items-center gap-2 ${statusStyles[status]}`}>
                 <span className="inline-block w-2 h-2 rounded-full bg-white/80" />
                 {status.charAt(0).toUpperCase() + status.slice(1)}
               </span>
             </div>
 
             <div className="space-y-3 max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900/70 border border-slate-700/60 text-xs font-medium text-slate-300">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/30 text-xs font-medium text-white">
                 <Calendar className="w-3.5 h-3.5" />
-                <span>{formatEventDate(event.startDate, event.endDate)}</span>
+                <span>
+                  {formatEventDate(event.startDate, event.endDate)}
+                </span>
               </div>
 
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight text-slate-50">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-white drop-shadow-lg">
                 {event.title}
               </h1>
 
-              <div className="flex flex-wrap items-center gap-4 text-sm text-slate-300">
+              <div className="flex flex-wrap items-center gap-4 text-sm text-white/90">
                 <div className="inline-flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-full bg-slate-900/70 border border-slate-700 flex items-center justify-center">
-                    <UserCircle className="w-4 h-4 text-slate-300" />
+                  <div className="w-7 h-7 rounded-full bg-white/10 backdrop-blur-md border border-white/30 flex items-center justify-center">
+                    <UserCircle className="w-4 h-4 text-white" />
                   </div>
                   <span>
                     Organized by{' '}
-                    <span className="font-medium text-slate-100">
+                    <span className="font-medium text-white">
                       {organizerName}
                     </span>
                   </span>
@@ -74,14 +87,16 @@ export function EventHero({ event, status, organizerName, formatEventDate }) {
 
                 {event.location && (
                   <div className="inline-flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-slate-300" />
-                    <span className="truncate max-w-xs">{event.location}</span>
+                    <MapPin className="w-4 h-4 text-white" />
+                    <span className="truncate max-w-xs">
+                      {event.location}
+                    </span>
                   </div>
                 )}
 
                 {event.category && (
                   <div className="inline-flex items-center gap-2">
-                    <Tag className="w-4 h-4 text-slate-300" />
+                    <Tag className="w-4 h-4 text-white" />
                     <span>{event.category}</span>
                   </div>
                 )}

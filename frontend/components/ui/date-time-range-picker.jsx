@@ -211,9 +211,9 @@ export function DateTimeRangePicker({
   };
 
   return (
-    <div className="space-y-4 text-slate-100">
+    <div className="space-y-4 text-gray-900">
       {label && (
-        <Label className="text-sm font-medium text-slate-100">
+        <Label className="text-sm font-medium text-gray-900">
           {label}
         </Label>
       )}
@@ -224,7 +224,7 @@ export function DateTimeRangePicker({
         <div className="flex-1">
           <Label
             htmlFor="event-date"
-            className="text-xs font-medium mb-1.5 block text-slate-300">
+            className="text-xs font-medium mb-1.5 block text-gray-700">
             Date
           </Label>
           <Popover open={open} onOpenChange={setOpen}>
@@ -232,7 +232,7 @@ export function DateTimeRangePicker({
               <Button
                 variant="outline"
                 id="event-date"
-                className="w-full justify-between font-normal bg-slate-900/80 border-slate-700/80 text-slate-100 hover:text-slate-200 hover:bg-slate-900 hover:border-slate-500">
+                className="w-full justify-between font-normal bg-gray-50 border-gray-300/80 text-gray-900 hover:text-black hover:bg-gray-50 hover:border-slate-500">
                 {startDate
                   ? startDate.toLocaleDateString()
                   : 'Select date'}
@@ -240,7 +240,7 @@ export function DateTimeRangePicker({
               </Button>
             </PopoverTrigger>
             <PopoverContent
-              className="w-auto overflow-hidden p-0 bg-slate-950 border-slate-800"
+              className="w-auto overflow-hidden p-0 bg-white border-gray-200"
               align="start">
               <Calendar
                 mode="single"
@@ -258,7 +258,7 @@ export function DateTimeRangePicker({
         <div className="flex-1">
           <Label
             htmlFor="start-time"
-            className="text-xs font-medium mb-1.5 block text-slate-300">
+            className="text-xs font-medium mb-1.5 block text-gray-700">
             Start time
           </Label>
           <Input
@@ -267,7 +267,7 @@ export function DateTimeRangePicker({
             value={startTime}
             onChange={handleStartTimeChange}
             disabled={timeDisabled}
-            className={`bg-slate-900/80 border-slate-800/80 text-slate-100 placeholder:text-slate-500 rounded-full focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/25 p-6 ${
+            className={`bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-full focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20 p-6 ${
               timeDisabled ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           />
@@ -277,7 +277,7 @@ export function DateTimeRangePicker({
         <div className="flex-1">
           <Label
             htmlFor="end-time"
-            className="text-xs font-medium mb-1.5 block text-slate-300">
+            className="text-xs font-medium mb-1.5 block text-gray-700">
             End time
           </Label>
           <Input
@@ -286,7 +286,7 @@ export function DateTimeRangePicker({
             value={endTime}
             onChange={handleEndTimeChange}
             disabled={timeDisabled}
-            className={`bg-slate-900/80 border-slate-800/80 text-slate-100 placeholder:text-slate-500 rounded-full focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/25 p-6 ${
+            className={`bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-full focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20 p-6 ${
               timeDisabled ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           />
@@ -311,19 +311,19 @@ export function DateTimeRangePicker({
         />
         <label
           htmlFor="multi-day"
-          className="text-sm font-medium leading-none text-slate-200 cursor-pointer">
+          className="text-sm font-medium leading-none text-black cursor-pointer">
           Event spans multiple days
         </label>
       </div>
 
       {/* End Date (only shown for multi-day events) */}
       {isMultiDay && (
-        <div className="pl-4 md:pl-6 border-l border-slate-800/80 space-y-2">
+        <div className="pl-4 md:pl-6 border-l border-gray-200 space-y-2">
           <div className="flex flex-col gap-4 md:flex-row">
             <div className="flex-1">
               <Label
                 htmlFor="end-date"
-                className="text-xs font-medium mb-1.5 block text-slate-300">
+                className="text-xs font-medium mb-1.5 block text-gray-700">
                 End date
               </Label>
               <Popover
@@ -333,7 +333,7 @@ export function DateTimeRangePicker({
                   <Button
                     variant="outline"
                     id="end-date"
-                    className="w-full justify-between font-normal bg-slate-900/80 border-slate-700/80 text-slate-100 hover:text-slate-200 hover:bg-slate-900 hover:border-slate-500">
+                    className="w-full justify-between font-normal bg-gray-50 border-gray-300/80 text-gray-900 hover:text-black hover:bg-gray-50 hover:border-slate-500">
                     {endDate
                       ? endDate.toLocaleDateString()
                       : 'Select end date'}
@@ -341,7 +341,7 @@ export function DateTimeRangePicker({
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent
-                  className="w-auto overflow-hidden p-0 bg-slate-950 border-slate-800"
+                  className="w-auto overflow-hidden p-0 bg-white border-gray-200"
                   align="start">
                   <Calendar
                     mode="single"
@@ -357,14 +357,14 @@ export function DateTimeRangePicker({
             </div>
 
             <div className="flex-1">
-              <Label className="text-xs font-medium mb-1.5 block text-slate-500">
+              <Label className="text-xs font-medium mb-1.5 block text-black0">
                 End time
               </Label>
               <Input
                 type="time"
                 value={endTime}
                 onChange={handleEndTimeChange}
-                className="bg-slate-900/60 border-slate-800/80 text-slate-400 rounded-full p-6"
+                className="bg-gray-50 border-gray-200 text-gray-600 rounded-full p-6"
                 disabled
               />
             </div>

@@ -65,10 +65,10 @@ export default function NewEventPage() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-cream-50 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-14 h-14 rounded-full border-4 border-slate-800 border-t-blue-500 animate-spin" />
-          <p className="text-slate-400">Loading...</p>
+          <p className="text-gray-600">Loading...</p>
         </div>
       </div>
     );
@@ -77,7 +77,7 @@ export default function NewEventPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900">
       <div className="fixed inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-5 pointer-events-none" />
-      
+
       <nav className="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
@@ -88,7 +88,9 @@ export default function NewEventPage() {
             </div>
             <div className="flex items-center space-x-4">
               <Link href="/admin/dashboard">
-                <Button variant="ghost" className="text-slate-400 hover:text-white hover:bg-slate-800">
+                <Button
+                  variant="ghost"
+                  className="text-gray-600 hover:text-white hover:bg-slate-800">
                   Back to Dashboard
                 </Button>
               </Link>
@@ -98,10 +100,14 @@ export default function NewEventPage() {
       </nav>
 
       <main className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl shadow-2xl">
+        <Card className="bg-white border-gray-200 shadow-lg">
           <CardHeader className="border-b border-slate-800/70 pb-6">
-            <CardTitle className="text-2xl text-slate-50">Event Details</CardTitle>
-            <p className="text-slate-400">Fill in the details to create your event</p>
+            <CardTitle className="text-2xl text-slate-50">
+              Event Details
+            </CardTitle>
+            <p className="text-gray-600">
+              Fill in the details to create your event
+            </p>
           </CardHeader>
           <CardContent className="pt-6">
             {error && (

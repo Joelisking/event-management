@@ -11,10 +11,10 @@ import { Button } from '@/components/ui/button';
 export function ProfileActivity({ profile }) {
   if (profile.role === 'student') {
     return (
-      <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl shadow-2xl shadow-blue-900/10 rounded-2xl pt-6">
+      <Card className="bg-white border-gray-200 backdrop-blur-xl shadow-2xl shadow-pfw-gold/10 rounded-2xl pt-6">
         <CardHeader>
-          <CardTitle className="text-slate-50">My RSVPs</CardTitle>
-          <CardDescription className="text-slate-400">
+          <CardTitle className="text-black">My RSVPs</CardTitle>
+          <CardDescription className="text-gray-600">
             Events you've registered for ({profile.rsvps?.length || 0})
           </CardDescription>
         </CardHeader>
@@ -24,16 +24,16 @@ export function ProfileActivity({ profile }) {
               {profile.rsvps.map((rsvp) => (
                 <div
                   key={rsvp.id}
-                  className="border border-slate-800/70 rounded-xl p-4 hover:shadow-lg hover:shadow-blue-900/10 transition-all bg-slate-900/30">
+                  className="border border-gray-200 rounded-xl p-4 hover:shadow-lg hover:shadow-pfw-gold/10 transition-all bg-gray-50">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-slate-50">
+                      <h3 className="text-lg font-semibold text-black">
                         {rsvp.event.title}
                       </h3>
-                      <p className="text-sm text-slate-400 mt-1">
+                      <p className="text-sm text-gray-600 mt-1">
                         Organized by {rsvp.event.organizerName}
                       </p>
-                      <p className="text-sm text-slate-400 mt-2">
+                      <p className="text-sm text-gray-600 mt-2">
                         {new Date(rsvp.event.startDate).toLocaleDateString(
                           'en-US',
                           {
@@ -47,7 +47,7 @@ export function ProfileActivity({ profile }) {
                         )}
                       </p>
                       {rsvp.event.location && (
-                        <p className="text-sm text-slate-400">
+                        <p className="text-sm text-gray-600">
                           📍 {rsvp.event.location}
                         </p>
                       )}
@@ -58,7 +58,7 @@ export function ProfileActivity({ profile }) {
                       )}
                     </div>
                     <Link href={`/events/${rsvp.event.id}`}>
-                      <Button className="bg-slate-800/70 text-slate-300 hover:bg-slate-800 border-slate-700 rounded-full">
+                      <Button className="bg-gray-100 text-gray-700 hover:bg-gray-100 border-gray-300 rounded-full">
                         View
                       </Button>
                     </Link>
@@ -68,11 +68,11 @@ export function ProfileActivity({ profile }) {
             </div>
           ) : (
             <div className="text-center py-8">
-              <p className="text-slate-400 mb-4">
+              <p className="text-gray-600 mb-4">
                 You haven't RSVP'd to any events yet
               </p>
               <Link href="/events">
-                <Button className="bg-blue-600 hover:bg-blue-500 text-white rounded-full shadow-lg shadow-blue-500/20">
+                <Button className="bg-pfw-gold hover:bg-gold-dark text-white rounded-full shadow-lg shadow-pfw-gold/20">
                   Browse Events
                 </Button>
               </Link>
@@ -85,10 +85,10 @@ export function ProfileActivity({ profile }) {
 
   if (profile.role === 'organizer') {
     return (
-      <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl shadow-2xl shadow-blue-900/10 rounded-2xl pt-6">
+      <Card className="bg-white border-gray-200 backdrop-blur-xl shadow-2xl shadow-pfw-gold/10 rounded-2xl pt-6">
         <CardHeader>
-          <CardTitle className="text-slate-50">My Events</CardTitle>
-          <CardDescription className="text-slate-400">
+          <CardTitle className="text-black">My Events</CardTitle>
+          <CardDescription className="text-gray-600">
             Events you've created ({profile.events?.length || 0})
           </CardDescription>
         </CardHeader>
@@ -98,13 +98,13 @@ export function ProfileActivity({ profile }) {
               {profile.events.map((event) => (
                 <div
                   key={event.id}
-                  className="border border-slate-800/70 rounded-xl p-4 hover:shadow-lg hover:shadow-blue-900/10 transition-all bg-slate-900/30">
+                  className="border border-gray-200 rounded-xl p-4 hover:shadow-lg hover:shadow-pfw-gold/10 transition-all bg-gray-50">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-slate-50">
+                      <h3 className="text-lg font-semibold text-black">
                         {event.title}
                       </h3>
-                      <p className="text-sm text-slate-400 mt-1">
+                      <p className="text-sm text-gray-600 mt-1">
                         {new Date(event.startDate).toLocaleDateString(
                           'en-US',
                           {
@@ -118,7 +118,7 @@ export function ProfileActivity({ profile }) {
                         )}
                       </p>
                       <div className="flex items-center gap-4 mt-2">
-                        <span className="text-sm text-slate-400">
+                        <span className="text-sm text-gray-600">
                           👥 {event.attendeeCount} attendee
                           {event.attendeeCount !== 1 ? 's' : ''}
                         </span>
@@ -128,14 +128,14 @@ export function ProfileActivity({ profile }) {
                               ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
                               : event.status === 'cancelled'
                               ? 'bg-red-500/20 text-red-400 border border-red-500/30'
-                              : 'bg-slate-500/20 text-slate-400 border border-slate-500/30'
+                              : 'bg-slate-500/20 text-gray-600 border border-slate-500/30'
                           }`}>
                           {event.status}
                         </span>
                       </div>
                     </div>
                     <Link href={`/organizer/events/edit/${event.id}`}>
-                      <Button className="bg-slate-800/70 text-slate-300 hover:bg-slate-800 border-slate-700 rounded-full">
+                      <Button className="bg-gray-100 text-gray-700 hover:bg-gray-100 border-gray-300 rounded-full">
                         Manage
                       </Button>
                     </Link>
@@ -145,11 +145,11 @@ export function ProfileActivity({ profile }) {
             </div>
           ) : (
             <div className="text-center py-8">
-              <p className="text-slate-400 mb-4">
+              <p className="text-gray-600 mb-4">
                 You haven't created any events yet
               </p>
               <Link href="/organizer/events/new">
-                <Button className="bg-blue-600 hover:bg-blue-500 text-white rounded-full shadow-lg shadow-blue-500/20">
+                <Button className="bg-pfw-gold hover:bg-gold-dark text-white rounded-full shadow-lg shadow-pfw-gold/20">
                   Create Event
                 </Button>
               </Link>

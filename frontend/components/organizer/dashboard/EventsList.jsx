@@ -66,33 +66,33 @@ export function EventsList({
 
   return (
     <>
-      <div className="rounded-2xl border border-slate-800/70 bg-slate-950/70 backdrop-blur-xl overflow-hidden shadow-xl shadow-blue-900/5">
+      <div className="rounded-2xl border border-gray-200 bg-white backdrop-blur-xl overflow-hidden shadow-xl shadow-pfw-gold/10">
         <Table>
-          <TableHeader className="bg-slate-900/50">
-            <TableRow className="border-b border-slate-800 hover:bg-transparent">
-              <TableHead className="text-slate-400 font-medium">Event</TableHead>
-              <TableHead className="text-slate-400 font-medium">Date & Time</TableHead>
-              <TableHead className="text-slate-400 font-medium">Status</TableHead>
-              <TableHead className="text-slate-400 font-medium">Stats</TableHead>
-              <TableHead className="text-right text-slate-400 font-medium">Actions</TableHead>
+          <TableHeader className="bg-gray-50">
+            <TableRow className="border-b border-gray-200 hover:bg-transparent">
+              <TableHead className="text-gray-600 font-medium">Event</TableHead>
+              <TableHead className="text-gray-600 font-medium">Date & Time</TableHead>
+              <TableHead className="text-gray-600 font-medium">Status</TableHead>
+              <TableHead className="text-gray-600 font-medium">Stats</TableHead>
+              <TableHead className="text-right text-gray-600 font-medium">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {events.map((event) => (
-              <TableRow key={event.id} className="border-b border-slate-800/50 hover:bg-slate-900/30 transition-colors">
+              <TableRow key={event.id} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
                 <TableCell className="font-medium">
-                  <div className="text-slate-200 font-semibold">{event.title}</div>
+                  <div className="text-black font-semibold">{event.title}</div>
                   {event.location && (
-                    <div className="text-sm text-slate-500 mt-1 flex items-center gap-1">
+                    <div className="text-sm text-black0 mt-1 flex items-center gap-1">
                        <span className="truncate max-w-[200px]">{event.location}</span>
                     </div>
                   )}
                 </TableCell>
                 <TableCell>
-                  <div className="text-sm text-slate-300">
+                  <div className="text-sm text-gray-700">
                     {new Date(event.startDate).toLocaleDateString()}
                   </div>
-                  <div className="text-xs text-slate-500 mt-1">
+                  <div className="text-xs text-black0 mt-1">
                     {new Date(event.startDate).toLocaleTimeString([], {
                       hour: '2-digit',
                       minute: '2-digit',
@@ -114,11 +114,11 @@ export function EventsList({
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  <div className="flex items-center gap-4 text-sm text-slate-400">
+                  <div className="flex items-center gap-4 text-sm text-gray-600">
                     <div className="flex items-center gap-1.5">
-                      <Users className="w-4 h-4 text-slate-500" />
+                      <Users className="w-4 h-4 text-black0" />
                       <span>
-                        <span className="text-slate-200">{event.attendeeCount}</span>
+                        <span className="text-black">{event.attendeeCount}</span>
                         <span className="text-slate-600 mx-1">/</span>
                         {event.capacity || '∞'}
                       </span>
@@ -130,7 +130,7 @@ export function EventsList({
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 text-slate-400 hover:text-blue-400 hover:bg-blue-400/10 rounded-full"
+                      className="h-8 w-8 text-gray-600 hover:text-pfw-gold hover:bg-blue-400/10 rounded-full"
                       onClick={() => onViewAttendees(event)}>
                       <Users className="w-4 h-4" />
                     </Button>
@@ -139,7 +139,7 @@ export function EventsList({
                         variant="ghost"
                         size="icon"
                         data-testid="edit-event-button"
-                        className="h-8 w-8 text-slate-400 hover:text-slate-100 hover:bg-slate-800 rounded-full">
+                        className="h-8 w-8 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full">
                         <Edit2 className="w-4 h-4" />
                       </Button>
                     </Link>
@@ -149,12 +149,12 @@ export function EventsList({
                           variant="ghost"
                           size="icon"
                           data-testid="event-actions-menu"
-                          className="h-8 w-8 text-slate-400 hover:text-slate-100 hover:bg-slate-800 rounded-full">
+                          className="h-8 w-8 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full">
                           <MoreVertical className="w-4 h-4" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="bg-slate-950 border-slate-800 text-slate-200 w-48">
-                        <DropdownMenuItem className="text-slate-300 focus:bg-slate-900 focus:text-slate-100 cursor-pointer">
+                      <DropdownMenuContent align="end" className="bg-white border-gray-200 text-black w-48">
+                        <DropdownMenuItem className="text-gray-700 focus:bg-gray-50 focus:text-gray-900 cursor-pointer">
                           <Link href={`/events/${event.id}`} className="flex w-full">
                             View Public Page
                           </Link>
@@ -166,7 +166,7 @@ export function EventsList({
                                 if (onPostpone) onPostpone(event);
                               }}
                               data-testid="postpone-event-button"
-                              className="focus:bg-slate-900 focus:text-slate-100 cursor-pointer">
+                              className="focus:bg-gray-50 focus:text-gray-900 cursor-pointer">
                               Postpone Event
                             </DropdownMenuItem>
                             <DropdownMenuItem

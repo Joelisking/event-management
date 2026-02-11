@@ -1,17 +1,27 @@
 import express from 'express';
 import { query, getClient } from '../db.js';
-import { authenticate } from '../middleware/auth.js';
+import { authenticate, optionalAuth } from '../middleware/auth.js';
 import pool from '../db.js';
 
 const router = express.Router();
 
-// Get all rewards
-router.get('/', async (req, res) => {
+// Get all rewards (with user redemption info if authenticated)
+router.get('/', optionalAuth, async (req, res) => {
   try {
     const result = await query(
       'SELECT * FROM rewards ORDER BY cost ASC'
     );
-    res.json(result.rows);
+
+    let redeemedRewardIds = [];
+    if (req.user?.id) {
+      const redemptions = await query(
+        'SELECT DISTINCT reward_id FROM redemptions WHERE user_id = $1',
+        [req.user.id]
+      );
+      redeemedRewardIds = redemptions.rows.map((r) => r.reward_id);
+    }
+
+    res.json({ rewards: result.rows, redeemedRewardIds });
   } catch (error) {
     console.error('Error fetching rewards:', error);
     res.status(500).json({ error: 'Failed to fetch rewards' });
@@ -66,7 +76,9 @@ router.post('/:id/redeem', authenticate, async (req, res) => {
 
     if (rewardResult.rows.length === 0) {
       await client.query('ROLLBACK');
-      return res.status(404).json({ error: 'Reward not found' });
+      return res.status(404).json({
+        error: 'Reward not found. This reward may have been removed.',
+      });
     }
     const reward = rewardResult.rows[0];
 
@@ -81,18 +93,26 @@ router.post('/:id/redeem', authenticate, async (req, res) => {
     const recentRedemption = await client.query(
       `SELECT * FROM redemptions
        WHERE user_id = $1 AND reward_id = $2
-       AND redeemed_at > NOW() - INTERVAL '5 seconds'`,
+       AND "redeemedAt" > NOW() - INTERVAL '5 seconds'`,
       [userId, id]
     );
 
     if (recentRedemption.rows.length > 0) {
       await client.query('ROLLBACK');
-      return res.status(400).json({ error: 'Duplicate redemption detected' });
+      return res.status(400).json({
+        error:
+          'You have already redeemed this reward recently. Please wait a few seconds and try again.',
+      });
     }
 
     if (user.total_points < reward.cost) {
       await client.query('ROLLBACK');
-      return res.status(400).json({ error: 'Insufficient points' });
+      return res.status(400).json({
+        error: `Insufficient points. You have ${user.total_points} points but need ${reward.cost} points to redeem "${reward.name}".`,
+        userPoints: user.total_points,
+        requiredPoints: reward.cost,
+        shortfall: reward.cost - user.total_points,
+      });
     }
 
     // Atomic point deduction
@@ -115,7 +135,10 @@ router.post('/:id/redeem', authenticate, async (req, res) => {
     await client.query(
       `INSERT INTO notifications (user_id, type, title, message)
        VALUES ($1, 'points', 'Reward Redeemed', $2)`,
-      [userId, `You redeemed ${reward.name} for ${reward.cost} points.`]
+      [
+        userId,
+        `You redeemed ${reward.name} for ${reward.cost} points.`,
+      ]
     );
 
     await client.query('COMMIT');
@@ -124,11 +147,33 @@ router.post('/:id/redeem', authenticate, async (req, res) => {
       message: 'Reward redeemed successfully',
       remainingPoints: updateResult.rows[0].total_points,
     });
-
   } catch (error) {
     await client.query('ROLLBACK');
     console.error('Error redeeming reward:', error);
-    res.status(500).json({ error: 'Failed to redeem reward' });
+
+    // Provide more specific error messages based on error type
+    if (error.code === '23505') {
+      return res.status(400).json({
+        error:
+          'You have already redeemed this reward recently. Please try again later.',
+      });
+    }
+
+    if (error.message && error.message.includes('transaction')) {
+      return res.status(500).json({
+        error:
+          'Transaction failed. Your points have not been deducted. Please try again.',
+      });
+    }
+
+    res.status(500).json({
+      error:
+        'Failed to redeem reward. Please try again or contact support if the problem persists.',
+      details:
+        process.env.NODE_ENV === 'development'
+          ? error.message
+          : undefined,
+    });
   } finally {
     client.release();
   }

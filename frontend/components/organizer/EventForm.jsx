@@ -194,14 +194,14 @@ export function EventForm({
       <div className="space-y-1.5">
         <FieldLabel
           htmlFor="title"
-          className="text-slate-200 text-sm">
+          className="text-black text-sm">
           Event title *
         </FieldLabel>
         <Input
           id="title"
           type="text"
           placeholder="Enter event title"
-          className="h-11 bg-slate-900/80 border-slate-800/80 text-slate-100 placeholder:text-slate-500 rounded-xl focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/25"
+          className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
           {...register('title')}
         />
         {errors.title && (
@@ -213,14 +213,14 @@ export function EventForm({
       <div className="space-y-1.5">
         <FieldLabel
           htmlFor="description"
-          className="text-slate-200 text-sm">
+          className="text-black text-sm">
           Description
         </FieldLabel>
         <Textarea
           id="description"
           placeholder="Describe what this event is about"
           rows={5}
-          className="bg-slate-900/80 border-slate-800/80 text-slate-100 placeholder:text-slate-500 rounded-xl focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/25"
+          className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
           {...register('description')}
         />
         {errors.description && (
@@ -230,15 +230,15 @@ export function EventForm({
 
       {/* Date & Time */}
       <div className="space-y-1.5">
-        <FieldLabel className="text-slate-200 text-sm">
+        <FieldLabel className="text-black text-sm">
           Event date &amp; time *
         </FieldLabel>
-        <p className="text-xs text-slate-400 mb-1">
+        <p className="text-xs text-gray-600 mb-1">
           Choose a start time. Optionally select an end time or span
           multiple days.
         </p>
 
-        <div className="rounded-xl border border-slate-800/80 bg-slate-900/80 px-3 py-3 sm:px-4 sm:py-4">
+        <div className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-3 sm:px-4 sm:py-4">
           <Controller
             name="startDate"
             control={control}
@@ -276,13 +276,13 @@ export function EventForm({
 
       {/* Time Slots for Multi-Day Events */}
       {isMultiDay && (
-        <div className="space-y-4 p-4 border border-slate-800 rounded-xl bg-slate-900/50">
+        <div className="space-y-4 p-4 border border-gray-200 rounded-xl bg-gray-50">
           <div className="flex items-center justify-between">
             <div>
-              <FieldLabel className="text-slate-200">
+              <FieldLabel className="text-black">
                 Different Times for Each Day
               </FieldLabel>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-gray-600 mt-1">
                 Specify different time ranges for each day
               </p>
             </div>
@@ -290,7 +290,7 @@ export function EventForm({
               type="button"
               onClick={() => setUseTimeSlots(!useTimeSlots)}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                useTimeSlots ? 'bg-blue-600' : 'bg-slate-700'
+                useTimeSlots ? 'bg-pfw-gold' : 'bg-slate-700'
               }`}>
               <span
                 className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
@@ -305,12 +305,12 @@ export function EventForm({
               {timeSlots.map((slot, index) => (
                 <div
                   key={slot.date}
-                  className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 bg-slate-950/50 rounded-lg border border-slate-800">
+                  className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 bg-white rounded-lg border border-gray-200">
                   <div>
-                    <FieldLabel className="text-xs text-slate-400">
+                    <FieldLabel className="text-xs text-gray-600">
                       Date
                     </FieldLabel>
-                    <div className="text-sm font-medium text-slate-200 mt-1">
+                    <div className="text-sm font-medium text-black mt-1">
                       {new Date(
                         `${slot.date}T00:00:00`
                       ).toLocaleDateString('en-US', {
@@ -323,7 +323,7 @@ export function EventForm({
                   <div>
                     <FieldLabel
                       htmlFor={`slot-start-${index}`}
-                      className="text-xs text-slate-400">
+                      className="text-xs text-gray-600">
                       Start Time
                     </FieldLabel>
                     <Input
@@ -337,13 +337,13 @@ export function EventForm({
                           e.target.value
                         )
                       }
-                      className="mt-1 h-9 bg-slate-900 border-slate-700 text-slate-200"
+                      className="mt-1 h-9 bg-gray-50 border-gray-300 text-black"
                     />
                   </div>
                   <div>
                     <FieldLabel
                       htmlFor={`slot-end-${index}`}
-                      className="text-xs text-slate-400">
+                      className="text-xs text-gray-600">
                       End Time
                     </FieldLabel>
                     <Input
@@ -357,7 +357,7 @@ export function EventForm({
                           e.target.value
                         )
                       }
-                      className="mt-1 h-9 bg-slate-900 border-slate-700 text-slate-200"
+                      className="mt-1 h-9 bg-gray-50 border-gray-300 text-black"
                     />
                   </div>
                 </div>
@@ -371,14 +371,14 @@ export function EventForm({
       <div className="space-y-1.5">
         <FieldLabel
           htmlFor="location"
-          className="text-slate-200 text-sm">
+          className="text-black text-sm">
           Location / venue
         </FieldLabel>
         <Input
           id="location"
           type="text"
           placeholder="Enter event location"
-          className="h-11 bg-slate-900/80 border-slate-800/80 text-slate-100 placeholder:text-slate-500 rounded-xl focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/25"
+          className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
           {...register('location')}
         />
         {errors.location && (
@@ -391,7 +391,7 @@ export function EventForm({
         <div className="space-y-1.5">
           <FieldLabel
             htmlFor="capacity"
-            className="text-slate-200 text-sm">
+            className="text-black text-sm">
             Capacity (optional)
           </FieldLabel>
           <Input
@@ -399,13 +399,13 @@ export function EventForm({
             type="number"
             min="1"
             placeholder="Max attendees"
-            className="h-11 bg-slate-900/80 border-slate-800/80 text-slate-100 placeholder:text-slate-500 rounded-xl focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/25"
+            className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
             {...register('capacity')}
           />
           {errors.capacity && (
             <FieldError>{errors.capacity.message}</FieldError>
           )}
-          <p className="text-[11px] text-slate-400">
+          <p className="text-[11px] text-gray-600">
             Leave empty for unlimited capacity.
           </p>
         </div>
@@ -413,14 +413,14 @@ export function EventForm({
         <div className="space-y-1.5">
           <FieldLabel
             htmlFor="category"
-            className="text-slate-200 text-sm">
+            className="text-black text-sm">
             Category (optional)
           </FieldLabel>
           <Input
             id="category"
             type="text"
             placeholder="e.g. Workshop, Social"
-            className="h-11 bg-slate-900/80 border-slate-800/80 text-slate-100 placeholder:text-slate-500 rounded-xl focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/25"
+            className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
             {...register('category')}
           />
           {errors.category && (
@@ -433,7 +433,7 @@ export function EventForm({
       <div className="space-y-1.5">
         <FieldLabel
           htmlFor="points"
-          className="text-slate-200 text-sm">
+          className="text-black text-sm">
           Event Points
         </FieldLabel>
         <Input
@@ -441,13 +441,13 @@ export function EventForm({
           type="number"
           min="0"
           placeholder="Points awarded for attendance"
-          className="h-11 bg-slate-900/80 border-slate-800/80 text-slate-100 placeholder:text-slate-500 rounded-xl focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/25"
+          className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
           {...register('points')}
         />
         {errors.points && (
           <FieldError>{errors.points.message}</FieldError>
         )}
-        <p className="text-[11px] text-slate-400">
+        <p className="text-[11px] text-gray-600">
           Points earned by students for checking in.
         </p>
       </div>
@@ -456,10 +456,10 @@ export function EventForm({
       <div className="space-y-1.5">
         <FieldLabel
           htmlFor="imageUrl"
-          className="text-slate-200 text-sm">
+          className="text-black text-sm">
           Event image (optional)
         </FieldLabel>
-        <p className="text-[11px] text-slate-400 mb-1">
+        <p className="text-[11px] text-gray-600 mb-1">
           Upload or paste a URL for the event cover image.
         </p>
         <ImageUpload
@@ -477,13 +477,13 @@ export function EventForm({
         <Button
           type="submit"
           disabled={loading}
-          className="flex-1 bg-blue-600 hover:bg-blue-500 text-white rounded-full shadow-lg shadow-blue-500/25 text-sm h-11">
+          className="flex-1 bg-pfw-gold hover:bg-gold-dark text-white rounded-full shadow-lg shadow-pfw-gold/20 text-sm h-11">
           {loading ? 'Saving...' : submitLabel}
         </Button>
         <Link href={cancelHref} className="flex-1">
           <Button
             type="button"
-            className="w-full bg-slate-800/80 text-slate-200 hover:bg-slate-800 border-slate-700 rounded-full text-sm h-11">
+            className="w-full bg-gray-100 text-black hover:bg-gray-100 border-gray-300 rounded-full text-sm h-11">
             Cancel
           </Button>
         </Link>

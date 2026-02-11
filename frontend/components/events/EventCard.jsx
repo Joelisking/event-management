@@ -19,14 +19,14 @@ export function EventCard({
   formatEventDate,
 }) {
   const statusStyles = {
-    upcoming: 'bg-blue-500/90 text-white ring-2 ring-blue-400/60',
+    upcoming: 'bg-gold-dark/90 text-white ring-2 ring-pfw-gold/60',
     ongoing:
       'bg-emerald-500/90 text-white ring-2 ring-emerald-400/60',
     past: 'bg-zinc-500/90 text-white ring-2 ring-zinc-400/60',
   };
 
   return (
-    <Card className="group hover:shadow-2xl hover:shadow-blue-900/20 transition-all duration-300 relative overflow-hidden bg-slate-950/70 border-slate-800/70 backdrop-blur-xl rounded-2xl">
+    <Card className="group hover:shadow-2xl hover:shadow-pfw-gold/10 transition-all duration-300 relative overflow-hidden bg-white border-gray-200 backdrop-blur-xl rounded-2xl">
       {/* Image Section */}
       <div className="relative w-full h-48 overflow-hidden">
         {event.imageUrl ? (
@@ -37,7 +37,7 @@ export function EventCard({
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-blue-700 via-indigo-600 to-slate-900" />
+          <div className="w-full h-full bg-gradient-to-br from-pfw-gold via-pfw-gold to-pfw-gold" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent"></div>
 
@@ -52,14 +52,14 @@ export function EventCard({
       </div>
 
       <CardHeader className="pb-3 pt-4">
-        <CardTitle className="text-lg font-semibold text-slate-50 line-clamp-2 leading-snug">
+        <CardTitle className="text-lg font-semibold text-black line-clamp-2 leading-snug">
           {event.title}
         </CardTitle>
-        <div className="flex items-center gap-2 text-xs text-slate-400 mt-2">
+        <div className="flex items-center gap-2 text-xs text-gray-600 mt-2">
           <UserCircle className="w-3.5 h-3.5" />
           <span>
             by{' '}
-            <span className="text-slate-300 font-medium">
+            <span className="text-gray-700 font-medium">
               {event.user.organizationName || event.user.name}
             </span>
           </span>
@@ -68,16 +68,16 @@ export function EventCard({
 
       <CardContent className="space-y-4">
         {/* Date */}
-        <div className="flex items-start gap-2 text-xs text-slate-300">
-          <Calendar className="w-4 h-4 mt-0.5 text-slate-400 flex-shrink-0" />
+        <div className="flex items-start gap-2 text-xs text-gray-700">
+          <Calendar className="w-4 h-4 mt-0.5 text-gray-600 flex-shrink-0" />
           <div className="flex-1">
             <span className="line-clamp-2">
               {formatEventDate(event.startDate, event.endDate)}
             </span>
             {event.timeSlots && event.timeSlots.length > 0 && (
-              <div className="mt-1.5 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20">
-                <Calendar className="w-3 h-3 text-blue-400" />
-                <span className="text-[10px] text-blue-300 font-medium">
+              <div className="mt-1.5 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-gold-dark/10 border border-pfw-gold/30">
+                <Calendar className="w-3 h-3 text-pfw-gold" />
+                <span className="text-[10px] text-pfw-gold font-medium">
                   Different times daily
                 </span>
               </div>
@@ -87,16 +87,16 @@ export function EventCard({
 
         {/* Description */}
         {event.description && (
-          <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+          <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed">
             {event.description}
           </p>
         )}
 
         {/* Footer */}
-        <div className="flex items-center justify-between pt-3 border-t border-slate-800/80">
+        <div className="flex items-center justify-between pt-3 border-t border-gray-200">
           <div className="flex items-center gap-1.5">
-            <Users className="w-4 h-4 text-slate-400" />
-            <span className="text-xs font-medium text-slate-300">
+            <Users className="w-4 h-4 text-gray-600" />
+            <span className="text-xs font-medium text-gray-700">
               {event.attendeeCount}{' '}
               {event.attendeeCount === 1 ? 'attendee' : 'attendees'}
             </span>
@@ -127,7 +127,7 @@ export function EventCard({
                     event.capacity &&
                     event.attendeeCount >= event.capacity
                       ? 'bg-amber-600 hover:bg-amber-500'
-                      : 'bg-blue-600 hover:bg-blue-500'
+                      : 'bg-pfw-gold hover:bg-gold-dark'
                   }`}>
                   {rsvpLoading
                     ? 'Processing...'
@@ -138,7 +138,7 @@ export function EventCard({
                 </button>
               ))}
             <Link href={`/events/${event.id}`}>
-              <button className="px-3 py-1.5 text-xs font-medium rounded-full border border-slate-700 text-slate-300 hover:bg-slate-900 hover:border-slate-600 hover:text-slate-100 transition-colors">
+              <button className="px-3 py-1.5 text-xs font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 hover:text-gray-900 transition-colors">
                 View
               </button>
             </Link>

@@ -8,9 +8,9 @@ function Features() {
       title: 'Discover Events',
       description:
         "Find events that match your interests with our powerful search and filter tools. Never miss out on what's happening around campus.",
-      iconBg: 'bg-blue-500/10',
-      iconColor: 'text-blue-400',
-      borderColor: 'border-blue-500/30',
+      iconBg: 'bg-gold-dark/10',
+      iconColor: 'text-pfw-gold',
+      borderColor: 'border-pfw-gold/30',
     },
     {
       icon: CheckCircle2,
@@ -33,13 +33,13 @@ function Features() {
   ];
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-900">
+    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-semibold text-slate-50 mb-4">
-            Why Campus Connect?
+          <h2 className="text-3xl sm:text-4xl font-semibold text-black mb-4">
+            Why Campus Pulse?
           </h2>
-          <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-gray-700 max-w-2xl mx-auto">
             Everything you need to stay connected with your campus community
           </p>
         </div>
@@ -49,14 +49,14 @@ function Features() {
             return (
               <div
                 key={index}
-                className="group relative p-8 bg-slate-950/70 border border-slate-800/70 rounded-2xl hover:shadow-2xl hover:shadow-blue-900/20 transition-all duration-300 backdrop-blur-xl">
+                className="group relative p-8 bg-white border border-gray-200 rounded-2xl hover:shadow-2xl hover:shadow-pfw-gold/10 transition-all duration-300 backdrop-blur-xl">
                 <div className={`p-3 mb-6 ${feature.iconBg} border ${feature.borderColor} rounded-xl inline-flex`}>
                   <Icon className={`w-5 h-5 ${feature.iconColor}`} />
                 </div>
-                <h3 className="text-xl font-semibold mb-3 text-slate-50">
+                <h3 className="text-xl font-semibold mb-3 text-black">
                   {feature.title}
                 </h3>
-                <p className="text-sm text-slate-400 leading-relaxed">
+                <p className="text-sm text-gray-600 leading-relaxed">
                   {feature.description}
                 </p>
               </div>

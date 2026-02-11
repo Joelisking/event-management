@@ -40,12 +40,12 @@ export function ProfileInfo({
   };
 
   return (
-    <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl shadow-2xl shadow-blue-900/10 rounded-2xl pt-6">
+    <Card className="bg-white border-gray-200 backdrop-blur-xl shadow-2xl shadow-pfw-gold/10 rounded-2xl pt-6">
       <CardHeader>
-        <CardTitle className="text-slate-50">
+        <CardTitle className="text-black">
           Profile Information
         </CardTitle>
-        <CardDescription className="text-slate-400">
+        <CardDescription className="text-gray-600">
           Your account details
         </CardDescription>
       </CardHeader>
@@ -53,7 +53,7 @@ export function ProfileInfo({
         {editing ? (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="name" className="text-slate-300">
+              <Label htmlFor="name" className="text-gray-700">
                 Name
               </Label>
               <Input
@@ -62,16 +62,16 @@ export function ProfileInfo({
                 onChange={(e) => setName(e.target.value)}
                 required
                 minLength={2}
-                className="h-11 bg-slate-900/70 border-slate-800/70 text-slate-100 placeholder:text-slate-500 rounded-xl focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
+                className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
               />
             </div>
             {profile.role === 'organizer' && (
               <div>
                 <Label
                   htmlFor="organizationName"
-                  className="text-slate-300">
+                  className="text-gray-700">
                   Organization Name{' '}
-                  <span className="text-slate-500 font-normal">
+                  <span className="text-black0 font-normal">
                     (Optional)
                   </span>
                 </Label>
@@ -82,9 +82,9 @@ export function ProfileInfo({
                     setOrganizationName(e.target.value)
                   }
                   placeholder="e.g., Computer Science Club"
-                  className="h-11 bg-slate-900/70 border-slate-800/70 text-slate-100 placeholder:text-slate-500 rounded-xl focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
+                  className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
                 />
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-gray-600 mt-1">
                   This name will be displayed as the event organizer
                   instead of your personal name
                 </p>
@@ -94,14 +94,14 @@ export function ProfileInfo({
               <Button
                 type="submit"
                 disabled={updating}
-                className="bg-blue-600 hover:bg-blue-500 text-white rounded-full shadow-lg shadow-blue-500/20">
+                className="bg-pfw-gold hover:bg-gold-dark text-white rounded-full shadow-lg shadow-pfw-gold/20">
                 {updating ? 'Saving...' : 'Save'}
               </Button>
               <Button
                 type="button"
                 onClick={handleCancel}
                 disabled={updating}
-                className="bg-slate-800/70 text-slate-300 hover:bg-slate-800 border-slate-700 rounded-full">
+                className="bg-gray-100 text-gray-700 hover:bg-gray-100 border-gray-300 rounded-full">
                 Cancel
               </Button>
             </div>
@@ -109,21 +109,21 @@ export function ProfileInfo({
         ) : (
           <>
             <div>
-              <p className="text-sm font-medium text-slate-400">
+              <p className="text-sm font-medium text-gray-600">
                 Name
               </p>
-              <p className="text-lg text-slate-50 mt-1">
+              <p className="text-lg text-black mt-1">
                 {profile.name}
               </p>
             </div>
             {profile.role === 'organizer' && (
               <div>
-                <p className="text-sm font-medium text-slate-400">
+                <p className="text-sm font-medium text-gray-600">
                   Organization Name
                 </p>
-                <p className="text-lg text-slate-50 mt-1">
+                <p className="text-lg text-black mt-1">
                   {profile.organization_name || (
-                    <span className="text-slate-500 italic">
+                    <span className="text-black0 italic">
                       Not set
                     </span>
                   )}
@@ -131,24 +131,24 @@ export function ProfileInfo({
               </div>
             )}
             <div>
-              <p className="text-sm font-medium text-slate-400">
+              <p className="text-sm font-medium text-gray-600">
                 Email
               </p>
-              <p className="text-lg text-slate-50 mt-1">
+              <p className="text-lg text-black mt-1">
                 {profile.email}
               </p>
             </div>
             <div>
-              <p className="text-sm font-medium text-slate-400">
+              <p className="text-sm font-medium text-gray-600">
                 Role
               </p>
-              <p className="text-lg text-slate-50 mt-1 capitalize">
+              <p className="text-lg text-black mt-1 capitalize">
                 {profile.role}
               </p>
             </div>
-            <div className="grid grid-cols-2 gap-4 bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+            <div className="grid grid-cols-2 gap-4 bg-gray-50 p-3 rounded-xl border border-gray-200">
               <div>
-                <p className="text-xs font-medium text-slate-400">
+                <p className="text-xs font-medium text-gray-600">
                   Points
                 </p>
                 <p className="text-xl text-yellow-500 font-bold">
@@ -156,19 +156,19 @@ export function ProfileInfo({
                 </p>
               </div>
               <div>
-                <p className="text-xs font-medium text-slate-400">
+                <p className="text-xs font-medium text-gray-600">
                   Attended
                 </p>
-                <p className="text-xl text-blue-400 font-bold">
+                <p className="text-xl text-pfw-gold font-bold">
                   {profile.events_attended || 0}
                 </p>
               </div>
             </div>
             <div>
-              <p className="text-sm font-medium text-slate-400">
+              <p className="text-sm font-medium text-gray-600">
                 Member Since
               </p>
-              <p className="text-lg text-slate-50 mt-1">
+              <p className="text-lg text-black mt-1">
                 {profile.createdAt
                   ? formatDate(profile.createdAt)
                   : '—'}
@@ -176,7 +176,7 @@ export function ProfileInfo({
             </div>
             <Button
               onClick={() => setEditing(true)}
-              className="w-full bg-blue-600 hover:bg-blue-500 text-white rounded-full shadow-lg shadow-blue-500/20">
+              className="w-full bg-pfw-gold hover:bg-gold-dark text-white rounded-full shadow-lg shadow-pfw-gold/20">
               Edit Profile
             </Button>
           </>

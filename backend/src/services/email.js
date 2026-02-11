@@ -57,7 +57,7 @@ function generateICalEvent(event) {
       url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/events/${event.id}`,
       status: 'CONFIRMED',
       busyStatus: 'BUSY',
-      organizer: { name: 'Campus Connect', email: process.env.EMAIL_USER },
+      organizer: { name: 'Campus Pulse', email: process.env.EMAIL_USER },
     };
 
     createEvent(icsEvent, (error, value) => {
@@ -74,7 +74,7 @@ function generateICalEvent(event) {
 export async function sendEmail({ to, subject, html, text, attachments }) {
   try {
     const mailOptions = {
-      from: `"Campus Connect" <${process.env.EMAIL_USER}>`,
+      from: `"Campus Pulse" <${process.env.EMAIL_USER}>`,
       to,
       subject,
       text,

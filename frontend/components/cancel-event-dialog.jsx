@@ -64,13 +64,13 @@ export function CancelEventDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] bg-slate-900 border-slate-800 text-slate-50">
+      <DialogContent className="sm:max-w-[500px] bg-white border-gray-200 text-black">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-red-500">
             <AlertTriangle className="h-5 w-5" />
             Cancel Event
           </DialogTitle>
-          <DialogDescription className="text-slate-400">
+          <DialogDescription className="text-gray-600">
             Are you sure you want to cancel &quot;{event?.title}
             &quot;? This action will notify all attendees via email.
           </DialogDescription>
@@ -78,13 +78,13 @@ export function CancelEventDialog({
 
         <div className="space-y-4">
           {error && (
-            <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 rounded-md">
+            <div className="p-3 text-sm text-red-600 bg-red-50 rounded-md">
               {error}
             </div>
           )}
 
           <div>
-            <FieldLabel htmlFor="reason" className="text-slate-200">
+            <FieldLabel htmlFor="reason" className="text-gray-900">
               Reason for Cancellation (Optional)
             </FieldLabel>
             <Textarea
@@ -94,15 +94,15 @@ export function CancelEventDialog({
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               disabled={loading}
-              className="bg-slate-800 border-slate-700 text-slate-100 placeholder:text-slate-500"
+              className="bg-gray-50 border-gray-300 text-gray-900 placeholder:text-gray-500"
             />
             <p className="text-xs text-gray-500 mt-1">
               This message will be included in the cancellation email.
             </p>
           </div>
 
-          <div className="p-3 bg-yellow-900/20 border border-yellow-900/50 rounded-md text-sm">
-            <p className="text-yellow-200">
+          <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-md text-sm">
+            <p className="text-yellow-800">
               <strong>Warning:</strong> All{' '}
               {event?.attendeeCount || 0} attendees will be notified
               about this cancellation. The event will be marked as
@@ -117,7 +117,7 @@ export function CancelEventDialog({
             variant="outline"
             onClick={() => onOpenChange(false)}
             disabled={loading}
-            className="border-slate-700 bg-transparent text-slate-300 hover:bg-slate-800 hover:text-white">
+            className="border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:text-black">
             Keep Event
           </Button>
           <Button

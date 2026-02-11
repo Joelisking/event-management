@@ -96,7 +96,7 @@ export function SignUpForm() {
   };
 
   return (
-    <Card className="w-full bg-slate-950/70 border-slate-800/70 backdrop-blur-xl rounded-2xl shadow-2xl shadow-blue-900/20">
+    <Card className="w-full bg-white border-gray-200 backdrop-blur-xl rounded-2xl shadow-2xl shadow-pfw-gold/10">
       <CardContent className="pt-6 pb-8 px-6 sm:px-8">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {error && (
@@ -109,7 +109,7 @@ export function SignUpForm() {
             <div className="space-y-2">
               <FieldLabel
                 htmlFor="firstName"
-                className="text-sm font-medium text-slate-300">
+                className="text-sm font-medium text-gray-700">
                 First Name
               </FieldLabel>
               <Input
@@ -117,7 +117,7 @@ export function SignUpForm() {
                 type="text"
                 {...register('firstName')}
                 placeholder="John"
-                className="h-11 bg-slate-900/70 border-slate-800/70 text-slate-100 placeholder:text-slate-500 rounded-xl focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
+                className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
               />
               {errors.firstName && (
                 <FieldError className="text-red-400 text-xs">
@@ -129,7 +129,7 @@ export function SignUpForm() {
             <div className="space-y-2">
               <FieldLabel
                 htmlFor="lastName"
-                className="text-sm font-medium text-slate-300">
+                className="text-sm font-medium text-gray-700">
                 Last Name
               </FieldLabel>
               <Input
@@ -137,7 +137,7 @@ export function SignUpForm() {
                 type="text"
                 {...register('lastName')}
                 placeholder="Doe"
-                className="h-11 bg-slate-900/70 border-slate-800/70 text-slate-100 placeholder:text-slate-500 rounded-xl focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
+                className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
               />
               {errors.lastName && (
                 <FieldError className="text-red-400 text-xs">
@@ -150,7 +150,7 @@ export function SignUpForm() {
           <div className="space-y-2">
             <FieldLabel
               htmlFor="email"
-              className="text-sm font-medium text-slate-300">
+              className="text-sm font-medium text-gray-700">
               Email Address
             </FieldLabel>
             <Input
@@ -158,7 +158,7 @@ export function SignUpForm() {
               type="email"
               {...register('email')}
               placeholder="john.doe@example.com"
-              className="h-11 bg-slate-900/70 border-slate-800/70 text-slate-100 placeholder:text-slate-500 rounded-xl focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
+              className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
             />
             {errors.email && (
               <FieldError className="text-red-400 text-xs">
@@ -170,7 +170,7 @@ export function SignUpForm() {
           <div className="space-y-2">
             <FieldLabel
               htmlFor="password"
-              className="text-sm font-medium text-slate-300">
+              className="text-sm font-medium text-gray-700">
               Password
             </FieldLabel>
             <div className="relative">
@@ -179,12 +179,12 @@ export function SignUpForm() {
                 type={showPassword ? 'text' : 'password'}
                 {...register('password')}
                 placeholder="••••••••"
-                className="h-11 pr-10 bg-slate-900/70 border-slate-800/70 text-slate-100 placeholder:text-slate-500 rounded-xl focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
+                className="h-11 pr-10 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300 focus:outline-none transition-colors">
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-700 focus:outline-none transition-colors">
                 {showPassword ? (
                   <EyeOff className="w-5 h-5" />
                 ) : (
@@ -202,7 +202,7 @@ export function SignUpForm() {
           <div className="space-y-2">
             <FieldLabel
               htmlFor="confirmPassword"
-              className="text-sm font-medium text-slate-300">
+              className="text-sm font-medium text-gray-700">
               Confirm Password
             </FieldLabel>
             <div className="relative">
@@ -211,14 +211,14 @@ export function SignUpForm() {
                 type={showConfirmPassword ? 'text' : 'password'}
                 {...register('confirmPassword')}
                 placeholder="••••••••"
-                className="h-11 pr-10 bg-slate-900/70 border-slate-800/70 text-slate-100 placeholder:text-slate-500 rounded-xl focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
+                className="h-11 pr-10 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
               />
               <button
                 type="button"
                 onClick={() =>
                   setShowConfirmPassword(!showConfirmPassword)
                 }
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300 focus:outline-none transition-colors">
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-700 focus:outline-none transition-colors">
                 {showConfirmPassword ? (
                   <EyeOff className="w-5 h-5" />
                 ) : (
@@ -236,36 +236,36 @@ export function SignUpForm() {
           <div className="space-y-2">
             <FieldLabel
               htmlFor="userCategory"
-              className="text-sm font-medium text-slate-300">
+              className="text-sm font-medium text-gray-700">
               User Category
             </FieldLabel>
             <select
               id="userCategory"
               {...register('userCategory')}
-              className="flex h-11 w-full rounded-xl border border-slate-800/70 bg-slate-900/70 px-3 py-2 text-sm text-slate-100 ring-offset-background placeholder:text-slate-500 focus:border-blue-500/50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 disabled:cursor-not-allowed disabled:opacity-50">
+              className="flex h-11 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 ring-offset-background placeholder:text-black0 focus:border-pfw-gold/30 focus:outline-none focus:ring-2 focus:ring-pfw-gold/20 disabled:cursor-not-allowed disabled:opacity-50">
               <option
                 value=""
-                className="bg-slate-900 text-slate-400">
+                className="bg-gray-50 text-gray-600">
                 Select category...
               </option>
               <option
                 value="pfw_student"
-                className="bg-slate-900 text-slate-100">
+                className="bg-gray-50 text-gray-900">
                 PFW Student
               </option>
               <option
                 value="pfw_alumni"
-                className="bg-slate-900 text-slate-100">
+                className="bg-gray-50 text-gray-900">
                 PFW Alumni
               </option>
               <option
                 value="community"
-                className="bg-slate-900 text-slate-100">
+                className="bg-gray-50 text-gray-900">
                 Community Member
               </option>
               <option
                 value="international"
-                className="bg-slate-900 text-slate-100">
+                className="bg-gray-50 text-gray-900">
                 International
               </option>
             </select>
@@ -281,7 +281,7 @@ export function SignUpForm() {
               <div className="space-y-2">
                 <FieldLabel
                   htmlFor="countryOfResidence"
-                  className="text-sm font-medium text-slate-300">
+                  className="text-sm font-medium text-gray-700">
                   Country of Residence{' '}
                   <span className="text-red-400">*</span>
                 </FieldLabel>
@@ -290,14 +290,14 @@ export function SignUpForm() {
                   type="text"
                   {...register('countryOfResidence')}
                   placeholder="e.g., United States"
-                  className="h-11 bg-slate-900/70 border-slate-800/70 text-slate-100 placeholder:text-slate-500 rounded-xl focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
+                  className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
                 />
                 {errors.countryOfResidence && (
                   <FieldError className="text-red-400 text-xs">
                     {errors.countryOfResidence.message}
                   </FieldError>
                 )}
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-gray-600">
                   Where do you currently reside?
                 </p>
               </div>
@@ -305,9 +305,9 @@ export function SignUpForm() {
               <div className="space-y-2">
                 <FieldLabel
                   htmlFor="countryOfOrigin"
-                  className="text-sm font-medium text-slate-300">
+                  className="text-sm font-medium text-gray-700">
                   Country of Origin{' '}
-                  <span className="text-slate-500 font-normal">
+                  <span className="text-black0 font-normal">
                     (Optional)
                   </span>
                 </FieldLabel>
@@ -316,14 +316,14 @@ export function SignUpForm() {
                   type="text"
                   {...register('countryOfOrigin')}
                   placeholder="e.g., Mexico"
-                  className="h-11 bg-slate-900/70 border-slate-800/70 text-slate-100 placeholder:text-slate-500 rounded-xl focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
+                  className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
                 />
                 {errors.countryOfOrigin && (
                   <FieldError className="text-red-400 text-xs">
                     {errors.countryOfOrigin.message}
                   </FieldError>
                 )}
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-gray-600">
                   If different from your country of residence
                 </p>
               </div>
@@ -332,7 +332,7 @@ export function SignUpForm() {
 
           <Button
             type="submit"
-            className="w-full h-12 text-base bg-blue-600 hover:bg-blue-500 text-white rounded-full shadow-lg shadow-blue-500/30 transition-all hover:scale-105 mt-6"
+            className="w-full h-12 text-base bg-pfw-gold hover:bg-gold-dark text-white rounded-full shadow-lg shadow-pfw-gold/20 transition-all hover:scale-105 mt-6"
             disabled={loading}>
             {loading ? (
               <>
@@ -349,10 +349,10 @@ export function SignUpForm() {
 
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-800/70"></div>
+              <div className="w-full border-t border-gray-200"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-3 bg-slate-950/70 text-slate-400">
+              <span className="px-3 bg-white text-gray-600">
                 Already have an account?
               </span>
             </div>
@@ -361,7 +361,7 @@ export function SignUpForm() {
           <Link href="/signin">
             <Button
               variant="outline"
-              className="w-full h-12 text-base border-slate-700 text-slate-300 bg-slate-950/70 hover:bg-slate-900 hover:border-slate-600 hover:text-slate-100 rounded-full transition-all"
+              className="w-full h-12 text-base border-gray-300 text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-400 hover:text-gray-900 rounded-full transition-all"
               type="button">
               <LogIn className="w-5 h-5 mr-2" />
               Sign In

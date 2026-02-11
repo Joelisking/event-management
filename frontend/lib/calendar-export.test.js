@@ -43,7 +43,7 @@ describe('Calendar Export', () => {
       const icsContent = await generateICalFile(minimalEvent);
       expect(icsContent).to.contain('SUMMARY:Minimal Event');
       // Expect default organizer
-      expect(icsContent).to.contain('Campus Connect');
+      expect(icsContent).to.contain('Campus Pulse');
     });
   });
 

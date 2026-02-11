@@ -24,25 +24,25 @@ export function EventSidebar({
   return (
     <aside className="space-y-5 lg:space-y-6 lg:sticky lg:top-24 self-start">
       {/* Event details */}
-      <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl shadow-xl rounded-2xl pt-6">
+      <Card className="bg-white border-gray-200 backdrop-blur-xl shadow-xl rounded-2xl pt-6">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base font-semibold text-slate-50">
+          <CardTitle className="text-base font-semibold text-black">
             Event details
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4 text-sm text-slate-200">
+        <CardContent className="space-y-4 text-sm text-black">
           {/* Date & Time */}
           <div className="flex gap-3">
-            <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl bg-blue-500/10 border border-blue-500/30 flex-shrink-0">
-              <Calendar className="w-4 h-4 text-blue-400" />
+            <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl bg-gold-dark/10 border border-pfw-gold/30 flex-shrink-0">
+              <Calendar className="w-4 h-4 text-pfw-gold" />
             </div>
             <div className="space-y-1 flex-1">
-              <h4 className="font-medium text-slate-100">
+              <h4 className="font-medium text-gray-900">
                 Date &amp; time
               </h4>
               {event.timeSlots && event.timeSlots.length > 0 ? (
                 <div className="space-y-2">
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-gray-600">
                     Multi-day event with custom times:
                   </p>
                   {event.timeSlots.map((slot, index) => {
@@ -60,15 +60,15 @@ export function EventSidebar({
                     return (
                       <div
                         key={index}
-                        className="text-xs sm:text-sm text-slate-300 p-2 rounded-lg bg-slate-900/50 border border-slate-800">
-                        <div className="font-medium text-slate-200">
+                        className="text-xs sm:text-sm text-gray-700 p-2 rounded-lg bg-gray-50 border border-gray-200">
+                        <div className="font-medium text-black">
                           {dateObj.toLocaleDateString('en-US', {
                             weekday: 'short',
                             month: 'short',
                             day: 'numeric',
                           })}
                         </div>
-                        <div className="text-slate-400 mt-0.5">
+                        <div className="text-gray-600 mt-0.5">
                           {new Date(
                             `2000-01-01T${slot.startTime}`
                           ).toLocaleTimeString('en-US', {
@@ -88,7 +88,7 @@ export function EventSidebar({
                   })}
                 </div>
               ) : (
-                <div className="text-xs sm:text-sm text-slate-300">
+                <div className="text-xs sm:text-sm text-gray-700">
                   {formatEventDate(event.startDate, event.endDate)}
                 </div>
               )}
@@ -102,10 +102,10 @@ export function EventSidebar({
                 <MapPin className="w-4 h-4 text-emerald-400" />
               </div>
               <div className="space-y-1">
-                <h4 className="font-medium text-slate-100">
+                <h4 className="font-medium text-gray-900">
                   Location
                 </h4>
-                <p className="text-xs sm:text-sm text-slate-300">
+                <p className="text-xs sm:text-sm text-gray-700">
                   {event.location}
                 </p>
               </div>
@@ -119,10 +119,10 @@ export function EventSidebar({
                 <Tag className="w-4 h-4 text-fuchsia-400" />
               </div>
               <div className="space-y-1">
-                <h4 className="font-medium text-slate-100">
+                <h4 className="font-medium text-gray-900">
                   Category
                 </h4>
-                <p className="text-xs sm:text-sm text-slate-300">
+                <p className="text-xs sm:text-sm text-gray-700">
                   {event.category}
                 </p>
               </div>
@@ -135,10 +135,10 @@ export function EventSidebar({
               <Users className="w-4 h-4 text-amber-400" />
             </div>
             <div className="space-y-1">
-              <h4 className="font-medium text-slate-100">
+              <h4 className="font-medium text-gray-900">
                 Attendance
               </h4>
-              <p className="text-xs sm:text-sm text-slate-300">
+              <p className="text-xs sm:text-sm text-gray-700">
                 {capacity
                   ? `${attendeeCount} / ${capacity} ${
                       attendeeCount === 1 ? 'person' : 'people'
@@ -160,11 +160,11 @@ export function EventSidebar({
       </Card>
 
       {/* Actions */}
-      <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl shadow-xl rounded-2xl">
+      <Card className="bg-white border-gray-200 backdrop-blur-xl shadow-xl rounded-2xl">
         <CardContent className="py-5 space-y-4">
           {event.status === 'past' ? (
             <div className="text-center py-2">
-              <p className="text-sm font-medium text-slate-400">
+              <p className="text-sm font-medium text-gray-600">
                 This event has ended
               </p>
             </div>
@@ -198,17 +198,17 @@ export function EventSidebar({
                 onClick={onRsvp}
                 disabled={rsvpLoading}
                 data-testid="rsvp-button"
-                className="w-full h-11 rounded-full bg-blue-600 hover:bg-blue-500">
+                className="w-full h-11 rounded-full bg-pfw-gold hover:bg-gold-dark">
                 {rsvpLoading ? 'RSVPing…' : 'RSVP to event'}
               </Button>
             )
           ) : (
             <div className="space-y-3">
-              <p className="text-xs text-center text-slate-400">
+              <p className="text-xs text-center text-gray-600">
                 Sign in to RSVP to this event.
               </p>
               <Link href="/signin">
-                <Button className="w-full h-11 rounded-full bg-blue-600 hover:bg-blue-500">
+                <Button className="w-full h-11 rounded-full bg-pfw-gold hover:bg-gold-dark">
                   Sign in to RSVP
                 </Button>
               </Link>
@@ -226,9 +226,9 @@ export function EventSidebar({
       {(user?.role === 'admin' ||
         (user && user.id === event.organizer?.id) ||
         (user && user.id === event.userId)) && (
-        <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl shadow-xl rounded-2xl">
+        <Card className="bg-white border-gray-200 backdrop-blur-xl shadow-xl rounded-2xl">
           <CardHeader className="pb-3">
-            <CardTitle className="text-base font-semibold text-slate-50">
+            <CardTitle className="text-base font-semibold text-black">
               Check-in QR Code
             </CardTitle>
           </CardHeader>
@@ -237,12 +237,12 @@ export function EventSidebar({
               <QRCodeSVG
                 value={
                   event.qrCodeUrl ||
-                  `https://campus-connect.com/scanner?eventId=${event.id}`
+                  `https://campuspulse.com/scanner?eventId=${event.id}`
                 }
                 size={200}
               />
             </div>
-            <p className="text-xs text-slate-400 text-center">
+            <p className="text-xs text-gray-600 text-center">
               Scan this code to check in attendees
             </p>
           </CardContent>

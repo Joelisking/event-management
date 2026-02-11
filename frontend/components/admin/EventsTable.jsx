@@ -19,26 +19,31 @@ export function EventsTable({
   handleDeleteEvent,
 }) {
   return (
-    <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl">
+    <Card className="bg-white border-gray-200 backdrop-blur-xl pt-4">
       <CardHeader>
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <CardTitle className="text-slate-50">All Events <span className="text-slate-500 text-lg ml-2">{events.length}</span></CardTitle>
+          <CardTitle className="text-black">
+            All Events{' '}
+            <span className="text-black0 text-sm ml-2 p-2 bg-gray-100 rounded-full">
+              {events.length}
+            </span>
+          </CardTitle>
           <div className="relative w-full md:w-64">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-500 w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black0 w-4 h-4" />
             <Input
               type="text"
               placeholder="Search events..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 bg-slate-900/50 border-slate-800 text-slate-200 placeholder:text-slate-500 focus:ring-blue-900/50 focus:border-blue-700"
+              className="pl-10 bg-gray-50 border-gray-200 text-black placeholder:text-black0 focus:ring-blue-900/50 focus:border-blue-700"
             />
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="rounded-md border border-slate-800">
+        <div className="rounded-md border border-gray-200">
           <table className="w-full text-sm text-left">
-            <thead className="bg-slate-900/50 text-slate-400 font-medium">
+            <thead className="bg-gray-50 text-gray-600 font-medium">
               <tr>
                 <th className="p-4">Title</th>
                 <th className="p-4">Organizer</th>
@@ -59,40 +64,59 @@ export function EventsTable({
                 return (
                   <tr
                     key={event.id}
-                    className="hover:bg-slate-900/50 transition-colors">
-                    <td className="p-4 font-medium text-slate-200">{event.title}</td>
+                    className="hover:bg-gray-50 transition-colors">
+                    <td className="p-4 font-medium text-black">
+                      {event.title}
+                    </td>
                     <td className="p-4">
                       <div>
-                        <div className="text-slate-200">{event.organizer.name}</div>
-                        <div className="text-xs text-slate-500">
+                        <div className="text-black">
+                          {event.organizer.name}
+                        </div>
+                        <div className="text-xs text-black0">
                           {event.organizer.email}
                         </div>
                       </div>
                     </td>
                     <td className="p-4">
                       {event.category ? (
-                        <Badge variant="outline" className="bg-slate-800/50 text-slate-300 border-slate-700">{event.category}</Badge>
+                        <Badge
+                          variant="outline"
+                          className="bg-gray-100 text-gray-700 border-gray-300">
+                          {event.category}
+                        </Badge>
                       ) : (
-                        <span className="text-slate-600 text-sm">None</span>
+                        <span className="text-slate-600 text-sm">
+                          None
+                        </span>
                       )}
                     </td>
-                    <td className="p-4 text-slate-400">
+                    <td className="p-4 text-gray-600">
                       {formatDate(event.startDate)}
                     </td>
                     <td className="p-4">
-                      <Badge className={`${
-                        status.label === 'Upcoming' ? 'bg-blue-500/10 text-blue-300 border-blue-500/20' : 
-                        status.label === 'Ongoing' ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20' : 
-                        'bg-slate-500/10 text-slate-400 border-slate-500/20'
-                      } border`} variant="outline">
+                      <Badge
+                        className={`${
+                          status.label === 'Upcoming'
+                            ? 'bg-gold-dark/20  border-pfw-gold/30'
+                            : status.label === 'Ongoing'
+                              ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20'
+                              : 'bg-slate-500/10 text-gray-600 border-slate-500/20'
+                        } border text-black`}
+                        variant="outline">
                         {status.label}
                       </Badge>
                     </td>
-                    <td className="p-4 text-center text-slate-400">
+                    <td className="p-4 text-center text-gray-600">
                       {event.attendeeCount}
-                      {event.capacity && <span className="text-slate-600"> / {event.capacity}</span>}
+                      {event.capacity && (
+                        <span className="text-slate-600">
+                          {' '}
+                          / {event.capacity}
+                        </span>
+                      )}
                     </td>
-                    <td className="p-4 text-slate-500">
+                    <td className="p-4 text-black0">
                       {formatDate(event.createdAt)}
                     </td>
                     <td className="p-4 text-right">
@@ -101,7 +125,7 @@ export function EventsTable({
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="text-slate-400 hover:text-white hover:bg-slate-800"
+                            className="text-gray-600 hover:text-white hover:bg-gray-100"
                             title="View Event">
                             <Eye className="w-4 h-4" />
                           </Button>

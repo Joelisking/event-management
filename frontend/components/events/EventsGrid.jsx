@@ -19,8 +19,8 @@ export function EventsGrid({
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
-        <div className="w-14 h-14 rounded-full border-4 border-slate-700 border-t-blue-500 animate-spin mb-4" />
-        <p className="text-sm font-medium text-slate-300">
+        <div className="w-14 h-14 rounded-full border-4 border-gray-300 border-t-blue-500 animate-spin mb-4" />
+        <p className="text-sm font-medium text-gray-700">
           Loading events...
         </p>
       </div>
@@ -30,15 +30,15 @@ export function EventsGrid({
   if (filteredEvents.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
-        <div className="w-20 h-20 bg-slate-900/60 border border-slate-800 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-blue-900/40">
-          <Calendar className="w-9 h-9 text-slate-400" />
+        <div className="w-20 h-20 bg-gray-50 border border-gray-200 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-pfw-gold/10">
+          <Calendar className="w-9 h-9 text-gray-600" />
         </div>
-        <h3 className="text-xl font-semibold text-slate-50 mb-2">
+        <h3 className="text-xl font-semibold text-black mb-2">
           {searchQuery || filterStatus !== 'all'
             ? 'No events found'
             : 'No events available'}
         </h3>
-        <p className="text-sm text-slate-400 mb-6">
+        <p className="text-sm text-gray-600 mb-6">
           {searchQuery || filterStatus !== 'all'
             ? 'Try adjusting your search or filters'
             : 'Check back later for upcoming events'}
@@ -46,7 +46,7 @@ export function EventsGrid({
         {(searchQuery || filterStatus !== 'all') && (
           <button
             onClick={onClearFilters}
-            className="px-5 py-2.5 rounded-full text-sm font-medium bg-slate-950/70 text-slate-300 border border-slate-800/70 hover:bg-slate-900 hover:border-slate-700 hover:text-slate-100 transition-colors">
+            className="px-5 py-2.5 rounded-full text-sm font-medium bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-900 transition-colors">
             Clear filters
           </button>
         )}
@@ -77,7 +77,7 @@ export function EventsGrid({
 
       {/* Results Summary */}
       <div className="mt-8 text-center">
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-gray-600">
           Showing {filteredEvents.length} of {events.length} events
         </p>
       </div>

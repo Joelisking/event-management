@@ -30,9 +30,7 @@ export default function LeaderboardPage() {
 
   const fetchLeaderboard = async () => {
     try {
-      const res = await fetch(
-        `${API_URL}/api/leaderboard`
-      );
+      const res = await fetch(`${API_URL}/api/leaderboard`);
       if (res.ok) {
         const data = await res.json();
         setUsers(data);
@@ -62,39 +60,39 @@ export default function LeaderboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900">
+    <div className="min-h-screen bg-cream-50">
       <div className="container mx-auto py-10 px-4">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold mb-8 text-center flex items-center justify-center gap-3 text-slate-50">
-            <Trophy className="h-10 w-10 text-blue-500" />
+          <h1 className="text-4xl font-bold mb-8 text-center flex items-center justify-center gap-3 text-black">
+            {/* <Trophy className="h-10 w-10 text-blue-500" /> */}
             Campus Leaderboard
           </h1>
 
-          <Card className="bg-slate-900/70 border-slate-800/70 backdrop-blur-sm">
+          <Card className="bg-white border-gray-200 pt-4">
             <CardHeader>
-              <CardTitle className="text-slate-50">
+              <CardTitle className="text-black">
                 Top Participants
               </CardTitle>
             </CardHeader>
             <CardContent>
               {loading ? (
-                <div className="text-center py-8 text-slate-300">
+                <div className="text-center py-8 text-gray-700">
                   Loading rankings...
                 </div>
               ) : (
                 <Table>
                   <TableHeader>
                     <TableRow className="border-slate-800/70 hover:bg-slate-800/30">
-                      <TableHead className="w-[100px] text-center text-slate-300">
+                      <TableHead className="w-[100px] text-center text-gray-700">
                         Rank
                       </TableHead>
-                      <TableHead className="text-slate-300">
+                      <TableHead className="text-gray-700">
                         Student
                       </TableHead>
-                      <TableHead className="text-right text-slate-300">
+                      <TableHead className="text-right text-gray-700">
                         Events
                       </TableHead>
-                      <TableHead className="text-right text-slate-300">
+                      <TableHead className="text-right text-gray-700">
                         Total Points
                       </TableHead>
                     </TableRow>
@@ -111,10 +109,10 @@ export default function LeaderboardPage() {
                         <TableCell className="font-medium flex justify-center items-center">
                           {getRankIcon(index)}
                         </TableCell>
-                        <TableCell className="text-slate-200">
+                        <TableCell className="text-gray-900">
                           {u.name}
                         </TableCell>
-                        <TableCell className="text-right text-slate-300">
+                        <TableCell className="text-right text-gray-700">
                           {u.events_attended}
                         </TableCell>
                         <TableCell className="text-right font-bold text-blue-400">

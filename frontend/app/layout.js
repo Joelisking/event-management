@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Campus Connect - Event Management",
+  title: "Campus Pulse - Event Management",
   description: "Manage and discover campus events at Purdue Fort Wayne",
 };
 

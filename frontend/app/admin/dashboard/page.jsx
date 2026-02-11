@@ -148,7 +148,9 @@ export default function AdminDashboardPage() {
 
   const handleDelete = (eventId, eventTitle, eventStatus) => {
     if (eventStatus !== 'cancelled') {
-      toast.error('Please cancel the event first before deleting it.');
+      toast.error(
+        'Please cancel the event first before deleting it.'
+      );
       return;
     }
     setEventToDelete({ id: eventId, title: eventTitle });
@@ -171,7 +173,9 @@ export default function AdminDashboardPage() {
       );
 
       if (response.ok) {
-        setMyEvents(myEvents.filter((e) => e.id !== eventToDelete.id));
+        setMyEvents(
+          myEvents.filter((e) => e.id !== eventToDelete.id)
+        );
         toast.success('Event deleted successfully');
         fetchStats();
       } else {
@@ -189,10 +193,10 @@ export default function AdminDashboardPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-cream-50 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-14 h-14 rounded-full border-4 border-slate-800 border-t-blue-500 animate-spin" />
-          <p className="text-slate-400">Loading dashboard...</p>
+          <p className="text-gray-600">Loading dashboard...</p>
         </div>
       </div>
     );
@@ -200,24 +204,24 @@ export default function AdminDashboardPage() {
 
   if (!stats) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-cream-50 flex items-center justify-center">
         <p className="text-red-400">Failed to load stats</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900">
+    <div className="min-h-screen bg-cream-50">
       <AdminHeader title="Dashboard" />
 
       <div className="fixed inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-5 pointer-events-none" />
 
       <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-0 py-8">
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-white mb-2">
+          <h2 className="text-3xl font-bold text-black mb-2">
             Dashboard Overview
           </h2>
-          <p className="text-slate-400">
+          <p className="text-gray-600">
             Monitor system performance and manage your events
           </p>
         </div>
@@ -233,13 +237,15 @@ export default function AdminDashboardPage() {
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <div>
-              <h3 className="text-xl font-bold text-white">My Events</h3>
-              <p className="text-sm text-slate-400">
+              <h3 className="text-xl font-bold text-black">
+                My Events
+              </h3>
+              <p className="text-sm text-gray-600">
                 Events you&apos;ve created and manage
               </p>
             </div>
             <Link href="/organizer/events/new">
-              <Button className="bg-blue-600 hover:bg-blue-500 text-white rounded-full px-6 shadow-lg shadow-blue-600/20">
+              <Button className="rounded-full px-6 shadow-lg shadow-blue-600/20">
                 <Plus className="w-4 h-4 mr-2" />
                 Create New Event
               </Button>
@@ -248,7 +254,7 @@ export default function AdminDashboardPage() {
 
           {myEventsLoading ? (
             <div className="flex items-center justify-center py-12">
-              <p className="text-slate-400">Loading events...</p>
+              <p className="text-gray-600">Loading events...</p>
             </div>
           ) : myEvents.length === 0 ? (
             <EmptyState />
@@ -310,17 +316,22 @@ export default function AdminDashboardPage() {
       )}
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent className="bg-slate-950 border-slate-800 text-slate-50">
+      <AlertDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent className="bg-white border-gray-200 text-black">
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription className="text-slate-400">
-              This action cannot be undone. This will permanently delete the event
-              &quot;{eventToDelete?.title}&quot; and remove all associated data.
+            <AlertDialogTitle>
+              Are you absolutely sure?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-600">
+              This action cannot be undone. This will permanently
+              delete the event &quot;{eventToDelete?.title}&quot; and
+              remove all associated data.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-slate-800 bg-slate-900/50 text-slate-300 hover:bg-slate-800 hover:text-white">
+            <AlertDialogCancel className="border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:text-black">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction

@@ -24,14 +24,23 @@ const postponeSchema = yup.object().shape({
   newEndDate: yup
     .string()
     .nullable()
-    .test('is-after-start', 'End date/time must be after start date/time', function(value) {
-      const { newStartDate } = this.parent;
-      if (!value || !newStartDate) return true;
-      return new Date(value) > new Date(newStartDate);
-    }),
+    .test(
+      'is-after-start',
+      'End date/time must be after start date/time',
+      function (value) {
+        const { newStartDate } = this.parent;
+        if (!value || !newStartDate) return true;
+        return new Date(value) > new Date(newStartDate);
+      }
+    ),
 });
 
-export function PostponeEventDialog({ event, open, onOpenChange, onSuccess }) {
+export function PostponeEventDialog({
+  event,
+  open,
+  onOpenChange,
+  onSuccess,
+}) {
   const [loading, setLoading] = useState(false);
 
   const {
@@ -52,14 +61,17 @@ export function PostponeEventDialog({ event, open, onOpenChange, onSuccess }) {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_URL}/api/events/${event.id}/postpone`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `${API_URL}/api/events/${event.id}/postpone`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
       const result = await response.json();
 
@@ -82,42 +94,50 @@ export function PostponeEventDialog({ event, open, onOpenChange, onSuccess }) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] bg-slate-950 border-slate-800 text-slate-50">
+      <DialogContent className="sm:max-w-[600px] bg-white border-gray-200 text-black">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-slate-50">
-            <Calendar className="h-5 w-5 text-blue-500" />
+          <DialogTitle className="flex items-center gap-2 text-black">
+            <Calendar className="h-5 w-5 text-pfw-gold" />
             Postpone Event
           </DialogTitle>
-          <DialogDescription className="text-slate-400">
-            Reschedule &quot;{event?.title}&quot; to a new date and time. All attendees will
-            be notified via email.
+          <DialogDescription className="text-gray-600">
+            Reschedule &quot;{event?.title}&quot; to a new date and
+            time. All attendees will be notified via email.
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4">
             <div>
-              <h4 className="text-sm font-medium mb-2 text-slate-200">Current Date & Time</h4>
-              <div className="p-3 bg-slate-900/50 border border-slate-800 rounded-md text-sm">
-                <div className="flex items-center gap-2 text-slate-300">
-                  <Clock className="h-4 w-4 text-slate-500" />
+              <h4 className="text-sm font-medium mb-2 text-gray-900">
+                Current Date & Time
+              </h4>
+              <div className="p-3 bg-gray-50 border border-gray-200 rounded-md text-sm">
+                <div className="flex items-center gap-2 text-gray-700">
+                  <Clock className="h-4 w-4 text-gray-600" />
                   {event?.startDate &&
-                    new Date(event.startDate).toLocaleString('en-US', {
-                      weekday: 'long',
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
+                    new Date(event.startDate).toLocaleString(
+                      'en-US',
+                      {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      }
+                    )}
                   {event?.endDate && (
                     <>
                       {' '}
                       -{' '}
-                      {new Date(event.endDate).toLocaleString('en-US', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
+                      {new Date(event.endDate).toLocaleString(
+                        'en-US',
+                        {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        }
+                      )}
                     </>
                   )}
                 </div>
@@ -125,7 +145,9 @@ export function PostponeEventDialog({ event, open, onOpenChange, onSuccess }) {
             </div>
 
             <div>
-              <h4 className="text-sm font-medium mb-2 text-slate-200">New Date & Time *</h4>
+              <h4 className="text-sm font-medium mb-2 text-gray-900">
+                New Date & Time *
+              </h4>
               <Controller
                 name="newStartDate"
                 control={control}
@@ -148,10 +170,11 @@ export function PostponeEventDialog({ event, open, onOpenChange, onSuccess }) {
               />
             </div>
 
-            <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-md text-sm">
-              <p className="text-blue-300">
-                <strong>Note:</strong> All attendees who have RSVP&apos;d to this event will
-                receive an email notification about the new date and time.
+            <div className="p-3 bg-gold-dark/10 border border-pfw-gold/30 rounded-md text-sm">
+              <p className="text-pfw-gold">
+                <strong>Note:</strong> All attendees who have
+                RSVP&apos;d to this event will receive an email
+                notification about the new date and time.
               </p>
             </div>
           </div>
@@ -162,10 +185,13 @@ export function PostponeEventDialog({ event, open, onOpenChange, onSuccess }) {
               variant="outline"
               onClick={() => onOpenChange(false)}
               disabled={loading}
-              className="border-slate-700 bg-slate-900/50 text-slate-300 hover:bg-slate-800 hover:text-white">
+              className="border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:text-black">
               Cancel
             </Button>
-            <Button type="submit" disabled={loading} className="bg-blue-600 hover:bg-blue-500 text-white">
+            <Button
+              type="submit"
+              disabled={loading}
+              className="bg-pfw-gold hover:bg-gold-dark text-black">
               {loading ? 'Postponing...' : 'Postpone Event'}
             </Button>
           </DialogFooter>

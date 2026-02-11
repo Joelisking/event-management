@@ -11,10 +11,10 @@ function Explore() {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-12 gap-4">
           <div>
-            <h2 className="text-3xl sm:text-4xl font-semibold text-slate-50 mb-2">
+            <h2 className="text-3xl sm:text-4xl font-semibold text-black mb-2">
               Explore Events
             </h2>
-            <p className="text-base sm:text-lg text-slate-300">
+            <p className="text-base sm:text-lg text-gray-700">
               Discover the hottest events happening on campus
             </p>
           </div>
@@ -22,7 +22,7 @@ function Explore() {
             <Button
               variant="outline"
               size="lg"
-              className="h-11 px-6 border-slate-700 text-slate-300 bg-slate-950/70 hover:bg-slate-900 hover:border-slate-600 hover:text-slate-100 rounded-full transition-all">
+              className="h-11 px-6 border-gray-300 text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-400 hover:text-gray-900 rounded-full transition-all">
               View All Events
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
@@ -34,7 +34,7 @@ function Explore() {
             <Button
               variant="outline"
               size="lg"
-              className="w-full h-12 border-slate-700 text-slate-300 bg-slate-950/70 hover:bg-slate-900 hover:border-slate-600 hover:text-slate-100 rounded-full">
+              className="w-full h-12 border-gray-300 text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-400 hover:text-gray-900 rounded-full">
               View All Events
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>

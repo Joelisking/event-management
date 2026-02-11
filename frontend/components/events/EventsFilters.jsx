@@ -16,8 +16,8 @@ export function EventsFilters({ filterStatus, onFilterChange, eventStats }) {
           onClick={() => onFilterChange(filter.value)}
           className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${
             filterStatus === filter.value
-              ? 'bg-blue-600 text-white ring-2 ring-blue-500/60 shadow-lg shadow-blue-500/30'
-              : 'bg-slate-950/70 text-slate-300 border border-slate-800/70 hover:bg-slate-900 hover:border-slate-700 hover:text-slate-100'
+              ? 'bg-pfw-gold text-white ring-2 ring-pfw-gold/20 shadow-lg shadow-pfw-gold/20'
+              : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-900'
           }`}>
           {filter.label}{' '}
           <span className={filterStatus === filter.value ? 'opacity-90' : 'opacity-60'}>

@@ -59,12 +59,10 @@ router.post(
       // Validate location fields for international users
       if (userCategory === 'international') {
         if (!countryOfResidence) {
-          return res
-            .status(400)
-            .json({
-              error:
-                'Country of residence is required for international users',
-            });
+          return res.status(400).json({
+            error:
+              'Country of residence is required for international users',
+          });
         }
       }
 
@@ -146,7 +144,7 @@ router.post(
       }
 
       const result = await query(
-        'SELECT id, name, email, "passwordHash", role, organization_name, user_category, country_of_residence, country_of_origin FROM users WHERE email = $1',
+        'SELECT id, name, email, "passwordHash", role, organization_name, user_category, country_of_residence, country_of_origin, total_points, events_attended FROM users WHERE email = $1',
         [email]
       );
 
@@ -209,7 +207,7 @@ router.get('/me', async (req, res) => {
     const decoded = jwt.verify(token, secret);
 
     const result = await query(
-      'SELECT id, name, email, role, organization_name, user_category, country_of_residence, country_of_origin FROM users WHERE id = $1',
+      'SELECT id, name, email, role, organization_name, user_category, country_of_residence, country_of_origin, total_points, events_attended FROM users WHERE id = $1',
       [decoded.userId]
     );
 
@@ -229,6 +227,8 @@ router.get('/me', async (req, res) => {
         userCategory: user.user_category,
         countryOfResidence: user.country_of_residence,
         countryOfOrigin: user.country_of_origin,
+        total_points: user.total_points || 0,
+        events_attended: user.events_attended || 0,
       },
     });
   } catch (error) {

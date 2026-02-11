@@ -43,6 +43,7 @@ import {
   X,
 } from 'lucide-react';
 import { API_URL } from '@/lib/constants';
+import { AdminHeader } from '@/components/admin/AdminHeader';
 
 export default function AdminRewardsPage() {
   const { user } = useAuth();
@@ -73,7 +74,7 @@ export default function AdminRewardsPage() {
       const res = await fetch(`${API_URL}/api/rewards`);
       if (res.ok) {
         const data = await res.json();
-        setRewards(data);
+        setRewards(data.rewards || data);
       }
     } catch (error) {
       toast.error('Failed to load rewards');
@@ -171,21 +172,23 @@ export default function AdminRewardsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900 flex justify-center items-center">
+      <div className="min-h-screen bg-cream-50 flex justify-center items-center">
         <Loader2 className="animate-spin h-8 w-8 text-blue-500" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900">
+    <div className="min-h-screen bg-cream-50">
+      <AdminHeader title="Rewards Management" />
+
       <div className="container mx-auto py-10 px-4">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-slate-50">
+            <h1 className="text-4xl font-bold text-black">
               Rewards Management
             </h1>
-            <p className="text-slate-400 mt-2">
+            <p className="text-gray-600 mt-2">
               Create and manage rewards for students
             </p>
           </div>
@@ -197,10 +200,10 @@ export default function AdminRewardsPage() {
                 Create Reward
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-slate-900 border-slate-800 text-slate-50">
+            <DialogContent className="bg-white border-gray-200 text-black">
               <DialogHeader>
                 <DialogTitle>Create New Reward</DialogTitle>
-                <DialogDescription className="text-slate-400">
+                <DialogDescription className="text-gray-600">
                   Add a new reward that students can redeem with their
                   points
                 </DialogDescription>
@@ -208,7 +211,7 @@ export default function AdminRewardsPage() {
               <form onSubmit={handleSubmit}>
                 <div className="space-y-4 py-4">
                   <div>
-                    <Label htmlFor="name" className="text-slate-200">
+                    <Label htmlFor="name" className="text-gray-900">
                       Reward Name *
                     </Label>
                     <Input
@@ -221,14 +224,14 @@ export default function AdminRewardsPage() {
                         })
                       }
                       required
-                      className="bg-slate-800 border-slate-700 text-slate-100"
+                      className="bg-gray-50 border-gray-300 text-gray-900"
                       placeholder="e.g., Free Coffee Voucher"
                     />
                   </div>
                   <div>
                     <Label
                       htmlFor="description"
-                      className="text-slate-200">
+                      className="text-gray-900">
                       Description
                     </Label>
                     <Textarea
@@ -240,12 +243,12 @@ export default function AdminRewardsPage() {
                           description: e.target.value,
                         })
                       }
-                      className="bg-slate-800 border-slate-700 text-slate-100"
+                      className="bg-gray-50 border-gray-300 text-gray-900"
                       placeholder="Describe the reward..."
                     />
                   </div>
                   <div>
-                    <Label htmlFor="cost" className="text-slate-200">
+                    <Label htmlFor="cost" className="text-gray-900">
                       Points Cost *
                     </Label>
                     <Input
@@ -260,16 +263,16 @@ export default function AdminRewardsPage() {
                         })
                       }
                       required
-                      className="bg-slate-800 border-slate-700 text-slate-100"
+                      className="bg-gray-50 border-gray-300 text-gray-900"
                       placeholder="100"
                     />
                   </div>
                   <div>
-                    <Label className="text-slate-200">
+                    <Label className="text-gray-900">
                       Image (optional)
                     </Label>
                     {imagePreview || formData.imageUrl ? (
-                      <div className="relative mt-2 w-full h-40 rounded-lg overflow-hidden border border-slate-700">
+                      <div className="relative mt-2 w-full h-40 rounded-lg overflow-hidden border border-gray-300">
                         <img
                           src={imagePreview || formData.imageUrl}
                           alt="Preview"
@@ -288,9 +291,9 @@ export default function AdminRewardsPage() {
                         </button>
                       </div>
                     ) : (
-                      <label className="mt-2 flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-700 rounded-lg cursor-pointer hover:border-slate-500 transition-colors">
-                        <Upload className="h-8 w-8 text-slate-500 mb-2" />
-                        <span className="text-sm text-slate-400">
+                      <label className="mt-2 flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-pfw-gold transition-colors">
+                        <Upload className="h-8 w-8 text-gray-500 mb-2" />
+                        <span className="text-sm text-gray-600">
                           Click to upload image
                         </span>
                         <input
@@ -308,7 +311,7 @@ export default function AdminRewardsPage() {
                     type="button"
                     variant="outline"
                     onClick={() => setDialogOpen(false)}
-                    className="border-slate-700 bg-transparent text-slate-300 hover:bg-slate-800 hover:text-white">
+                    className="border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:text-black">
                     Cancel
                   </Button>
                   <Button type="submit" disabled={submitting}>
@@ -327,19 +330,17 @@ export default function AdminRewardsPage() {
           </Dialog>
         </div>
 
-        <Card className="bg-slate-900/70 border-slate-800/70 backdrop-blur-sm pt-4">
+        <Card className="bg-white border-gray-200 pt-4">
           <CardHeader>
-            <CardTitle className="text-slate-50">
-              All Rewards
-            </CardTitle>
-            <CardDescription className="text-slate-400">
+            <CardTitle className="text-black">All Rewards</CardTitle>
+            <CardDescription className="text-gray-600">
               {rewards.length} reward{rewards.length !== 1 ? 's' : ''}{' '}
               available
             </CardDescription>
           </CardHeader>
           <CardContent>
             {rewards.length === 0 ? (
-              <div className="text-center py-12 text-slate-400">
+              <div className="text-center py-12 text-gray-600">
                 No rewards created yet. Create your first reward to
                 get started!
               </div>
@@ -347,16 +348,16 @@ export default function AdminRewardsPage() {
               <Table className="table-fixed w-full">
                 <TableHeader>
                   <TableRow className="border-slate-800/70 hover:bg-slate-800/30">
-                    <TableHead className="text-slate-300 w-28">
+                    <TableHead className="text-gray-700 w-28">
                       Image
                     </TableHead>
-                    <TableHead className="text-slate-300">
+                    <TableHead className="text-gray-700">
                       Name
                     </TableHead>
-                    <TableHead className="text-slate-300">
+                    <TableHead className="text-gray-700">
                       Description
                     </TableHead>
-                    <TableHead className="text-slate-300 text-right">
+                    <TableHead className="text-gray-700 text-right">
                       Cost
                     </TableHead>
                   </TableRow>
@@ -379,12 +380,12 @@ export default function AdminRewardsPage() {
                           </div>
                         )}
                       </TableCell>
-                      <TableCell className="font-medium text-slate-200 max-w-[150px]">
+                      <TableCell className="font-medium text-gray-900 max-w-[150px]">
                         <span className="block truncate">
                           {reward.name}
                         </span>
                       </TableCell>
-                      <TableCell className="text-slate-300 max-w-[250px]">
+                      <TableCell className="text-gray-700 max-w-[250px]">
                         <span className="block truncate">
                           {reward.description || '-'}
                         </span>

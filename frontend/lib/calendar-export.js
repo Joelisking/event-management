@@ -31,8 +31,8 @@ export async function generateICalFile(event) {
     status: 'CONFIRMED',
     busyStatus: 'BUSY',
     organizer: {
-      name: event.organizer?.name || 'Campus Connect',
-      email: event.organizer?.email || 'noreply@campusconnect.com',
+      name: event.organizer?.name || 'Campus Pulse',
+      email: event.organizer?.email || 'noreply@campuspulse.com',
     },
     attendees: event.attendees?.map((attendee) => ({
       name: attendee.name,

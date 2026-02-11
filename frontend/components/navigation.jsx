@@ -37,7 +37,6 @@ export function Navigation() {
   };
 
   const navLinks = [
-    { href: '/', label: 'Home', icon: Home, show: true },
     { href: '/events', label: 'Events', icon: Calendar, show: true },
     {
       href: '/events/calendar',
@@ -54,7 +53,9 @@ export function Navigation() {
       icon: LayoutDashboard,
       show:
         user &&
-        (user.role === 'student' || user.role === 'organizer' || user.role === 'admin'),
+        (user.role === 'student' ||
+          user.role === 'organizer' ||
+          user.role === 'admin'),
     },
     {
       href: '/leaderboard',
@@ -68,18 +69,18 @@ export function Navigation() {
   ].filter((link) => link.show);
 
   return (
-    <nav className="sticky top-0 z-50 bg-slate-950/95 backdrop-blur-md border-b border-slate-800/70">
+    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link
             href="/"
             className="flex items-center space-x-2 group">
-            <div className="w-8 h-8 bg-blue-600 rounded-xl flex items-center justify-center group-hover:bg-blue-500 transition-colors shadow-lg shadow-blue-500/30">
-              <Calendar className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 bg-pfw-gold rounded-xl flex items-center justify-center group-hover:bg-gold-dark transition-colors shadow-md">
+              <Calendar className="w-5 h-5 text-black" />
             </div>
-            <span className="text-xl font-bold text-slate-50">
-              Campus Connect
+            <span className="text-xl font-bold text-black">
+              Campus Pulse
             </span>
           </Link>
 
@@ -94,8 +95,8 @@ export function Navigation() {
                   href={link.href}
                   className={`px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
                     active
-                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30'
-                      : 'text-slate-300 hover:bg-slate-800/70 hover:text-slate-100'
+                      ? 'bg-pfw-gold text-black shadow-md'
+                      : 'text-gray-700 hover:bg-gray-100 hover:text-black'
                   }`}>
                   <Icon className="w-4 h-4" />
                   {link.label}
@@ -111,7 +112,7 @@ export function Navigation() {
                 <NotificationBell user={user} />
                 {/* <Link href="/profile">
                   <span
-                    className="text-sm text-slate-300 px-4 py-2 bg-slate-900/70 border border-slate-800/70 rounded-full backdrop-blur-sm"
+                    className="text-sm text-gray-700 px-4 py-2 bg-gray-50 border border-gray-200 rounded-full backdrop-blur-sm"
                     data-testid="user-name-display">
                     {user.name}
                   </span>
@@ -131,13 +132,13 @@ export function Navigation() {
                   variant="ghost"
                   size="sm"
                   onClick={() => router.push('/signin')}
-                  className="rounded-lg text-slate-300 hover:bg-slate-800/70 hover:text-slate-100 px-5">
+                  className="rounded-lg text-gray-700 hover:bg-gray-100 hover:text-black px-5">
                   Sign In
                 </Button>
                 <Button
                   size="sm"
                   onClick={() => router.push('/signup')}
-                  className="rounded-lg bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/30 transition-all hover:shadow-blue-500/50 px-5">
+                  className="rounded-lg bg-pfw-gold hover:bg-gold-dark text-black shadow-md transition-all px-5">
                   Sign Up
                 </Button>
               </>
@@ -146,12 +147,12 @@ export function Navigation() {
 
           {/* Mobile Menu Button */}
           <button
-            className="xl:hidden p-2 rounded-xl hover:bg-slate-800/70 transition-colors"
+            className="xl:hidden p-2 rounded-xl hover:bg-gray-100 transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? (
-              <X className="w-6 h-6 text-slate-300" />
+              <X className="w-6 h-6 text-gray-700" />
             ) : (
-              <Menu className="w-6 h-6 text-slate-300" />
+              <Menu className="w-6 h-6 text-gray-700" />
             )}
           </button>
         </div>
@@ -159,7 +160,7 @@ export function Navigation() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-slate-800/70 bg-slate-950/95 backdrop-blur-xl">
+        <div className="lg:hidden border-t border-gray-200 bg-white/95 backdrop-blur-xl">
           <div className="px-4 py-4 space-y-2">
             {navLinks.map((link) => {
               const Icon = link.icon;
@@ -171,8 +172,8 @@ export function Navigation() {
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all ${
                     active
-                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30'
-                      : 'text-slate-300 hover:bg-slate-800/70 hover:text-slate-100'
+                      ? 'bg-pfw-gold text-black shadow-md'
+                      : 'text-gray-700 hover:bg-gray-100 hover:text-black'
                   }`}>
                   <Icon className="w-5 h-5" />
                   {link.label}
@@ -180,13 +181,13 @@ export function Navigation() {
               );
             })}
 
-            <div className="pt-3 mt-3 border-t border-slate-800/70 space-y-2">
+            <div className="pt-3 mt-3 border-t border-gray-200 space-y-2">
               {user ? (
                 <>
                   <Link href="/profile">
-                    <div className="px-4 py-3 text-sm text-slate-300 bg-slate-900/70 border border-slate-800/70 rounded-2xl backdrop-blur-sm">
+                    <div className="px-4 py-3 text-sm text-gray-700 bg-gray-50 border border-gray-200 rounded-2xl">
                       Signed in as{' '}
-                      <span className="font-semibold text-slate-100">
+                      <span className="font-semibold text-black">
                         {user.name}
                       </span>
                     </div>
@@ -203,7 +204,7 @@ export function Navigation() {
                 <>
                   <Button
                     variant="outline"
-                    className="w-full justify-center rounded-full border-slate-700 text-slate-300 bg-slate-950/70 hover:bg-slate-900 hover:border-slate-600 hover:text-slate-100"
+                    className="w-full justify-center rounded-full border-gray-300 text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-400 hover:text-black"
                     onClick={() => {
                       setMobileMenuOpen(false);
                       router.push('/signin');
@@ -211,7 +212,7 @@ export function Navigation() {
                     Sign In
                   </Button>
                   <Button
-                    className="w-full justify-center rounded-full bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/30"
+                    className="w-full justify-center rounded-full bg-pfw-gold hover:bg-gold-dark text-black shadow-md"
                     onClick={() => {
                       setMobileMenuOpen(false);
                       router.push('/signup');
@@ -230,23 +231,23 @@ export function Navigation() {
 
 export function Footer() {
   return (
-    <footer className="relative bg-gradient-to-b from-slate-900 to-slate-950 border-t border-slate-800/70 mt-auto overflow-hidden">
+    <footer className="relative bg-gradient-to-b from-gray-50 to-white border-t border-gray-200 mt-auto overflow-hidden">
       {/* Background Pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-10" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#e5e5e5_1px,transparent_1px),linear-gradient(to_bottom,#e5e5e5_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-30" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
-                <Calendar className="w-5 h-5 text-white" />
+              <div className="w-8 h-8 bg-pfw-gold rounded-xl flex items-center justify-center shadow-md">
+                <Calendar className="w-5 h-5 text-black" />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
-                Campus Connect
+              <span className="text-xl font-bold bg-gradient-to-r from-pfw-gold to-gold-dark bg-clip-text text-transparent">
+                Campus Pulse
               </span>
             </div>
-            <p className="text-slate-400 text-sm max-w-md leading-relaxed">
+            <p className="text-gray-600 text-sm max-w-md leading-relaxed">
               Your one-stop platform for discovering, organizing, and
               attending campus events. Connect with your community and
               never miss out on what's happening around you.
@@ -255,22 +256,22 @@ export function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-semibold text-slate-50 mb-4">
+            <h3 className="font-semibold text-black mb-4">
               Quick Links
             </h3>
             <ul className="space-y-3">
               <li>
                 <Link
                   href="/events"
-                  className="text-slate-400 hover:text-blue-400 text-sm transition-colors inline-flex items-center group">
-                  <span className="w-1 h-1 bg-blue-400 rounded-full mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  className="text-gray-600 hover:text-pfw-gold text-sm transition-colors inline-flex items-center group">
+                  <span className="w-1 h-1 bg-pfw-gold rounded-full mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                   Browse Events
                 </Link>
               </li>
               <li>
                 <Link
                   href="/events/calendar"
-                  className="text-slate-400 hover:text-blue-400 text-sm transition-colors inline-flex items-center group">
+                  className="text-gray-600 hover:text-pfw-gold text-sm transition-colors inline-flex items-center group">
                   <span className="w-1 h-1 bg-blue-400 rounded-full mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                   Event Calendar
                 </Link>
@@ -278,7 +279,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/signup"
-                  className="text-slate-400 hover:text-blue-400 text-sm transition-colors inline-flex items-center group">
+                  className="text-gray-600 hover:text-pfw-gold text-sm transition-colors inline-flex items-center group">
                   <span className="w-1 h-1 bg-blue-400 rounded-full mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                   Create Account
                 </Link>
@@ -288,17 +289,17 @@ export function Footer() {
 
           {/* About */}
           <div>
-            <h3 className="font-semibold text-slate-50 mb-4">
+            <h3 className="font-semibold text-black mb-4">
               About
             </h3>
             <ul className="space-y-3">
               <li>
-                <span className="text-slate-400 text-sm">
+                <span className="text-gray-600 text-sm">
                   Purdue Fort Wayne
                 </span>
               </li>
               <li>
-                <span className="text-slate-400 text-sm">
+                <span className="text-gray-600 text-sm">
                   Campus Events Platform
                 </span>
               </li>
@@ -306,9 +307,9 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-slate-800/70">
-          <p className="text-center text-sm text-slate-400">
-            &copy; {new Date().getFullYear()} Campus Connect. All
+        <div className="mt-12 pt-8 border-t border-gray-200">
+          <p className="text-center text-sm text-gray-600">
+            &copy; {new Date().getFullYear()} Campus Pulse. All
             rights reserved.
           </p>
         </div>

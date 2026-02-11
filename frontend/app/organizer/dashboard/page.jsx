@@ -11,8 +11,8 @@ export default function OrganizerDashboardRedirect() {
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-      <p className="text-slate-400">Redirecting...</p>
+    <div className="min-h-screen bg-cream-50 flex items-center justify-center">
+      <p className="text-gray-600">Redirecting...</p>
     </div>
   );
 }

@@ -235,10 +235,10 @@ export default function EventDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900">
+      <div className="min-h-screen flex items-center justify-center bg-cream-50">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-14 h-14 rounded-full border-4 border-slate-700 border-t-blue-500 animate-spin" />
-          <p className="text-sm font-medium text-slate-300">
+          <div className="w-14 h-14 rounded-full border-4 border-gray-300 border-t-pfw-gold animate-spin" />
+          <p className="text-sm font-medium text-gray-700">
             Loading event...
           </p>
         </div>
@@ -259,7 +259,7 @@ export default function EventDetailPage() {
   const capacity = event.capacity;
 
   return (
-    <div className="min-h-screen bg-slate-950 pb-20">
+    <div className="min-h-screen bg-white pb-20">
       <EventHero
         event={event}
         status={status}
@@ -292,10 +292,10 @@ export default function EventDetailPage() {
       <AlertDialog
         open={isCancelDialogOpen}
         onOpenChange={setIsCancelDialogOpen}>
-        <AlertDialogContent className="bg-slate-950 border-slate-800 text-slate-100">
+        <AlertDialogContent className="bg-white border-gray-200 text-black">
           <AlertDialogHeader>
             <AlertDialogTitle>Cancel RSVP?</AlertDialogTitle>
-            <AlertDialogDescription className="text-slate-400">
+            <AlertDialogDescription className="text-gray-600">
               Are you sure you want to cancel your RSVP for this
               event?
             </AlertDialogDescription>
@@ -303,7 +303,7 @@ export default function EventDetailPage() {
           <AlertDialogFooter>
             <AlertDialogCancel
               onClick={() => setIsCancelDialogOpen(false)}
-              className="text-black">
+              className="border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:text-black">
               Keep RSVP
             </AlertDialogCancel>
             <AlertDialogAction

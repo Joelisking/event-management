@@ -11,8 +11,12 @@ import { ProfileActivity } from '@/components/profile/ProfileActivity';
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { user, loading: authLoading, getToken, updateUser } =
-    useAuth();
+  const {
+    user,
+    loading: authLoading,
+    getToken,
+    updateUser,
+  } = useAuth();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -96,22 +100,26 @@ export default function ProfilePage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900 flex items-center justify-center">
-        <p className="text-slate-400 relative z-10">Loading profile...</p>
+      <div className="min-h-screen bg-cream-50 flex items-center justify-center">
+        <p className="text-gray-600 relative z-10">
+          Loading profile...
+        </p>
       </div>
     );
   }
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900 flex items-center justify-center">
-        <p className="text-slate-400 relative z-10">Profile not found</p>
+      <div className="min-h-screen bg-cream-50 flex items-center justify-center">
+        <p className="text-gray-600 relative z-10">
+          Profile not found
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900">
+    <div className="min-h-screen bg-cream-50">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         <ProfileHeader />
 

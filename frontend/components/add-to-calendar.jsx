@@ -45,7 +45,7 @@ export function AddToCalendar({ event }) {
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="flex w-full items-center justify-between gap-2 border-slate-700 bg-slate-900/50 text-slate-200 hover:bg-slate-800 hover:text-white"
+          className="flex w-full items-center justify-between gap-2 border-gray-300 bg-gray-50 text-black hover:bg-gray-100 hover:text-white"
         >
           <span className="flex items-center gap-2">
             <Calendar className="w-4 h-4" />
@@ -59,23 +59,23 @@ export function AddToCalendar({ event }) {
         side="top"
         align="end"
         sideOffset={8}
-        className="w-56 bg-slate-950 border-slate-800 text-slate-200"
+        className="w-56 bg-white border-gray-200 text-black"
       >
-        <DropdownMenuLabel className="text-slate-400">Select calendar</DropdownMenuLabel>
+        <DropdownMenuLabel className="text-gray-600">Select calendar</DropdownMenuLabel>
 
         <DropdownMenuItem
           onClick={handleGoogleCalendar}
-          className="text-sm focus:bg-slate-800 focus:text-white cursor-pointer"
+          className="text-sm focus:bg-gray-100 focus:text-white cursor-pointer"
         >
           Google Calendar
         </DropdownMenuItem>
 
-        <DropdownMenuSeparator className="bg-slate-800" />
+        <DropdownMenuSeparator className="bg-gray-100" />
 
         <DropdownMenuItem
           onClick={handleDownloadICS}
           disabled={isDownloading}
-          className={`flex items-center gap-2 text-sm focus:bg-slate-800 focus:text-white cursor-pointer ${
+          className={`flex items-center gap-2 text-sm focus:bg-gray-100 focus:text-white cursor-pointer ${
             isDownloading ? 'opacity-60 cursor-not-allowed' : ''
           }`}
         >

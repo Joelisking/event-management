@@ -2,11 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { useAuth } from '@/lib/auth-context';
 import { API_URL } from '@/lib/constants';
 import { CalendarHeader } from '@/components/calendar/CalendarHeader';
@@ -66,13 +62,21 @@ export default function EventsCalendarPage() {
 
   const previousMonth = () => {
     setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
+      new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() - 1,
+        1
+      )
     );
   };
 
   const nextMonth = () => {
     setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
+      new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() + 1,
+        1
+      )
     );
   };
 
@@ -80,7 +84,8 @@ export default function EventsCalendarPage() {
     setCurrentDate(new Date());
   };
 
-  const { daysInMonth, startingDayOfWeek } = getDaysInMonth(currentDate);
+  const { daysInMonth, startingDayOfWeek } =
+    getDaysInMonth(currentDate);
   const monthName = currentDate.toLocaleDateString('en-US', {
     month: 'long',
     year: 'numeric',
@@ -98,10 +103,10 @@ export default function EventsCalendarPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900">
+      <div className="min-h-screen flex items-center justify-center bg-cream-50">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-14 h-14 rounded-full border-4 border-slate-700 border-t-blue-500 animate-spin" />
-          <p className="text-sm font-medium text-slate-300">
+          <div className="w-14 h-14 rounded-full border-4 border-gray-300 border-t-pfw-gold animate-spin" />
+          <p className="text-sm font-medium text-gray-700">
             Loading calendar...
           </p>
         </div>
@@ -110,15 +115,15 @@ export default function EventsCalendarPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900">
+    <div className="min-h-screen bg-cream-50">
       {/* Background Pattern */}
-      <div className="fixed inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-10" />
+      <div className="fixed inset-0 bg-[linear-gradient(to_right,#e5e5e5_1px,transparent_1px),linear-gradient(to_bottom,#e5e5e5_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-20" />
 
       <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         <CalendarHeader />
 
-        <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl rounded-2xl shadow-2xl shadow-blue-900/20 pt-6">
-          <CardHeader className="border-b border-slate-800/70">
+        <Card className="bg-white border-gray-200 rounded-2xl shadow-lg pt-6">
+          <CardHeader className="border-b border-gray-200">
             <MonthNavigation
               monthName={monthName}
               onPrev={previousMonth}

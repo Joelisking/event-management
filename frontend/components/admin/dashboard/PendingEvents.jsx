@@ -59,7 +59,7 @@ export function PendingEvents({ events = [], onUpdate }) {
   };
 
   return (
-    <Card className="bg-slate-900 border-slate-800 mb-8">
+    <Card className="bg-gray-50 border-gray-200 mb-8">
       <CardHeader>
         <CardTitle className="text-white flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
@@ -71,12 +71,12 @@ export function PendingEvents({ events = [], onUpdate }) {
           {pendingEvents.map((event) => (
             <div
               key={event.id}
-              className="flex items-center justify-between p-4 bg-slate-950/50 rounded-lg border border-slate-800">
+              className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200">
               <div>
                 <h4 className="font-semibold text-white">
                   {event.title}
                 </h4>
-                <p className="text-sm text-slate-400">
+                <p className="text-sm text-gray-600">
                   by {event.organizer?.name} •{' '}
                   {new Date(event.startDate).toLocaleDateString()}
                 </p>

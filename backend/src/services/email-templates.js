@@ -81,7 +81,7 @@ export function generateRsvpConfirmationContent(user, event) {
           </div>
 
           <div class="footer">
-            <p>This is an automated message from Campus Connect.</p>
+            <p>This is an automated message from Campus Pulse.</p>
             <p>If you need to cancel your RSVP, please visit the event page.</p>
           </div>
         </div>
@@ -112,7 +112,7 @@ ADD TO CALENDAR: A calendar file (.ics) is attached to this email. Open it to ad
 View event details: ${process.env.FRONTEND_URL || 'http://localhost:3000'}/events/${event.id}
 
 ---
-This is an automated message from Campus Connect.
+This is an automated message from Campus Pulse.
 If you need to cancel your RSVP, please visit the event page.
   `;
 
@@ -183,7 +183,7 @@ export function generateEventReminderContent(user, event) {
           </div>
 
           <div class="footer">
-            <p>This is an automated reminder from Campus Connect.</p>
+            <p>This is an automated reminder from Campus Pulse.</p>
           </div>
         </div>
       </div>
@@ -208,7 +208,7 @@ Don't forget to attend! See you there!
 View event details: ${process.env.FRONTEND_URL || 'http://localhost:3000'}/events/${event.id}
 
 ---
-This is an automated reminder from Campus Connect.
+This is an automated reminder from Campus Pulse.
   `;
 
   return { subject, html, text };
@@ -246,7 +246,7 @@ export function generateEventUpdateContent(user, event) {
           </div>
 
           <div class="footer">
-            <p>This is an automated notification from Campus Connect.</p>
+            <p>This is an automated notification from Campus Pulse.</p>
           </div>
         </div>
       </div>
@@ -266,7 +266,7 @@ Please review the latest event details to make sure you have the most current in
 View updated event: ${process.env.FRONTEND_URL || 'http://localhost:3000'}/events/${event.id}
 
 ---
-This is an automated notification from Campus Connect.
+This is an automated notification from Campus Pulse.
   `;
 
   return { subject, html, text };
@@ -299,7 +299,7 @@ export function generateEventCancellationContent(user, event) {
           <p>We apologize for any inconvenience this may cause.</p>
 
           <div class="footer">
-            <p>This is an automated notification from Campus Connect.</p>
+            <p>This is an automated notification from Campus Pulse.</p>
           </div>
         </div>
       </div>
@@ -317,7 +317,7 @@ We regret to inform you that the event "${event.title}" has been cancelled.
 We apologize for any inconvenience this may cause.
 
 ---
-This is an automated notification from Campus Connect.
+This is an automated notification from Campus Pulse.
   `;
 
   return { subject, html, text };
@@ -326,7 +326,7 @@ This is an automated notification from Campus Connect.
 export function generateWelcomeContent(user) {
   const roleMessages = {
     student: {
-      greeting: 'Welcome to Campus Connect!',
+      greeting: 'Welcome to Campus Pulse!',
       message: 'You can now browse campus events, RSVP to activities, and manage your participation all in one place.',
       features: [
         'Browse all campus events',
@@ -337,7 +337,7 @@ export function generateWelcomeContent(user) {
       ]
     },
     organizer: {
-      greeting: 'Welcome to Campus Connect, Event Organizer!',
+      greeting: 'Welcome to Campus Pulse, Event Organizer!',
       message: 'You now have access to powerful tools to create and manage campus events.',
       features: [
         'Create and manage events',
@@ -348,7 +348,7 @@ export function generateWelcomeContent(user) {
       ]
     },
     admin: {
-      greeting: 'Welcome to Campus Connect, Administrator!',
+      greeting: 'Welcome to Campus Pulse, Administrator!',
       message: 'You have full administrative access to manage the platform.',
       features: [
         'Manage all users and events',
@@ -367,7 +367,7 @@ export function generateWelcomeContent(user) {
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
       <div style="text-align: center; margin-bottom: 30px;">
-        <h1 style="color: #2563eb; margin: 0;">Campus Connect</h1>
+        <h1 style="color: #2563eb; margin: 0;">Campus Pulse</h1>
         <p style="color: #6b7280; margin-top: 5px;">Your Campus Event Hub</p>
       </div>
       
@@ -397,7 +397,7 @@ export function generateWelcomeContent(user) {
           Need help? Contact us at <a href="mailto:${process.env.EMAIL_USER}" style="color: #2563eb;">${process.env.EMAIL_USER}</a>
         </p>
         <p style="color: #9ca3af; font-size: 12px; margin-top: 15px;">
-          © ${new Date().getFullYear()} Campus Connect. All rights reserved.
+          © ${new Date().getFullYear()} Campus Pulse. All rights reserved.
         </p>
       </div>
     </div>
@@ -417,7 +417,7 @@ Get started now: ${frontendUrl}/events
 
 Need help? Contact us at ${process.env.EMAIL_USER}
 
-© ${new Date().getFullYear()} Campus Connect. All rights reserved.
+© ${new Date().getFullYear()} Campus Pulse. All rights reserved.
   `;
 
   return { subject, html, text };

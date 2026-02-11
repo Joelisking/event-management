@@ -165,27 +165,27 @@ export default function AdminUsersPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-cream-50 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-14 h-14 rounded-full border-4 border-slate-800 border-t-blue-500 animate-spin" />
-          <p className="text-slate-400">Loading users...</p>
+          <p className="text-gray-600">Loading users...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900">
+    <div className="min-h-screen bg-cream-50">
       <AdminHeader title="User Management" />
 
       <div className="fixed inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-5 pointer-events-none" />
 
       <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-white mb-2">
+          <h2 className="text-3xl font-bold text-black mb-2">
             User Management
           </h2>
-          <p className="text-slate-400">
+          <p className="text-gray-600">
             Manage user roles and permissions
           </p>
         </div>
@@ -202,12 +202,12 @@ export default function AdminUsersPage() {
         <Dialog
           open={isRoleDialogOpen}
           onOpenChange={setIsRoleDialogOpen}>
-          <DialogContent className="bg-slate-950 border-slate-800 text-slate-100 sm:max-w-[425px]">
+          <DialogContent className="bg-white border-gray-200 text-black sm:max-w-[425px]">
             <DialogHeader>
               <DialogTitle>Change User Role</DialogTitle>
-              <DialogDescription className="text-slate-400">
+              <DialogDescription className="text-gray-600">
                 Update the role for{' '}
-                <span className="text-slate-200 font-semibold">
+                <span className="text-black font-semibold">
                   {selectedUser?.name}
                 </span>
                 .
@@ -217,27 +217,27 @@ export default function AdminUsersPage() {
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label
                   htmlFor="role"
-                  className="text-right text-slate-300">
+                  className="text-right text-gray-900">
                   Role
                 </Label>
                 <Select value={newRole} onValueChange={setNewRole}>
-                  <SelectTrigger className="col-span-3 bg-slate-900 border-slate-700 text-slate-100">
+                  <SelectTrigger className="col-span-3 bg-gray-50 border-gray-300 text-gray-900">
                     <SelectValue placeholder="Select a role" />
                   </SelectTrigger>
-                  <SelectContent className="bg-slate-900 border-slate-700 text-slate-100">
+                  <SelectContent className="bg-white border-gray-200 text-gray-900">
                     <SelectItem
                       value="student"
-                      className="focus:bg-slate-800 focus:text-slate-100">
+                      className="focus:bg-gray-100 focus:text-black">
                       Student
                     </SelectItem>
                     <SelectItem
                       value="organizer"
-                      className="focus:bg-slate-800 focus:text-slate-100">
+                      className="focus:bg-gray-100 focus:text-black">
                       Organizer
                     </SelectItem>
                     <SelectItem
                       value="admin"
-                      className="focus:bg-slate-800 focus:text-slate-100">
+                      className="focus:bg-gray-100 focus:text-black">
                       Admin
                     </SelectItem>
                   </SelectContent>
@@ -248,7 +248,7 @@ export default function AdminUsersPage() {
               <Button
                 variant="outline"
                 onClick={() => setIsRoleDialogOpen(false)}
-                className="bg-transparent border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white">
+                className="border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:text-black">
                 Cancel
               </Button>
               <Button onClick={handleSaveRole} disabled={updating}>

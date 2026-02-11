@@ -56,9 +56,12 @@ export default function EditEventPage() {
   const fetchEvent = async () => {
     setFetchingEvent(true);
     try {
-      const response = await fetch(`${API_URL}/api/events/${eventId}`, {
-        cache: 'no-store',
-      });
+      const response = await fetch(
+        `${API_URL}/api/events/${eventId}`,
+        {
+          cache: 'no-store',
+        }
+      );
 
       if (!response.ok) {
         toast.error('Event not found.');
@@ -81,11 +84,16 @@ export default function EditEventPage() {
         title: data.title || '',
         description: data.description || '',
         location: data.location || '',
-        capacity: typeof data.capacity === 'number' ? data.capacity : '',
+        capacity:
+          typeof data.capacity === 'number' ? data.capacity : '',
         category: data.category || '',
         imageUrl: data.imageUrl || '',
-        startDate: data.startDate ? new Date(data.startDate).toISOString() : '',
-        endDate: data.endDate ? new Date(data.endDate).toISOString() : '',
+        startDate: data.startDate
+          ? new Date(data.startDate).toISOString()
+          : '',
+        endDate: data.endDate
+          ? new Date(data.endDate).toISOString()
+          : '',
       };
 
       setInitialData(formattedData);
@@ -111,14 +119,17 @@ export default function EditEventPage() {
         return;
       }
 
-      const response = await fetch(`${API_URL}/api/events/${eventId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        `${API_URL}/api/events/${eventId}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       const result = await response.json().catch(() => ({}));
 
@@ -140,11 +151,11 @@ export default function EditEventPage() {
 
   if (authLoading || fetchingEvent) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-cream-50 flex items-center justify-center">
         <div className="fixed inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-10" />
         <div className="flex flex-col items-center gap-4 relative z-10">
           <div className="w-14 h-14 rounded-full border-4 border-slate-700 border-t-blue-500 animate-spin" />
-          <p className="text-sm font-medium text-slate-300">
+          <p className="text-sm font-medium text-gray-700">
             Loading event...
           </p>
         </div>
@@ -161,11 +172,11 @@ export default function EditEventPage() {
       <nav className="bg-slate-950/80 border-b border-slate-800/70 backdrop-blur-xl shadow-2xl shadow-blue-900/10 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-            <h1 className="text-xl sm:text-2xl font-semibold text-slate-50">
+            <h1 className="text-xl sm:text-2xl font-semibold text-black">
               Edit event
             </h1>
             <Link href="/admin/dashboard">
-              <Button className="bg-slate-800/80 text-slate-200 hover:bg-slate-800 hover:text-slate-50 border-slate-700 rounded-full text-sm">
+              <Button className="bg-gray-100 text-gray-900 hover:bg-gray-200 hover:text-black border-gray-300 rounded-full text-sm">
                 Back to dashboard
               </Button>
             </Link>
@@ -175,9 +186,9 @@ export default function EditEventPage() {
 
       {/* Main */}
       <main className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Card className="bg-slate-950/85 border-slate-800/80 backdrop-blur-2xl shadow-2xl shadow-blue-900/20 rounded-2xl pt-6">
+        <Card className="bg-white border-gray-200 shadow-lg rounded-2xl pt-6">
           <CardHeader className="border-b border-slate-800/70 pb-4">
-            <CardTitle className="text-slate-50 text-lg">
+            <CardTitle className="text-black text-lg">
               Event details
             </CardTitle>
           </CardHeader>

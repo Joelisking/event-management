@@ -12,7 +12,10 @@ import { useAuth } from '@/lib/auth-context';
 import { Eye, EyeOff, LogIn, Sparkles } from 'lucide-react';
 
 const signinSchema = yup.object().shape({
-  email: yup.string().email('Invalid email').required('Email is required'),
+  email: yup
+    .string()
+    .email('Invalid email')
+    .required('Email is required'),
   password: yup.string().required('Password is required'),
 });
 
@@ -46,7 +49,7 @@ export function SignInForm() {
   };
 
   return (
-    <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl rounded-2xl shadow-2xl shadow-blue-900/20">
+    <Card className="bg-white border-gray-200 rounded-2xl shadow-lg">
       <CardContent className="pt-6 pb-8 px-6 sm:px-8">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           {error && (
@@ -58,7 +61,7 @@ export function SignInForm() {
           <div className="space-y-2">
             <FieldLabel
               htmlFor="email"
-              className="text-sm font-medium text-slate-300">
+              className="text-sm font-medium text-gray-700">
               Email Address
             </FieldLabel>
             <Input
@@ -66,7 +69,7 @@ export function SignInForm() {
               type="email"
               placeholder="you@example.com"
               {...register('email')}
-              className="h-12 bg-slate-900/70 border-slate-800/70 text-slate-100 placeholder:text-slate-500 rounded-xl focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
+              className="h-12 bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 rounded-xl focus:border-pfw-gold focus:ring-2 focus:ring-pfw-gold/20"
             />
             {errors.email && (
               <FieldError className="text-red-400">
@@ -78,7 +81,7 @@ export function SignInForm() {
           <div className="space-y-2">
             <FieldLabel
               htmlFor="password"
-              className="text-sm font-medium text-slate-300">
+              className="text-sm font-medium text-gray-700">
               Password
             </FieldLabel>
             <div className="relative">
@@ -87,12 +90,12 @@ export function SignInForm() {
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Enter your password"
                 {...register('password')}
-                className="h-12 pr-10 bg-slate-900/70 border-slate-800/70 text-slate-100 placeholder:text-slate-500 rounded-xl focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
+                className="h-12 pr-10 bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 rounded-xl focus:border-pfw-gold focus:ring-2 focus:ring-pfw-gold/20"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300 focus:outline-none transition-colors">
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none transition-colors">
                 {showPassword ? (
                   <EyeOff className="w-5 h-5" />
                 ) : (
@@ -109,11 +112,11 @@ export function SignInForm() {
 
           <Button
             type="submit"
-            className="w-full h-12 text-base bg-blue-600 hover:bg-blue-500 text-white rounded-full shadow-lg shadow-blue-500/30 transition-all hover:scale-105 mt-6"
+            className="w-full h-12 text-base bg-pfw-gold hover:bg-gold-dark text-black rounded-full shadow-md transition-all hover:scale-105 mt-6"
             disabled={loading}>
             {loading ? (
               <>
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
+                <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin mr-2" />
                 Signing in...
               </>
             ) : (
@@ -126,11 +129,11 @@ export function SignInForm() {
 
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-800/70"></div>
+              <div className="w-full border-t border-gray-200"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-3 bg-slate-950/70 text-slate-400">
-                New to Campus Connect?
+              <span className="px-3 bg-white text-gray-600">
+                New to Campus Pulse?
               </span>
             </div>
           </div>
@@ -138,7 +141,7 @@ export function SignInForm() {
           <Link href="/signup">
             <Button
               variant="outline"
-              className="w-full h-12 text-base border-slate-700 text-slate-300 bg-slate-950/70 hover:bg-slate-900 hover:border-slate-600 hover:text-slate-100 rounded-full transition-all"
+              className="w-full h-12 text-base border-gray-300 text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-400 hover:text-black rounded-full transition-all"
               type="button">
               <Sparkles className="w-5 h-5 mr-2" />
               Create an Account

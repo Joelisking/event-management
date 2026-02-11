@@ -14,7 +14,7 @@ export function CalendarGrid({
       {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
         <div
           key={day}
-          className="p-2 text-center font-semibold text-slate-400 text-sm">
+          className="p-2 text-center font-semibold text-gray-600 text-sm">
           {day}
         </div>
       ))}
@@ -41,12 +41,12 @@ export function CalendarGrid({
             key={day}
             className={`p-2 min-h-[120px] border rounded-xl transition-all ${
               isToday
-                ? 'bg-blue-500/10 border-blue-500/30 shadow-lg shadow-blue-900/20'
-                : 'bg-slate-900/30 border-slate-800/50 hover:border-slate-700'
+                ? 'bg-gold-dark/10 border-pfw-gold/30 shadow-lg shadow-pfw-gold/10'
+                : 'bg-gray-50 border-gray-200 hover:border-gray-300'
             }`}>
             <div
               className={`text-sm font-semibold mb-2 ${
-                isToday ? 'text-blue-400' : 'text-slate-300'
+                isToday ? 'text-pfw-gold' : 'text-gray-700'
               }`}>
               {day}
             </div>
@@ -56,13 +56,13 @@ export function CalendarGrid({
                   key={event.id}
                   href={`/events/${event.id}`}
                   className="block">
-                  <div className="text-xs p-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-colors truncate shadow-sm">
+                  <div className="text-xs p-1.5 bg-pfw-gold text-white rounded-lg hover:bg-gold-dark transition-colors truncate shadow-sm">
                     {event.title}
                   </div>
                 </Link>
               ))}
               {dayEvents.length > 3 && (
-                <div className="text-xs text-slate-400 pl-1">
+                <div className="text-xs text-gray-600 pl-1">
                   +{dayEvents.length - 3} more
                 </div>
               )}

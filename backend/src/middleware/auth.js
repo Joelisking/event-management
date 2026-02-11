@@ -31,6 +31,23 @@ export const authenticate = (req, res, next) => {
   }
 };
 
+export const optionalAuth = (req, res, next) => {
+  try {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    if (token) {
+      const secret = process.env.JWT_SECRET || 'my-secret-123';
+      const decoded = jwt.verify(token, secret);
+      req.user = {
+        ...decoded,
+        id: decoded.id || decoded.userId || decoded.sub,
+      };
+    }
+  } catch {
+    // Invalid token — proceed as unauthenticated
+  }
+  next();
+};
+
 export const requireOrganizer = (req, res, next) => {
   if (req.user.role !== 'organizer' && req.user.role !== 'admin') {
     return res

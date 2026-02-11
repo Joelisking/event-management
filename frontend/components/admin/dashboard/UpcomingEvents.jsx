@@ -20,10 +20,10 @@ export function UpcomingEvents({ upcomingEvents }) {
   };
 
   return (
-    <Card className="bg-slate-950/70 border-slate-800/70 backdrop-blur-xl h-full pt-6">
+    <Card className="bg-white border-gray-200 backdrop-blur-xl h-full pt-6">
       <CardHeader>
-        <CardTitle className="text-slate-50">Upcoming Events</CardTitle>
-        <CardDescription className="text-slate-400">Next 10 active events</CardDescription>
+        <CardTitle className="text-black">Upcoming Events</CardTitle>
+        <CardDescription className="text-gray-600">Next 10 active events</CardDescription>
       </CardHeader>
       <CardContent>
         {upcomingEvents.length > 0 ? (
@@ -31,18 +31,18 @@ export function UpcomingEvents({ upcomingEvents }) {
             {upcomingEvents.map((event) => (
               <div
                 key={event.id}
-                className="p-3 bg-slate-900/50 border border-slate-800 rounded-lg hover:border-slate-700 transition-colors">
-                <div className="font-medium text-slate-200">
+                className="p-3 bg-gray-50 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors">
+                <div className="font-medium text-black">
                   {event.title}
                 </div>
-                <div className="text-sm text-slate-400 mt-0.5">
+                <div className="text-sm text-gray-600 mt-0.5">
                   By {event.organizerName}
                 </div>
-                <div className="flex justify-between items-center mt-2.5 pt-2 border-t border-slate-800">
-                  <div className="text-xs text-slate-500">
+                <div className="flex justify-between items-center mt-2.5 pt-2 border-t border-gray-200">
+                  <div className="text-xs text-black0">
                     {formatDate(event.startDate)}
                   </div>
-                  <div className="text-xs text-slate-400 bg-slate-800 px-2 py-0.5 rounded">
+                  <div className="text-xs text-gray-600 bg-gray-100 px-2 py-0.5 rounded">
                     👥 {event.attendeeCount} attendee
                     {event.attendeeCount !== 1 ? 's' : ''}
                   </div>
@@ -51,7 +51,7 @@ export function UpcomingEvents({ upcomingEvents }) {
             ))}
           </div>
         ) : (
-          <p className="text-center py-8 text-slate-500">
+          <p className="text-center py-8 text-black0">
             No upcoming events
           </p>
         )}

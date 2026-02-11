@@ -201,16 +201,16 @@ export function EventsShowcase() {
       <div className="w-full py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3].map((i) => (
-            <Card key={i} className="overflow-hidden bg-slate-950/70 border-slate-800/70 backdrop-blur-xl rounded-2xl">
-              <div className="h-48 bg-slate-800/50 animate-pulse" />
+            <Card key={i} className="overflow-hidden bg-white border-gray-200 backdrop-blur-xl rounded-2xl">
+              <div className="h-48 bg-gray-100 animate-pulse" />
               <CardHeader>
-                <div className="h-6 bg-slate-800/50 rounded w-3/4 mb-2"></div>
-                <div className="h-4 bg-slate-800/50 rounded w-1/2"></div>
+                <div className="h-6 bg-gray-100 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-gray-100 rounded w-1/2"></div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  <div className="h-4 bg-slate-800/50 rounded"></div>
-                  <div className="h-4 bg-slate-800/50 rounded w-5/6"></div>
+                  <div className="h-4 bg-gray-100 rounded"></div>
+                  <div className="h-4 bg-gray-100 rounded w-5/6"></div>
                 </div>
               </CardContent>
             </Card>
@@ -223,11 +223,11 @@ export function EventsShowcase() {
   if (events.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-slate-400 mb-4">
+        <p className="text-gray-600 mb-4">
           No events available at the moment.
         </p>
         <Link href="/signup">
-          <Button className="bg-blue-600 hover:bg-blue-500 text-white rounded-full">Get Started</Button>
+          <Button className="bg-pfw-gold hover:bg-gold-dark text-white rounded-full">Get Started</Button>
         </Link>
       </div>
     );
@@ -240,7 +240,7 @@ export function EventsShowcase() {
         return (
           <Card
             key={event.id}
-            className="group hover:shadow-2xl hover:shadow-blue-900/20 transition-all duration-300 relative overflow-hidden bg-slate-950/70 border-slate-800/70 backdrop-blur-xl rounded-2xl">
+            className="group hover:shadow-2xl hover:shadow-pfw-gold/10 transition-all duration-300 relative overflow-hidden bg-white border-gray-200 backdrop-blur-xl rounded-2xl">
             <div className="relative w-full h-48 overflow-hidden">
               {event.imageUrl ? (
                 <Image
@@ -256,10 +256,10 @@ export function EventsShowcase() {
                 <span
                   className={`px-3 py-1.5 text-xs font-semibold rounded-full backdrop-blur-sm ${
                     status === 'upcoming'
-                      ? 'bg-blue-500/20 text-blue-300 ring-1 ring-blue-500/40'
+                      ? 'bg-gold-dark/20 text-pfw-gold ring-1 ring-pfw-gold/20'
                       : status === 'ongoing'
                       ? 'bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-500/40'
-                      : 'bg-slate-500/20 text-slate-300 ring-1 ring-slate-500/40'
+                      : 'bg-slate-500/20 text-gray-700 ring-1 ring-slate-500/40'
                   }`}>
                   {status}
                 </span>
@@ -268,9 +268,9 @@ export function EventsShowcase() {
             <CardHeader className="pb-3">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <CardTitle className="line-clamp-1 text-slate-50">{event.title}</CardTitle>
-                  <CardDescription className="mt-1 flex items-center text-slate-400">
-                    <UserCircle className="w-3 h-3 mr-1 text-blue-400" />
+                  <CardTitle className="line-clamp-1 text-black">{event.title}</CardTitle>
+                  <CardDescription className="mt-1 flex items-center text-gray-600">
+                    <UserCircle className="w-3 h-3 mr-1 text-pfw-gold" />
                     by {event.user.organizationName || event.user.name}
                   </CardDescription>
                 </div>
@@ -278,20 +278,20 @@ export function EventsShowcase() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <div className="flex items-center gap-2 text-sm text-slate-300">
-                  <Calendar className="w-4 h-4 flex-shrink-0 text-blue-400" />
+                <div className="flex items-center gap-2 text-sm text-gray-700">
+                  <Calendar className="w-4 h-4 flex-shrink-0 text-pfw-gold" />
                   {formatEventDate(event.startDate, event.endDate)}
                 </div>
 
                 {event.description && (
-                  <p className="text-sm text-slate-400 line-clamp-2">
+                  <p className="text-sm text-gray-600 line-clamp-2">
                     {event.description}
                   </p>
                 )}
 
-                <div className="flex items-center justify-between pt-3 border-t border-slate-800/70">
-                  <div className="flex items-center gap-1 text-sm text-slate-300">
-                    <Users className="w-4 h-4 text-blue-400" />
+                <div className="flex items-center justify-between pt-3 border-t border-gray-200">
+                  <div className="flex items-center gap-1 text-sm text-gray-700">
+                    <Users className="w-4 h-4 text-pfw-gold" />
                     {event.attendeeCount}
                   </div>
                   <div className="flex gap-2">
@@ -302,7 +302,7 @@ export function EventsShowcase() {
                           variant="outline"
                           onClick={() => handleCancelRsvp(event.id)}
                           disabled={rsvpLoading[event.id]}
-                          className="border-slate-700 text-slate-300 bg-slate-950/70 hover:bg-slate-900 hover:border-slate-600 hover:text-slate-100 rounded-full transition-all">
+                          className="border-gray-300 text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-400 hover:text-gray-900 rounded-full transition-all">
                           {rsvpLoading[event.id] ? 'Cancelling...' : 'Cancel RSVP'}
                         </Button>
                       ) : (
@@ -310,13 +310,13 @@ export function EventsShowcase() {
                           size="sm"
                           onClick={() => handleRsvp(event.id)}
                           disabled={rsvpLoading[event.id]}
-                          className="bg-blue-600 hover:bg-blue-500 text-white rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+                          className="bg-pfw-gold hover:bg-gold-dark text-white rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition-all">
                           {rsvpLoading[event.id] ? 'RSVPing...' : 'RSVP'}
                         </Button>
                       )
                     )}
                     <Link href={`/events/${event.id}`}>
-                      <Button size="sm" variant="outline" className="border-slate-700 text-slate-300 bg-slate-950/70 hover:bg-slate-900 hover:border-slate-600 hover:text-slate-100 rounded-full transition-all">
+                      <Button size="sm" variant="outline" className="border-gray-300 text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-400 hover:text-gray-900 rounded-full transition-all">
                         View
                       </Button>
                     </Link>
