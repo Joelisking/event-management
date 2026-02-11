@@ -36,7 +36,7 @@ export function BenefitsSection() {
 
         <div className="p-4 rounded-2xl bg-gold-dark/5 border border-pfw-gold/30 backdrop-blur-sm">
           <p className="text-xs text-center text-gray-600">
-            Join 5000+ active students already using Campus Pulse
+            Join 50+ active students already using Campus Pulse
           </p>
         </div>
       </div>

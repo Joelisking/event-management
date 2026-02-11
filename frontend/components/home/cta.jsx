@@ -16,7 +16,7 @@ function Cta() {
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 backdrop-blur-sm rounded-full mb-6">
           <Users className="w-4 h-4 text-pfw-gold" />
           <span className="text-sm font-medium text-gray-900">
-            Join 5000+ Active Students
+            Join 50+ Active Students
           </span>
         </div>
 

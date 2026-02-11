@@ -26,7 +26,8 @@ export function EventCard({
   };
 
   return (
-    <Card className="group hover:shadow-2xl hover:shadow-pfw-gold/10 transition-all duration-300 relative overflow-hidden bg-white border-gray-200 backdrop-blur-xl rounded-2xl">
+    <Link href={`/events/${event.id}`} className="block">
+    <Card className="group hover:shadow-2xl hover:shadow-pfw-gold/10 transition-all duration-300 relative overflow-hidden bg-white border-gray-200 backdrop-blur-xl rounded-2xl cursor-pointer">
       {/* Image Section */}
       <div className="relative w-full h-48 overflow-hidden">
         {event.imageUrl ? (
@@ -101,11 +102,11 @@ export function EventCard({
             </span>
           </div>
 
-          <div className="flex gap-2">
-            {user &&
-              (rsvpStatus ? (
+          {user && status !== 'past' && (
+            <div className="flex gap-2">
+              {rsvpStatus ? (
                 <button
-                  onClick={() => onCancelRsvp(event.id)}
+                  onClick={(e) => { e.preventDefault(); onCancelRsvp(event.id); }}
                   disabled={rsvpLoading}
                   className={`px-3 py-1.5 text-xs font-medium rounded-full border disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${
                     rsvpStatus === 'waitlist'
@@ -120,7 +121,7 @@ export function EventCard({
                 </button>
               ) : (
                 <button
-                  onClick={() => onRsvp(event.id)}
+                  onClick={(e) => { e.preventDefault(); onRsvp(event.id); }}
                   disabled={rsvpLoading}
                   className={`px-3 py-1.5 text-xs font-medium rounded-full text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${
                     event.capacity &&
@@ -135,15 +136,12 @@ export function EventCard({
                       ? 'Join Waitlist'
                       : 'RSVP'}
                 </button>
-              ))}
-            <Link href={`/events/${event.id}`}>
-              <button className="px-3 py-1.5 text-xs font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 hover:text-gray-900 transition-colors">
-                View
-              </button>
-            </Link>
-          </div>
+              )}
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
+    </Link>
   );
 }
