@@ -32,10 +32,6 @@ const signUpSchema = yup.object({
     .string()
     .required('Please confirm your password')
     .oneOf([yup.ref('password')], 'Passwords must match'),
-  role: yup
-    .string()
-    .oneOf(['student', 'organizer'], 'Invalid role')
-    .required('Please select a role'),
   organizationName: yup.string().optional(),
   userCategory: yup
     .string()
@@ -73,7 +69,6 @@ export function SignUpForm() {
     resolver: yupResolver(signUpSchema),
   });
 
-  const selectedRole = watch('role');
   const selectedCategory = watch('userCategory');
 
   const onSubmit = async (data) => {
@@ -86,7 +81,7 @@ export function SignUpForm() {
         data.lastName,
         data.email,
         data.password,
-        data.role,
+        'student', // All users are students by default
         data.organizationName,
         data.userCategory,
         data.countryOfResidence,
@@ -237,68 +232,6 @@ export function SignUpForm() {
               </FieldError>
             )}
           </div>
-
-          <div className="space-y-2">
-            <FieldLabel
-              htmlFor="role"
-              className="text-sm font-medium text-slate-300">
-              I am a
-            </FieldLabel>
-            <select
-              id="role"
-              {...register('role')}
-              className="flex h-11 w-full rounded-xl border border-slate-800/70 bg-slate-900/70 px-3 py-2 text-sm text-slate-100 ring-offset-background placeholder:text-slate-500 focus:border-blue-500/50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 disabled:cursor-not-allowed disabled:opacity-50">
-              <option
-                value=""
-                className="bg-slate-900 text-slate-400">
-                Select role...
-              </option>
-              <option
-                value="student"
-                className="bg-slate-900 text-slate-100">
-                Student
-              </option>
-              <option
-                value="organizer"
-                className="bg-slate-900 text-slate-100">
-                Event Organizer
-              </option>
-            </select>
-            {errors.role && (
-              <FieldError className="text-red-400 text-xs">
-                {errors.role.message}
-              </FieldError>
-            )}
-          </div>
-
-          {selectedRole === 'organizer' && (
-            <div className="space-y-2">
-              <FieldLabel
-                htmlFor="organizationName"
-                className="text-sm font-medium text-slate-300">
-                Organization Name{' '}
-                <span className="text-slate-500 font-normal">
-                  (Optional)
-                </span>
-              </FieldLabel>
-              <Input
-                id="organizationName"
-                type="text"
-                {...register('organizationName')}
-                placeholder="e.g., Computer Science Club"
-                className="h-11 bg-slate-900/70 border-slate-800/70 text-slate-100 placeholder:text-slate-500 rounded-xl focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
-              />
-              {errors.organizationName && (
-                <FieldError className="text-red-400 text-xs">
-                  {errors.organizationName.message}
-                </FieldError>
-              )}
-              <p className="text-xs text-slate-400">
-                This name will be displayed as the event organizer
-                instead of your personal name
-              </p>
-            </div>
-          )}
 
           <div className="space-y-2">
             <FieldLabel
