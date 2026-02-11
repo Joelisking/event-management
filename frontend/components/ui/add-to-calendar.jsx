@@ -50,11 +50,12 @@ export function AddToCalendar({ event }) {
       <Button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2"
-        variant="outline"
-      >
+        variant="outline">
         <Calendar className="w-4 h-4" />
         Add to Calendar
-        <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown
+          className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+        />
       </Button>
 
       {isOpen && (
@@ -70,8 +71,7 @@ export function AddToCalendar({ event }) {
             <div className="py-1">
               <button
                 onClick={handleGoogleCalendar}
-                className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3"
-              >
+                className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3">
                 <svg className="w-4 h-4" viewBox="0 0 24 24">
                   <path
                     fill="currentColor"
@@ -83,8 +83,7 @@ export function AddToCalendar({ event }) {
 
               <button
                 onClick={handleOutlookCalendar}
-                className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3"
-              >
+                className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3">
                 <svg className="w-4 h-4" viewBox="0 0 24 24">
                   <path
                     fill="currentColor"
@@ -96,8 +95,7 @@ export function AddToCalendar({ event }) {
 
               <button
                 onClick={handleYahooCalendar}
-                className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3"
-              >
+                className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3">
                 <svg className="w-4 h-4" viewBox="0 0 24 24">
                   <path
                     fill="currentColor"
@@ -112,10 +110,11 @@ export function AddToCalendar({ event }) {
               <button
                 onClick={handleDownloadICS}
                 disabled={isDownloading}
-                className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
+                className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed">
                 <Download className="w-4 h-4" />
-                {isDownloading ? 'Downloading...' : 'Download .ics file'}
+                {isDownloading
+                  ? 'Downloading...'
+                  : 'Download .ics file'}
               </button>
 
               <div className="px-4 py-2 text-xs text-gray-500 dark:text-gray-400">

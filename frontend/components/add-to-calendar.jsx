@@ -29,7 +29,9 @@ export function AddToCalendar({ event }) {
       await downloadICalFile(event);
     } catch (error) {
       console.error('Failed to download calendar file:', error);
-      toast.error('Failed to download calendar file. Please try again.');
+      toast.error(
+        'Failed to download calendar file. Please try again.'
+      );
     } finally {
       setIsDownloading(false);
     }
@@ -45,8 +47,7 @@ export function AddToCalendar({ event }) {
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="flex w-full items-center justify-between gap-2 border-gray-300 bg-gray-50 text-black hover:bg-gray-100 hover:text-white"
-        >
+          className="flex w-full items-center justify-between gap-2 border-gray-300 bg-gray-50 text-black hover:bg-gray-100">
           <span className="flex items-center gap-2">
             <Calendar className="w-4 h-4" />
             Add to Calendar
@@ -59,14 +60,14 @@ export function AddToCalendar({ event }) {
         side="top"
         align="end"
         sideOffset={8}
-        className="w-56 bg-white border-gray-200 text-black"
-      >
-        <DropdownMenuLabel className="text-gray-600">Select calendar</DropdownMenuLabel>
+        className="w-56 bg-white border-gray-200 text-black">
+        <DropdownMenuLabel className="text-gray-600">
+          Select calendar
+        </DropdownMenuLabel>
 
         <DropdownMenuItem
           onClick={handleGoogleCalendar}
-          className="text-sm focus:bg-gray-100 focus:text-white cursor-pointer"
-        >
+          className="text-sm focus:bg-gray-100 cursor-pointer">
           Google Calendar
         </DropdownMenuItem>
 
@@ -75,10 +76,9 @@ export function AddToCalendar({ event }) {
         <DropdownMenuItem
           onClick={handleDownloadICS}
           disabled={isDownloading}
-          className={`flex items-center gap-2 text-sm focus:bg-gray-100 focus:text-white cursor-pointer ${
+          className={`flex items-center gap-2 text-sm focus:bg-gray-100 cursor-pointer ${
             isDownloading ? 'opacity-60 cursor-not-allowed' : ''
-          }`}
-        >
+          }`}>
           <Download className="w-4 h-4" />
           {isDownloading ? 'Downloading…' : 'Download .ics file'}
         </DropdownMenuItem>
