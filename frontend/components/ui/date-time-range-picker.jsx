@@ -249,6 +249,7 @@ export function DateTimeRangePicker({
                 onSelect={handleStartDateSelect}
                 fromYear={new Date().getFullYear()}
                 toYear={new Date().getFullYear() + 10}
+                className="hover:text-black"
               />
             </PopoverContent>
           </Popover>

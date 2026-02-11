@@ -17,18 +17,19 @@ function ScannerContent() {
   const router = useRouter();
   const { user } = useAuth();
 
-  const [status, setStatus] = useState('idle'); // idle, scanning, processing, success, error
+  const [status, setStatus] = useState('idle'); // idle, scanning, processing, success, already_checked_in, error
   const [message, setMessage] = useState('');
   const [pointsEarned, setPointsEarned] = useState(0);
 
   const scannerRef = useRef(null);
 
   useEffect(() => {
-    // If eventId param is present, attempt check-in immediately
+    // If eventId param is present, always attempt check-in on mount/navigation
     if (eventIdParam && user) {
       handleCheckIn(eventIdParam);
     }
-  }, [eventIdParam, user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eventIdParam, user, searchParams]);
 
   useEffect(() => {
     // Initialize scanner if no param and not processing
@@ -107,7 +108,12 @@ function ScannerContent() {
 
       const data = await res.json();
 
-      if (res.ok) {
+      if (res.ok && data.alreadyCheckedIn) {
+        setStatus('already_checked_in');
+        setPointsEarned(0);
+        setMessage('You have already checked in to this event.');
+        toast.info('Already checked in');
+      } else if (res.ok) {
         setStatus('success');
         setPointsEarned(data.pointsEarned || 0);
         setMessage(data.message || 'Check-in successful!');
@@ -165,10 +171,28 @@ function ScannerContent() {
                   </div>
                 )}
                 <Button
-                  className="mt-6 w-full bg-blue-600 hover:bg-blue-500"
+                  className="mt-6 w-full"
                   onClick={() => {
                     setStatus('idle');
                     router.push('/scanner'); // Reset
+                  }}>
+                  Scan Another
+                </Button>
+              </div>
+            )}
+
+            {status === 'already_checked_in' && (
+              <div className="text-center py-8">
+                <CheckCircle className="h-16 w-16 mx-auto mb-4 text-green-500" />
+                <h2 className="text-2xl font-bold mb-2 text-green-400">
+                  Already Checked In
+                </h2>
+                <p className="text-gray-700">{message}</p>
+                <Button
+                  className="mt-6 w-full"
+                  onClick={() => {
+                    setStatus('idle');
+                    router.push('/scanner');
                   }}>
                   Scan Another
                 </Button>

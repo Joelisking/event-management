@@ -891,12 +891,14 @@ router.post('/:id/check-in', authenticate, async (req, res) => {
 
     const attendee = attendeeResult.rows[0];
 
-    // Idempotency check: prevent duplicate check-ins
+    // Idempotency: if already checked in, return success with flag
     if (attendee.checked_in_at) {
       await client.query('ROLLBACK');
-      return res
-        .status(400)
-        .json({ error: 'User already checked in' });
+      return res.json({
+        message: 'Already checked in',
+        alreadyCheckedIn: true,
+        pointsEarned: 0,
+      });
     }
 
     // Get event points

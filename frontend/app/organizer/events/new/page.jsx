@@ -95,7 +95,7 @@ export default function NewEventPage() {
         <Card className="bg-white border-gray-200 shadow-lg rounded-2xl pt-6">
           <CardHeader className="border-b border-gray-200 pb-6">
             <CardTitle className="text-2xl text-black">
-              Event Details
+              Create New Event
             </CardTitle>
             <p className="text-gray-600">
               Fill in the details to create your event

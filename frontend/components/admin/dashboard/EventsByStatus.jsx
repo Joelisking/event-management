@@ -19,13 +19,19 @@ export function EventsByStatus({ eventsByStatus }) {
             <div
               key={item.status}
               className="flex justify-between items-center p-3 bg-gray-50 border border-gray-200 rounded-lg backdrop-blur-sm">
-              <span className="capitalize font-medium text-black">{item.status}</span>
-              <span className={`text-xs font-semibold px-2 py-0.5 rounded ${
-                item.status === 'upcoming' ? 'bg-gold-dark/20 text-pfw-gold' :
-                item.status === 'ongoing' ? 'bg-emerald-500/20 text-emerald-300' :
-                item.status === 'past' ? 'bg-slate-500/20 text-gray-700' :
-                'bg-red-500/20 text-red-300'
-              }`}>
+              <span className="capitalize font-medium text-black">
+                {item.status}
+              </span>
+              <span
+                className={`text-xs font-semibold px-2 py-0.5 rounded ${
+                  item.status === 'upcoming'
+                    ? 'bg-gold-dark/20 text-pfw-gold'
+                    : item.status === 'ongoing'
+                      ? 'bg-emerald-500/20 text-emerald-300'
+                      : item.status === 'past'
+                        ? 'bg-slate-500/20 text-gray-700'
+                        : ''
+                }`}>
                 {item.count}
               </span>
             </div>

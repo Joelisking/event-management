@@ -226,7 +226,7 @@ export function EventSidebar({
       {(user?.role === 'admin' ||
         (user && user.id === event.organizer?.id) ||
         (user && user.id === event.userId)) && (
-        <Card className="bg-white border-gray-200 backdrop-blur-xl shadow-xl rounded-2xl">
+        <Card className="bg-white border-gray-200 backdrop-blur-xl shadow-xl rounded-2xl pt-4">
           <CardHeader className="pb-3">
             <CardTitle className="text-base font-semibold text-black">
               Check-in QR Code
