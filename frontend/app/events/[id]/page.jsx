@@ -252,8 +252,8 @@ export default function EventDetailPage() {
 
   const status = getEventStatus(event.startDate, event.endDate);
   const organizerName =
-    event.organizer?.organizationName ||
-    event.organizer?.name ||
+    event.user?.organizationName ||
+    event.user?.name ||
     'Unknown Organizer';
   const attendeeCount = event.attendees?.length || 0;
   const capacity = event.capacity;
