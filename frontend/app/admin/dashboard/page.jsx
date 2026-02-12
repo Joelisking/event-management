@@ -81,12 +81,14 @@ export default function AdminDashboardPage() {
       if (response.ok) {
         const data = await response.json();
         setStats(data);
-      } else {
+      } else if (user?.role === 'admin') {
         toast.error('Failed to load dashboard stats');
       }
     } catch (error) {
       console.error('Error fetching stats:', error);
-      toast.error('Failed to load dashboard stats');
+      if (user?.role === 'admin') {
+        toast.error('Failed to load dashboard stats');
+      }
     } finally {
       setLoading(false);
     }
@@ -202,14 +204,6 @@ export default function AdminDashboardPage() {
     );
   }
 
-  if (!stats) {
-    return (
-      <div className="min-h-screen bg-cream-50 flex items-center justify-center">
-        <p className="text-red-400">Failed to load stats</p>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-cream-50">
       <AdminHeader title="Dashboard" />
@@ -226,12 +220,16 @@ export default function AdminDashboardPage() {
           </p>
         </div>
 
-        <StatsOverview stats={stats} />
+        {stats && (
+          <>
+            <StatsOverview stats={stats} />
 
-        <PendingEvents
-          events={stats.pendingEvents || []}
-          onUpdate={fetchStats}
-        />
+            <PendingEvents
+              events={stats.pendingEvents || []}
+              onUpdate={fetchStats}
+            />
+          </>
+        )}
 
         {/* My Events Section */}
         <div className="mb-8">
@@ -269,19 +267,23 @@ export default function AdminDashboardPage() {
           )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <UsersByRole usersByRole={stats.usersByRole} />
-          <EventsByStatus eventsByStatus={stats.eventsByStatus} />
-        </div>
+        {stats && (
+          <>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              <UsersByRole usersByRole={stats.usersByRole} />
+              <EventsByStatus eventsByStatus={stats.eventsByStatus} />
+            </div>
 
-        <EventsByCategory eventsByCategory={stats.eventsByCategory} />
+            <EventsByCategory eventsByCategory={stats.eventsByCategory} />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <RecentUsers recentUsers={stats.recentUsers} />
-          <UpcomingEvents upcomingEvents={stats.upcomingEvents} />
-        </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <RecentUsers recentUsers={stats.recentUsers} />
+              <UpcomingEvents upcomingEvents={stats.upcomingEvents} />
+            </div>
 
-        <RecentRsvps recentRsvps={stats.recentRsvps} />
+            <RecentRsvps recentRsvps={stats.recentRsvps} />
+          </>
+        )}
       </main>
 
       {/* Postpone Dialog */}
