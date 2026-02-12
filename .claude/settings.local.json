@@ -8,7 +8,8 @@
       "Bash(psql:*)",
       "Bash(npm uninstall:*)",
       "Bash(ipconfig getifaddr:*)",
-      "Bash(NEXT_PUBLIC_API_URL=https://placeholder.com npm run build:*)"
+      "Bash(NEXT_PUBLIC_API_URL=https://placeholder.com npm run build:*)",
+      "Bash(curl:*)"
     ]
   }
 }

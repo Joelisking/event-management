@@ -46,6 +46,18 @@ const cacheSuccessOnly = apicache.options({
   statusCodes: { include: [200] }
 }).middleware;
 
+// Cache wrapper that only caches GET requests and clears cache on mutations
+const cacheGetOnly = (duration) => {
+  const cacheMiddleware = cacheSuccessOnly(duration);
+  return (req, res, next) => {
+    if (req.method !== 'GET') {
+      apicache.clear(req.baseUrl);
+      return next();
+    }
+    return cacheMiddleware(req, res, next);
+  };
+};
+
 // Enhanced security headers
 app.use(helmet({
   contentSecurityPolicy: {
@@ -124,8 +136,8 @@ app.get('/', (_req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
-// Cache public event listings for 5 minutes in production
-app.use('/api/events', process.env.NODE_ENV === 'production' ? cacheSuccessOnly('5 minutes') : (req, res, next) => next(), eventRoutes);
+// Cache public event listings for 5 minutes in production (GET only, cleared on POST/PUT/DELETE)
+app.use('/api/events', process.env.NODE_ENV === 'production' ? cacheGetOnly('5 minutes') : (req, res, next) => next(), eventRoutes);
 app.use('/api/rsvp', rsvpLimiter, rsvpRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/upload', uploadRoutes);
