@@ -63,15 +63,6 @@ app.use(helmet({
   },
 }));
 
-// CORS configuration
-app.use(cors({
-  origin: true,
-  credentials: true,
-}));
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
 // Redirect HTTP to HTTPS in production (use 308 to preserve HTTP method)
 if (process.env.NODE_ENV === 'production') {
   app.use((req, res, next) => {
@@ -82,6 +73,15 @@ if (process.env.NODE_ENV === 'production') {
     }
   });
 }
+
+// CORS configuration
+app.use(cors({
+  origin: true,
+  credentials: true,
+}));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Request logging middleware
 app.use((req, res, next) => {
