@@ -63,7 +63,7 @@ export function Navigation() {
       icon: Trophy,
       show: !!user,
     },
-    { href: '/rewards', label: 'Rewards', icon: Coins, show: !!user },
+    { href: '/store', label: 'Store', icon: Coins, show: !!user },
     { href: '/scanner', label: 'Scan', icon: QrCode, show: !!user },
     { href: '/profile', label: 'Profile', icon: User, show: !!user },
   ].filter((link) => link.show);
@@ -289,9 +289,7 @@ export function Footer() {
 
           {/* About */}
           <div>
-            <h3 className="font-semibold text-black mb-4">
-              About
-            </h3>
+            <h3 className="font-semibold text-black mb-4">About</h3>
             <ul className="space-y-3">
               <li>
                 <span className="text-gray-600 text-sm">
@@ -309,8 +307,8 @@ export function Footer() {
 
         <div className="mt-12 pt-8 border-t border-gray-200">
           <p className="text-center text-sm text-gray-600">
-            &copy; {new Date().getFullYear()} Campus Pulse. All
-            rights reserved.
+            &copy; {new Date().getFullYear()} Campus Pulse. All rights
+            reserved.
           </p>
         </div>
       </div>
