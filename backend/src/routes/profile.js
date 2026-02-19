@@ -1,4 +1,5 @@
 import express from 'express';
+import bcrypt from 'bcrypt';
 import { query } from '../db.js';
 import { authenticate } from '../middleware/auth.js';
 
@@ -149,6 +150,57 @@ router.put('/me', authenticate, async (req, res) => {
   } catch (error) {
     console.error('Error updating profile:', error);
     res.status(500).json({ error: 'Failed to update profile' });
+  }
+});
+
+// Change password
+router.put('/me/password', authenticate, async (req, res) => {
+  try {
+    const userId = req.user.id || req.user.userId;
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res
+        .status(400)
+        .json({ error: 'Current and new password are required' });
+    }
+
+    if (newPassword.length < 8) {
+      return res
+        .status(400)
+        .json({ error: 'New password must be at least 8 characters' });
+    }
+
+    const userResult = await query(
+      'SELECT "passwordHash" FROM users WHERE id = $1',
+      [userId]
+    );
+
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const valid = await bcrypt.compare(
+      currentPassword,
+      userResult.rows[0].passwordHash
+    );
+
+    if (!valid) {
+      return res
+        .status(400)
+        .json({ error: 'Current password is incorrect' });
+    }
+
+    const newHash = await bcrypt.hash(newPassword, 10);
+    await query(
+      'UPDATE users SET "passwordHash" = $1 WHERE id = $2',
+      [newHash, userId]
+    );
+
+    res.json({ message: 'Password changed successfully' });
+  } catch (error) {
+    console.error('Error changing password:', error);
+    res.status(500).json({ error: 'Failed to change password' });
   }
 });
 

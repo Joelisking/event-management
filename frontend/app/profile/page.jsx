@@ -8,6 +8,7 @@ import { API_URL } from '@/lib/constants';
 import { ProfileHeader } from '@/components/profile/ProfileHeader';
 import { ProfileInfo } from '@/components/profile/ProfileInfo';
 import { ProfileActivity } from '@/components/profile/ProfileActivity';
+import { ChangePassword } from '@/components/profile/ChangePassword';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -125,12 +126,13 @@ export default function ProfilePage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Profile Information */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 space-y-6">
             <ProfileInfo
               profile={profile}
               onUpdateProfile={handleUpdateProfile}
               formatDate={formatDate}
             />
+            <ChangePassword getToken={getToken} />
           </div>
 
           {/* Student RSVPs or Organizer Events */}
