@@ -123,11 +123,11 @@ export function EventCard({
                 <button
                   onClick={(e) => { e.preventDefault(); onRsvp(event.id); }}
                   disabled={rsvpLoading}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-full text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${
+                  className={`px-4 py-1.5 text-xs font-semibold rounded-full text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm ${
                     event.capacity &&
                     event.attendeeCount >= event.capacity
-                      ? 'bg-amber-600 hover:bg-amber-500'
-                      : 'bg-pfw-gold hover:bg-gold-dark'
+                      ? 'bg-amber-600 hover:bg-amber-500 shadow-amber-600/30'
+                      : 'bg-[#9a7d5c] hover:bg-[#836a4c] shadow-[#9a7d5c]/40'
                   }`}>
                   {rsvpLoading
                     ? 'Processing...'

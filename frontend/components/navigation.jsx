@@ -110,21 +110,13 @@ export function Navigation() {
             {user ? (
               <>
                 <NotificationBell user={user} />
-                {/* <Link href="/profile">
-                  <span
-                    className="text-sm text-gray-700 px-4 py-2 bg-gray-50 border border-gray-200 rounded-full backdrop-blur-sm"
-                    data-testid="user-name-display">
-                    {user.name}
-                  </span>
-                </Link> */}
-                <Button
-                  size="sm"
+                <button
                   onClick={handleSignOut}
                   data-testid="sign-out-button"
-                  className="rounded-lg hover:bg-red-700 text-white hover:border-red-500/60 transition-all bg-red-600 px-4 flex items-center gap-2">
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-gray-500 hover:text-red-600 hover:bg-red-50 transition-all">
                   <LogOut className="w-4 h-4" />
                   Sign Out
-                </Button>
+                </button>
               </>
             ) : (
               <>
@@ -192,13 +184,13 @@ export function Navigation() {
                       </span>
                     </div>
                   </Link>
-                  <Button
-                    variant="outline"
+                  <button
                     data-testid="sign-out-button-mobile"
-                    className="w-full justify-center rounded-full border-red-500/40 bg-red-500 hover:bg-red-500/10 hover:text-red-300 hover:border-red-500/60 text-white"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-2xl text-sm font-medium text-gray-500 hover:text-red-600 hover:bg-red-50 transition-all"
                     onClick={handleSignOut}>
+                    <LogOut className="w-4 h-4" />
                     Sign Out
-                  </Button>
+                  </button>
                 </>
               ) : (
                 <>

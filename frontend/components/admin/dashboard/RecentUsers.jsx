@@ -52,7 +52,7 @@ export function RecentUsers({ recentUsers }) {
                   }`}>
                   {user.role}
                 </div>
-                <div className="text-xs text-black0">
+                <div className="text-xs text-gray-500">
                   {formatDate(user.createdAt)}
                 </div>
               </div>

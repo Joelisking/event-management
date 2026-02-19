@@ -39,7 +39,7 @@ export function UpcomingEvents({ upcomingEvents }) {
                   By {event.organizerName}
                 </div>
                 <div className="flex justify-between items-center mt-2.5 pt-2 border-t border-gray-200">
-                  <div className="text-xs text-black0">
+                  <div className="text-xs text-gray-500">
                     {formatDate(event.startDate)}
                   </div>
                   <div className="text-xs text-gray-600 bg-gray-100 px-2 py-0.5 rounded">
@@ -51,7 +51,7 @@ export function UpcomingEvents({ upcomingEvents }) {
             ))}
           </div>
         ) : (
-          <p className="text-center py-8 text-black0">
+          <p className="text-center py-8 text-gray-500">
             No upcoming events
           </p>
         )}

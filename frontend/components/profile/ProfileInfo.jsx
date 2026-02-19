@@ -62,7 +62,7 @@ export function ProfileInfo({
                 onChange={(e) => setName(e.target.value)}
                 required
                 minLength={2}
-                className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
+                className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
               />
             </div>
             {profile.role === 'organizer' && (
@@ -71,7 +71,7 @@ export function ProfileInfo({
                   htmlFor="organizationName"
                   className="text-gray-700">
                   Organization Name{' '}
-                  <span className="text-black0 font-normal">
+                  <span className="text-gray-500 font-normal">
                     (Optional)
                   </span>
                 </Label>
@@ -82,7 +82,7 @@ export function ProfileInfo({
                     setOrganizationName(e.target.value)
                   }
                   placeholder="e.g., Computer Science Club"
-                  className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
+                  className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
                 />
                 <p className="text-xs text-gray-600 mt-1">
                   This name will be displayed as the event organizer
@@ -123,7 +123,7 @@ export function ProfileInfo({
                 </p>
                 <p className="text-lg text-black mt-1">
                   {profile.organization_name || (
-                    <span className="text-black0 italic">
+                    <span className="text-gray-500 italic">
                       Not set
                     </span>
                   )}

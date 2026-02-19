@@ -268,7 +268,7 @@ export function DateTimeRangePicker({
             value={startTime}
             onChange={handleStartTimeChange}
             disabled={timeDisabled}
-            className={`bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-full focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20 p-6 ${
+            className={`bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 rounded-full focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20 p-6 ${
               timeDisabled ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           />
@@ -287,7 +287,7 @@ export function DateTimeRangePicker({
             value={endTime}
             onChange={handleEndTimeChange}
             disabled={timeDisabled}
-            className={`bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-full focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20 p-6 ${
+            className={`bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 rounded-full focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20 p-6 ${
               timeDisabled ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           />
@@ -358,7 +358,7 @@ export function DateTimeRangePicker({
             </div>
 
             <div className="flex-1">
-              <Label className="text-xs font-medium mb-1.5 block text-black0">
+              <Label className="text-xs font-medium mb-1.5 block text-gray-500">
                 End time
               </Label>
               <Input

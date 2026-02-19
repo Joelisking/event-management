@@ -40,7 +40,7 @@ export function RsvpCard({ rsvp, onCancel, formatDate, getStatus }) {
 
           {event.location && (
             <div className="flex items-start gap-2">
-              <MapPin className="w-4 h-4 text-black0 mt-0.5" />
+              <MapPin className="w-4 h-4 text-gray-500 mt-0.5" />
               <span className="text-gray-600 line-clamp-1">
                 {event.location}
               </span>
@@ -49,7 +49,7 @@ export function RsvpCard({ rsvp, onCancel, formatDate, getStatus }) {
 
           {event.category && (
             <div className="flex items-start gap-2">
-              <Tag className="w-4 h-4 text-black0 mt-0.5" />
+              <Tag className="w-4 h-4 text-gray-500 mt-0.5" />
               <Badge
                  variant="secondary"
                  className="bg-gray-100 text-gray-700 hover:bg-slate-700 border-gray-300 text-[10px] h-5 px-2">
@@ -59,7 +59,7 @@ export function RsvpCard({ rsvp, onCancel, formatDate, getStatus }) {
           )}
 
           <div className="flex items-center gap-2 pt-1">
-            <Users className="w-4 h-4 text-black0" />
+            <Users className="w-4 h-4 text-gray-500" />
             <span className="text-gray-600">
                <span className="text-black font-semibold">{event.attendeeCount}</span>{' '}
               {event.capacity ? `/ ${event.capacity}` : ''} attending

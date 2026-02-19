@@ -24,18 +24,18 @@ export function EventsTable({
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <CardTitle className="text-black">
             All Events{' '}
-            <span className="text-black0 text-sm ml-2 p-2 bg-gray-100 rounded-full">
+            <span className="text-gray-500 text-sm ml-2 p-2 bg-gray-100 rounded-full">
               {events.length}
             </span>
           </CardTitle>
           <div className="relative w-full md:w-64">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black0 w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />
             <Input
               type="text"
               placeholder="Search events..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 bg-gray-50 border-gray-200 text-black placeholder:text-black0 focus:ring-blue-900/50 focus:border-blue-700"
+              className="pl-10 bg-gray-50 border-gray-200 text-black placeholder:text-gray-500 focus:ring-blue-900/50 focus:border-blue-700"
             />
           </div>
         </div>
@@ -73,7 +73,7 @@ export function EventsTable({
                         <div className="text-black">
                           {event.organizer.name}
                         </div>
-                        <div className="text-xs text-black0">
+                        <div className="text-xs text-gray-500">
                           {event.organizer.email}
                         </div>
                       </div>
@@ -116,7 +116,7 @@ export function EventsTable({
                         </span>
                       )}
                     </td>
-                    <td className="p-4 text-black0">
+                    <td className="p-4 text-gray-500">
                       {formatDate(event.createdAt)}
                     </td>
                     <td className="p-4 text-right">

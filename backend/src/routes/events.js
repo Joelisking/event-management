@@ -6,10 +6,6 @@ import {
   requireOrganizer,
 } from '../middleware/auth.js';
 import {
-  sendEventUpdateEmail,
-  sendEventCancellationEmail,
-} from '../services/email.js';
-import {
   validateEventDates,
   validateCapacity,
 } from '../utils/validation.js';
@@ -366,7 +362,7 @@ router.post('/', authenticate, requireOrganizer, async (req, res) => {
     );
 
     const event = result.rows[0];
-    const qrCodeUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/scanner?eventId=${event.id}`;
+    const qrCodeUrl = `${process.env.FRONTEND_URL || 'https://pfw-campus-pulse.vercel.app'}/scanner?eventId=${event.id}`;
 
     await query('UPDATE events SET qr_code_url = $1 WHERE id = $2', [
       qrCodeUrl,
@@ -520,38 +516,6 @@ router.put(
         [id]
       );
 
-      // Send update notification emails to all attendees
-      const eventData = {
-        id: event.id,
-        title: event.title,
-        description: event.description,
-        startDate: event.start_date,
-        endDate: event.end_date,
-        location: event.location,
-        category: event.category,
-      };
-
-      try {
-        const emailPromises = attendeesResult.rows.map((attendee) => {
-          const userData = {
-            id: attendee.user_id,
-            name: attendee.user_name,
-            email: attendee.user_email,
-          };
-          return sendEventUpdateEmail(userData, eventData).catch(
-            (err) => {
-              console.error(
-                `Failed to send update email to ${attendee.user_email}:`,
-                err
-              );
-            }
-          );
-        });
-        await Promise.all(emailPromises);
-      } catch (err) {
-        console.error('Error sending update emails:', err);
-      }
-
       res.json({
         id: event.id,
         title: event.title,
@@ -630,43 +594,6 @@ router.post(
         [reason || null, id]
       );
 
-      // Get all attendees to send cancellation emails
-      const attendeesResult = await query(
-        `SELECT u.id, u.name, u.email
-         FROM event_attendees ea
-         JOIN users u ON ea.user_id = u.id
-         WHERE ea.event_id = $1`,
-        [id]
-      );
-
-      // Send cancellation emails to all attendees
-      const eventData = {
-        id: event.id,
-        title: event.title,
-        description: event.description,
-        startDate: event.start_date,
-        endDate: event.end_date,
-        location: event.location,
-        category: event.category,
-      };
-
-      try {
-        const emailPromises = attendeesResult.rows.map((attendee) => {
-          return sendEventCancellationEmail(
-            attendee,
-            eventData
-          ).catch((err) => {
-            console.error(
-              `Failed to send cancellation email to ${attendee.email}:`,
-              err
-            );
-          });
-        });
-        await Promise.all(emailPromises);
-      } catch (err) {
-        console.error('Error sending cancellation emails:', err);
-      }
-
       res.json({
         message: 'Event cancelled successfully',
         event: {
@@ -676,7 +603,6 @@ router.post(
           cancelledAt: result.rows[0].cancelled_at,
           cancellationReason: result.rows[0].cancellation_reason,
         },
-        emailsSent: attendeesResult.rows.length,
       });
     } catch (error) {
       console.error('Error cancelling event:', error);
@@ -766,42 +692,6 @@ router.post(
         ]
       );
 
-      // Get all attendees to send update emails
-      const attendeesResult = await query(
-        `SELECT u.id, u.name, u.email
-         FROM event_attendees ea
-         JOIN users u ON ea.user_id = u.id
-         WHERE ea.event_id = $1`,
-        [id]
-      );
-
-      // Send update emails to all attendees
-      const eventData = {
-        id: result.rows[0].id,
-        title: result.rows[0].title,
-        description: result.rows[0].description,
-        startDate: result.rows[0].start_date,
-        endDate: result.rows[0].end_date,
-        location: result.rows[0].location,
-        category: result.rows[0].category,
-      };
-
-      try {
-        const emailPromises = attendeesResult.rows.map((attendee) => {
-          return sendEventUpdateEmail(attendee, eventData).catch(
-            (err) => {
-              console.error(
-                `Failed to send update email to ${attendee.email}:`,
-                err
-              );
-            }
-          );
-        });
-        await Promise.all(emailPromises);
-      } catch (err) {
-        console.error('Error sending postponement emails:', err);
-      }
-
       res.json({
         message: 'Event postponed successfully',
         event: {
@@ -813,7 +703,6 @@ router.post(
           postponedFromStart: result.rows[0].postponed_from_start,
           postponedFromEnd: result.rows[0].postponed_from_end,
         },
-        emailsSent: attendeesResult.rows.length,
       });
     } catch (error) {
       console.error('Error postponing event:', error);
@@ -875,6 +764,21 @@ router.post('/:id/check-in', authenticate, async (req, res) => {
 
     const { id } = req.params;
     const userId = req.user.userId;
+
+    // Prevent event organizer from earning points for their own event
+    const eventOwnerResult = await client.query(
+      'SELECT user_id FROM events WHERE id = $1',
+      [id]
+    );
+    if (
+      eventOwnerResult.rows.length > 0 &&
+      eventOwnerResult.rows[0].user_id === userId
+    ) {
+      await client.query('ROLLBACK');
+      return res
+        .status(403)
+        .json({ error: 'You cannot earn points for your own event' });
+    }
 
     // Lock event_attendees row (prevents concurrent check-ins)
     const attendeeResult = await client.query(

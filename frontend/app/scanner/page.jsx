@@ -6,46 +6,50 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import { toast } from 'sonner';
 import { useAuth } from '@/lib/auth-context';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { CheckCircle, XCircle, Loader2, QrCode, ScanLine } from 'lucide-react';
 import './scanner-styles.css';
 
 function ScannerContent() {
   const searchParams = useSearchParams();
   const eventIdParam = searchParams.get('eventId');
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
 
-  const [status, setStatus] = useState('idle'); // idle, scanning, processing, success, already_checked_in, error
+  const [status, setStatus] = useState('idle');
   const [message, setMessage] = useState('');
   const [pointsEarned, setPointsEarned] = useState(0);
 
   const scannerRef = useRef(null);
 
+  // Redirect to sign-in if auth resolved and user is not logged in
   useEffect(() => {
-    // If eventId param is present, always attempt check-in on mount/navigation
-    if (eventIdParam && user) {
-      handleCheckIn(eventIdParam);
+    if (authLoading) return;
+    if (!user && eventIdParam) {
+      router.push(
+        `/signin?redirect=${encodeURIComponent(`/scanner?eventId=${eventIdParam}`)}`
+      );
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [eventIdParam, user, searchParams]);
+  }, [authLoading, user, eventIdParam]);
 
+  // Trigger check-in when eventId param is present and user is authenticated
   useEffect(() => {
-    // Initialize scanner if no param and not processing
+    if (authLoading || !user || !eventIdParam) return;
+    handleCheckIn(eventIdParam);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eventIdParam, user, authLoading, searchParams]);
+
+  // Initialize QR scanner when idle with no eventId param
+  useEffect(() => {
     if (!eventIdParam && status === 'idle') {
-      // Small delay to ensure DOM is ready
       const timer = setTimeout(() => {
         const readerElement = document.getElementById('reader');
-        if (!readerElement) {
-          console.error('Reader element not found');
-          return;
-        }
+        if (!readerElement) return;
 
         const scanner = new Html5QrcodeScanner(
           'reader',
           { fps: 10, qrbox: { width: 250, height: 250 } },
-          /* verbose= */ false
+          false
         );
 
         scanner.render(onScanSuccess, onScanFailure);
@@ -61,14 +65,9 @@ function ScannerContent() {
     }
   }, [eventIdParam, status]);
 
-  const onScanSuccess = (decodedText, decodedResult) => {
-    // Handle the scanned code
-    // Expecting URL: .../scanner?eventId=123 OR just 123
-    console.log(`Code matched = ${decodedText}`, decodedResult);
-
+  const onScanSuccess = (decodedText) => {
     let targetEventId = decodedText;
 
-    // Try to parse URL parameters
     try {
       const url = new URL(decodedText);
       const params = new URLSearchParams(url.search);
@@ -76,19 +75,18 @@ function ScannerContent() {
         targetEventId = params.get('eventId');
       }
     } catch (e) {
-      // Not a URL, treat as ID
+      // Not a URL, treat as raw ID
     }
 
     if (scannerRef.current) {
       scannerRef.current.clear();
+      scannerRef.current = null;
     }
 
-    handleCheckIn(targetEventId);
+    router.push(`/scanner?eventId=${encodeURIComponent(targetEventId)}`);
   };
 
-  const onScanFailure = (error) => {
-    // console.warn(`Code scan error = ${error}`);
-  };
+  const onScanFailure = () => {};
 
   const handleCheckIn = async (id) => {
     setStatus('processing');
@@ -96,15 +94,10 @@ function ScannerContent() {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(
-        `${API_URL}/api/events/${id}/check-in`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await fetch(`${API_URL}/api/events/${id}/check-in`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       const data = await res.json();
 
@@ -118,6 +111,9 @@ function ScannerContent() {
         setPointsEarned(data.pointsEarned || 0);
         setMessage(data.message || 'Check-in successful!');
         toast.success('Checked in!');
+      } else if (res.status === 400 && data.error === 'User is not registered for this event') {
+        toast.info('You need to RSVP to this event before checking in.');
+        router.push(`/events/${id}`);
       } else {
         setStatus('error');
         setMessage(data.error || 'Check-in failed');
@@ -130,11 +126,30 @@ function ScannerContent() {
     }
   };
 
-  if (!user) {
+  // Show spinner while auth is resolving
+  if (authLoading) {
     return (
       <div className="min-h-screen bg-cream-50 flex items-center justify-center">
-        <div className="text-center text-red-400 bg-red-500/10 border border-red-500/30 rounded-lg p-8">
-          Please sign in to scan.
+        <Loader2 className="animate-spin h-8 w-8 text-[#9a7d5c]" />
+      </div>
+    );
+  }
+
+  // Not logged in, no eventId — show a prompt instead of a blank redirect
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-cream-50 flex items-center justify-center px-4">
+        <div className="text-center max-w-sm">
+          <div className="w-16 h-16 rounded-full bg-[#9a7d5c]/10 flex items-center justify-center mx-auto mb-4">
+            <QrCode className="w-8 h-8 text-[#9a7d5c]" />
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Sign in to check in</h2>
+          <p className="text-gray-500 text-sm mb-6">You need to be signed in to scan event QR codes.</p>
+          <Button
+            className="bg-[#9a7d5c] hover:bg-[#836a4c] text-white rounded-xl px-6"
+            onClick={() => router.push('/signin')}>
+            Sign In
+          </Button>
         </div>
       </div>
     );
@@ -142,120 +157,93 @@ function ScannerContent() {
 
   return (
     <div className="min-h-screen bg-cream-50">
-      <div className="container mx-auto py-10 px-4 max-w-md">
-        <h1 className="text-3xl font-bold mb-6 text-center text-slate-50">
-          Event Check-in
-        </h1>
+      <div className="container mx-auto py-10 px-4 max-w-sm">
 
-        <Card className="bg-white border-gray-200">
-          <CardContent className="pt-6">
-            {status === 'processing' && (
-              <div className="text-center py-10">
-                <Loader2 className="h-12 w-12 animate-spin mx-auto text-blue-500 mb-4" />
-                <p className="text-lg text-gray-700">{message}</p>
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="w-14 h-14 rounded-2xl bg-[#9a7d5c]/10 border border-[#9a7d5c]/20 flex items-center justify-center mx-auto mb-4">
+            <QrCode className="w-7 h-7 text-[#9a7d5c]" />
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900">Event Check-in</h1>
+          <p className="text-sm text-gray-500 mt-1">Scan your event QR code to check in</p>
+        </div>
+
+        {/* Status Card */}
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+
+          {status === 'processing' && (
+            <div className="p-10 text-center">
+              <div className="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mx-auto mb-4">
+                <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
               </div>
-            )}
+              <p className="text-base font-medium text-gray-700">{message}</p>
+            </div>
+          )}
 
-            {status === 'success' && (
-              <div className="text-center py-8">
-                <CheckCircle className="h-16 w-16 mx-auto mb-4 text-green-500" />
-                <h2 className="text-2xl font-bold mb-2 text-green-400">
-                  Checked In!
-                </h2>
-                <p className="text-gray-700">{message}</p>
-                {pointsEarned > 0 && (
-                  <div className="mt-4 bg-green-500/10 border border-green-500/30 p-3 rounded-lg inline-block">
-                    <span className="font-bold text-green-400">
-                      +{pointsEarned} Points Earned
-                    </span>
-                  </div>
-                )}
-                <Button
-                  className="mt-6 w-full"
-                  onClick={() => {
-                    setStatus('idle');
-                    router.push('/scanner'); // Reset
-                  }}>
-                  Scan Another
-                </Button>
+          {status === 'success' && (
+            <div className="p-8 text-center">
+              <div className="w-20 h-20 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="h-10 w-10 text-emerald-500" />
               </div>
-            )}
+              <h2 className="text-xl font-bold text-gray-900 mb-1">Checked In!</h2>
+              <p className="text-sm text-gray-500 mb-4">{message}</p>
+              {pointsEarned > 0 && (
+                <div className="inline-flex items-center gap-2 bg-[#9a7d5c]/10 border border-[#9a7d5c]/20 rounded-full px-4 py-2 mb-6">
+                  <span className="text-sm font-bold text-[#9a7d5c]">+{pointsEarned} pts earned</span>
+                </div>
+              )}
+              <Button
+                className="w-full bg-[#9a7d5c] hover:bg-[#836a4c] text-white rounded-xl h-11"
+                onClick={() => { setStatus('idle'); router.push('/scanner'); }}>
+                Scan Another
+              </Button>
+            </div>
+          )}
 
-            {status === 'already_checked_in' && (
-              <div className="text-center py-8">
-                <CheckCircle className="h-16 w-16 mx-auto mb-4 text-green-500" />
-                <h2 className="text-2xl font-bold mb-2 text-green-400">
-                  Already Checked In
-                </h2>
-                <p className="text-gray-700">{message}</p>
-                <Button
-                  className="mt-6 w-full"
-                  onClick={() => {
-                    setStatus('idle');
-                    router.push('/scanner');
-                  }}>
-                  Scan Another
-                </Button>
+          {status === 'already_checked_in' && (
+            <div className="p-8 text-center">
+              <div className="w-20 h-20 rounded-full bg-amber-50 flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="h-10 w-10 text-amber-500" />
               </div>
-            )}
+              <h2 className="text-xl font-bold text-gray-900 mb-1">Already Checked In</h2>
+              <p className="text-sm text-gray-500 mb-6">{message}</p>
+              <Button
+                className="w-full bg-[#9a7d5c] hover:bg-[#836a4c] text-white rounded-xl h-11"
+                onClick={() => { setStatus('idle'); router.push('/scanner'); }}>
+                Scan Another
+              </Button>
+            </div>
+          )}
 
-            {status === 'error' && (
-              <div className="text-center py-8">
-                <XCircle className="h-16 w-16 mx-auto mb-4 text-red-500" />
-                <h2 className="text-2xl font-bold mb-2 text-red-400">
-                  Error
-                </h2>
-                <p className="text-gray-700">{message}</p>
-                <Button
-                  variant="outline"
-                  className="mt-6 w-full border-slate-700 text-gray-700 hover:bg-slate-800 hover:text-slate-100"
-                  onClick={() => {
-                    setStatus('idle');
-                    router.push('/scanner');
-                  }}>
-                  Try Again
-                </Button>
+          {status === 'error' && (
+            <div className="p-8 text-center">
+              <div className="w-20 h-20 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
+                <XCircle className="h-10 w-10 text-red-500" />
               </div>
-            )}
+              <h2 className="text-xl font-bold text-gray-900 mb-1">Check-in Failed</h2>
+              <p className="text-sm text-gray-500 mb-6">{message}</p>
+              <Button
+                className="w-full bg-gray-900 hover:bg-gray-800 text-white rounded-xl h-11"
+                onClick={() => { setStatus('idle'); router.push('/scanner'); }}>
+                Try Again
+              </Button>
+            </div>
+          )}
 
-            {status === 'idle' && !eventIdParam && (
-              <div>
-                <div id="reader" className="w-full"></div>
-                <p className="text-center text-sm text-gray-600 mt-4">
-                  Point your camera at the event QR code to check in.
+          {status === 'idle' && !eventIdParam && (
+            <div>
+              <div className="flex items-center gap-2 px-5 py-3 bg-[#9a7d5c]/5 border-b border-gray-100">
+                <ScanLine className="w-4 h-4 text-[#9a7d5c]" />
+                <p className="text-xs font-medium text-gray-600">
+                  Point your camera at the event QR code
                 </p>
               </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Fallback for testing on desktop */}
-        {status === 'idle' && !eventIdParam && (
-          <div className="text-center mt-8">
-            <p className="text-xs text-slate-500 mb-2">
-              Dev Check-in (Manual ID)
-            </p>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                const id = e.target.elements.eventId.value;
-                if (id) handleCheckIn(id);
-              }}
-              className="flex gap-2">
-              <input
-                name="eventId"
-                placeholder="Event UUID"
-                className="flex-1 border border-slate-700 bg-slate-800/50 text-gray-900 rounded px-3 py-2 focus:outline-none focus:border-blue-500"
-              />
-              <Button
-                type="submit"
-                size="sm"
-                className="bg-blue-600 hover:bg-blue-500">
-                Go
-              </Button>
-            </form>
-          </div>
-        )}
+              <div className="p-4">
+                <div id="reader" className="w-full rounded-xl overflow-hidden" />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -266,7 +254,7 @@ export default function ScannerPage() {
     <Suspense
       fallback={
         <div className="min-h-screen bg-cream-50 flex justify-center items-center">
-          <Loader2 className="animate-spin h-8 w-8 text-blue-500" />
+          <Loader2 className="animate-spin h-8 w-8 text-[#9a7d5c]" />
         </div>
       }>
       <ScannerContent />

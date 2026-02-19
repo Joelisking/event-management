@@ -21,12 +21,6 @@ const transportConfig = {
   },
 };
 
-console.log('Email transporter config:', {
-  host: transportConfig.host,
-  port: transportConfig.port,
-  secure: transportConfig.secure,
-  user: transportConfig.auth.user,
-});
 
 export const transporter = nodemailer.createTransport(transportConfig);
 

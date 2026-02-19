@@ -1,7 +1,6 @@
 import express from 'express';
 import { query, getClient } from '../db.js';
 import { authenticate } from '../middleware/auth.js';
-import { sendRsvpConfirmationEmail } from '../services/email.js';
 import { rsvpLimiter } from '../middleware/rate-limit.js';
 
 const router = express.Router();
@@ -117,32 +116,6 @@ router.post(
       );
 
       await client.query('COMMIT');
-
-      const userResult = await query(
-        'SELECT id, name, email FROM users WHERE id = $1',
-        [userId]
-      );
-
-      const eventData = {
-        id: eventResult.rows[0].id,
-        title: eventResult.rows[0].title,
-        description: eventResult.rows[0].description,
-        startDate: eventResult.rows[0].start_date,
-        endDate: eventResult.rows[0].end_date,
-        location: eventResult.rows[0].location,
-        category: eventResult.rows[0].category,
-      };
-
-      const userData = {
-        name: userResult.rows[0].name,
-        email: userResult.rows[0].email,
-      };
-
-      try {
-        await sendRsvpConfirmationEmail(userData, eventData);
-      } catch (err) {
-        console.error('Failed to send RSVP confirmation email:', err);
-      }
 
       res.status(201).json({
         message: 'RSVP successful',

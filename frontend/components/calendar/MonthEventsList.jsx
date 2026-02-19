@@ -42,7 +42,7 @@ export function MonthEventsList({
                     })}
                   </p>
                   {event.location && (
-                    <p className="text-sm text-black0 mt-1">
+                    <p className="text-sm text-gray-500 mt-1">
                       {event.location}
                     </p>
                   )}

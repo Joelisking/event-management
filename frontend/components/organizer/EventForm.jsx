@@ -201,7 +201,7 @@ export function EventForm({
           id="title"
           type="text"
           placeholder="Enter event title"
-          className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
+          className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
           {...register('title')}
         />
         {errors.title && (
@@ -220,7 +220,7 @@ export function EventForm({
           id="description"
           placeholder="Describe what this event is about"
           rows={5}
-          className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
+          className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
           {...register('description')}
         />
         {errors.description && (
@@ -378,7 +378,7 @@ export function EventForm({
           id="location"
           type="text"
           placeholder="Enter event location"
-          className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
+          className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
           {...register('location')}
         />
         {errors.location && (
@@ -399,7 +399,7 @@ export function EventForm({
             type="number"
             min="1"
             placeholder="Max attendees"
-            className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
+            className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
             {...register('capacity')}
           />
           {errors.capacity && (
@@ -420,7 +420,7 @@ export function EventForm({
             id="category"
             type="text"
             placeholder="e.g. Workshop, Social"
-            className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
+            className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
             {...register('category')}
           />
           {errors.category && (
@@ -441,7 +441,7 @@ export function EventForm({
           type="number"
           min="0"
           placeholder="Points awarded for attendance"
-          className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
+          className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
           {...register('points')}
         />
         {errors.points && (

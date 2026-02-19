@@ -117,7 +117,7 @@ export function SignUpForm() {
                 type="text"
                 {...register('firstName')}
                 placeholder="John"
-                className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
+                className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
               />
               {errors.firstName && (
                 <FieldError className="text-red-400 text-xs">
@@ -137,7 +137,7 @@ export function SignUpForm() {
                 type="text"
                 {...register('lastName')}
                 placeholder="Doe"
-                className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
+                className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
               />
               {errors.lastName && (
                 <FieldError className="text-red-400 text-xs">
@@ -158,7 +158,7 @@ export function SignUpForm() {
               type="email"
               {...register('email')}
               placeholder="john.doe@example.com"
-              className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
+              className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
             />
             {errors.email && (
               <FieldError className="text-red-400 text-xs">
@@ -179,7 +179,7 @@ export function SignUpForm() {
                 type={showPassword ? 'text' : 'password'}
                 {...register('password')}
                 placeholder="••••••••"
-                className="h-11 pr-10 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
+                className="h-11 pr-10 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
               />
               <button
                 type="button"
@@ -211,7 +211,7 @@ export function SignUpForm() {
                 type={showConfirmPassword ? 'text' : 'password'}
                 {...register('confirmPassword')}
                 placeholder="••••••••"
-                className="h-11 pr-10 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
+                className="h-11 pr-10 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
               />
               <button
                 type="button"
@@ -242,7 +242,7 @@ export function SignUpForm() {
             <select
               id="userCategory"
               {...register('userCategory')}
-              className="flex h-11 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 ring-offset-background placeholder:text-black0 focus:border-pfw-gold/30 focus:outline-none focus:ring-2 focus:ring-pfw-gold/20 disabled:cursor-not-allowed disabled:opacity-50">
+              className="flex h-11 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 ring-offset-background placeholder:text-gray-500 focus:border-pfw-gold/30 focus:outline-none focus:ring-2 focus:ring-pfw-gold/20 disabled:cursor-not-allowed disabled:opacity-50">
               <option
                 value=""
                 className="bg-gray-50 text-gray-600">
@@ -266,7 +266,7 @@ export function SignUpForm() {
               <option
                 value="international"
                 className="bg-gray-50 text-gray-900">
-                International
+                Outside the US
               </option>
             </select>
             {errors.userCategory && (
@@ -290,7 +290,7 @@ export function SignUpForm() {
                   type="text"
                   {...register('countryOfResidence')}
                   placeholder="e.g., United States"
-                  className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
+                  className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
                 />
                 {errors.countryOfResidence && (
                   <FieldError className="text-red-400 text-xs">
@@ -307,7 +307,7 @@ export function SignUpForm() {
                   htmlFor="countryOfOrigin"
                   className="text-sm font-medium text-gray-700">
                   Country of Origin{' '}
-                  <span className="text-black0 font-normal">
+                  <span className="text-gray-500 font-normal">
                     (Optional)
                   </span>
                 </FieldLabel>
@@ -316,7 +316,7 @@ export function SignUpForm() {
                   type="text"
                   {...register('countryOfOrigin')}
                   placeholder="e.g., Mexico"
-                  className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-black0 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
+                  className="h-11 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 rounded-xl focus:border-pfw-gold/30 focus:ring-2 focus:ring-pfw-gold/20"
                 />
                 {errors.countryOfOrigin && (
                   <FieldError className="text-red-400 text-xs">

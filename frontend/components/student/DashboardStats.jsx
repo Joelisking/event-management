@@ -39,7 +39,7 @@ export function DashboardStats({ stats }) {
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
-          <div className="text-3xl font-bold text-black0">
+          <div className="text-3xl font-bold text-gray-500">
             {stats.pastEvents}
           </div>
         </CardContent>

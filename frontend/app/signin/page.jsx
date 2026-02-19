@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import { SignInForm } from '@/components/auth/SignInForm';
 
 export default function SignInPage() {
@@ -19,7 +20,9 @@ export default function SignInPage() {
           </p>
         </div>
 
-        <SignInForm />
+        <Suspense fallback={null}>
+          <SignInForm />
+        </Suspense>
 
         <p className="text-center text-xs text-gray-500 mt-6">
           By signing in, you agree to our Terms of Service and Privacy

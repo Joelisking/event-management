@@ -83,7 +83,7 @@ export function EventsList({
                 <TableCell className="font-medium">
                   <div className="text-black font-semibold">{event.title}</div>
                   {event.location && (
-                    <div className="text-sm text-black0 mt-1 flex items-center gap-1">
+                    <div className="text-sm text-gray-500 mt-1 flex items-center gap-1">
                        <span className="truncate max-w-[200px]">{event.location}</span>
                     </div>
                   )}
@@ -92,7 +92,7 @@ export function EventsList({
                   <div className="text-sm text-gray-700">
                     {new Date(event.startDate).toLocaleDateString()}
                   </div>
-                  <div className="text-xs text-black0 mt-1">
+                  <div className="text-xs text-gray-500 mt-1">
                     {new Date(event.startDate).toLocaleTimeString([], {
                       hour: '2-digit',
                       minute: '2-digit',
@@ -116,7 +116,7 @@ export function EventsList({
                 <TableCell>
                   <div className="flex items-center gap-4 text-sm text-gray-600">
                     <div className="flex items-center gap-1.5">
-                      <Users className="w-4 h-4 text-black0" />
+                      <Users className="w-4 h-4 text-gray-500" />
                       <span>
                         <span className="text-black">{event.attendeeCount}</span>
                         <span className="text-slate-600 mx-1">/</span>

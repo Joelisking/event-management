@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -21,6 +21,8 @@ const signinSchema = yup.object().shape({
 
 export function SignInForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get('redirect') || '/events';
   const { signin } = useAuth();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -40,7 +42,7 @@ export function SignInForm() {
 
     try {
       await signin(data.email, data.password);
-      router.push('/events');
+      router.push(redirectTo);
     } catch (err) {
       setError(err.message || 'Failed to sign in');
     } finally {

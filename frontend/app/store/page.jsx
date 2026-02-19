@@ -138,8 +138,7 @@ export default function RewardsPage() {
                     {reward.name}
                   </CardTitle>
                   <span className="bg-pfw-gold text-black px-2 py-1 rounded-full text-xs font-bold shadow-lg shadow-pfw-gold/30">
-                    {reward.cost}
-                    {/* pts */}
+                    {reward.cost} pts
                   </span>
                 </div>
                 <CardDescription className="text-gray-600">

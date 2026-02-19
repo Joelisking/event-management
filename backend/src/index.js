@@ -19,7 +19,6 @@ import rewardsRoutes from './routes/rewards.js';
 import leaderboardRoutes from './routes/leaderboard.js';
 import notificationsRoutes from './routes/notifications.js';
 import { apiLimiter, rsvpLimiter } from './middleware/rate-limit.js';
-import { transporter } from './services/email.js';
 const app = express();
 const PORT = process.env.PORT || 4000;
 
@@ -147,16 +146,6 @@ app.use('/api/rewards', process.env.NODE_ENV === 'production' ? cacheSuccessOnly
 // Cache leaderboard for 10 minutes in production
 app.use('/api/leaderboard', process.env.NODE_ENV === 'production' ? cacheSuccessOnly('10 minutes') : (req, res, next) => next(), leaderboardRoutes);
 app.use('/api/notifications', notificationsRoutes);
-// Health‑check endpoint for email transporter
-app.get('/api/email-status', async (req, res) => {
-  try {
-    await transporter.verify();
-    res.json({ success: true });
-  } catch (error) {
-    logger.error('Email transporter verification failed:', error);
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
 
 // Sentry error handler must be after all routes
 if (process.env.SENTRY_DSN) {

@@ -37,7 +37,7 @@ export function AdminHeader({ title }) {
                       : ''
                   }`}>
                   <Users className="w-4 h-4 mr-2" />
-                  Users
+                  User Management
                 </Button>
               </Link>
               <Link href="/admin/events">
@@ -49,7 +49,7 @@ export function AdminHeader({ title }) {
                       : ''
                   }`}>
                   <Calendar className="w-4 h-4 mr-2" />
-                  Events
+                  Event Management
                 </Button>
               </Link>
               <Link href="/admin/rewards">

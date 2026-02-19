@@ -36,14 +36,14 @@ export function RecentRsvps({ recentRsvps }) {
                   <span className="font-medium text-black">
                     {rsvp.userName}
                   </span>
-                  <span className="text-black0 mx-1">
+                  <span className="text-gray-500 mx-1">
                     registered for
                   </span>
                   <span className="font-medium text-pfw-gold">
                     {rsvp.eventTitle}
                   </span>
                 </div>
-                <div className="text-xs text-black0 ml-4">
+                <div className="text-xs text-gray-500 ml-4">
                   {formatDate(rsvp.rsvpDate)}
                 </div>
               </div>
