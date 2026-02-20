@@ -105,13 +105,15 @@ export function EventSidebar({
                 <h4 className="font-medium text-gray-900">
                   Location
                 </h4>
-                {/^https?:\/\//i.test(event.location) ? (
+                {event.location.startsWith('http://') ||
+                event.location.startsWith('https://') ? (
                   <a
                     href={event.location}
                     target="_blank"
                     rel="noopener noreferrer"
                     title={event.location}
-                    className="text-xs sm:text-sm text-emerald-600 hover:text-emerald-700 underline underline-offset-2 block truncate">
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-xs sm:text-sm text-emerald-600 hover:text-emerald-700 underline underline-offset-2 block truncate cursor-pointer">
                     {event.location}
                   </a>
                 ) : (
