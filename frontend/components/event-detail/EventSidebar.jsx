@@ -111,10 +111,9 @@ export function EventSidebar({
                     href={event.location}
                     target="_blank"
                     rel="noopener noreferrer"
-                    title={event.location}
                     onClick={(e) => e.stopPropagation()}
-                    className="text-xs sm:text-sm text-emerald-600 hover:text-emerald-700 underline underline-offset-2 block truncate cursor-pointer">
-                    {event.location}
+                    className="text-xs sm:text-sm text-emerald-600 hover:text-emerald-700 underline underline-offset-2 cursor-pointer">
+                    Join Online Meeting
                   </a>
                 ) : (
                   <p

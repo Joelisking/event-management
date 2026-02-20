@@ -95,8 +95,8 @@ export function EventHero({
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="truncate max-w-xs underline underline-offset-2 hover:text-white/80">
-                        {event.location}
+                        className="underline underline-offset-2 hover:text-white/80">
+                        Join Online Meeting
                       </a>
                     ) : (
                       <span className="truncate max-w-xs">
