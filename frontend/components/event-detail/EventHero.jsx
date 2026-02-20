@@ -7,6 +7,7 @@ import {
   MapPin,
   Tag,
 } from 'lucide-react';
+import { normalizeLocation } from '@/lib/utils';
 
 export function EventHero({
   event,
@@ -85,26 +86,27 @@ export function EventHero({
                   </span>
                 </div>
 
-                {event.location && (
-                  <div className="inline-flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-white" />
-                    {event.location.startsWith('http://') ||
-                    event.location.startsWith('https://') ? (
-                      <a
-                        href={event.location}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="underline underline-offset-2 hover:text-white/80">
-                        Join Online Meeting
-                      </a>
-                    ) : (
-                      <span className="truncate max-w-xs">
-                        {event.location}
-                      </span>
-                    )}
-                  </div>
-                )}
+                {event.location && (() => {
+                  const loc = normalizeLocation(event.location);
+                  const isUrl = loc.startsWith('http://') || loc.startsWith('https://');
+                  return (
+                    <div className="inline-flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-white" />
+                      {isUrl ? (
+                        <a
+                          href={loc}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="underline underline-offset-2 hover:text-white/80">
+                          Join Online Meeting
+                        </a>
+                      ) : (
+                        <span className="truncate max-w-xs">{loc}</span>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 {event.category && (
                   <div className="inline-flex items-center gap-2">

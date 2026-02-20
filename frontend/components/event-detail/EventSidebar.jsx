@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { normalizeLocation } from '@/lib/utils';
 import {
   Card,
   CardContent,
@@ -96,35 +97,38 @@ export function EventSidebar({
           </div>
 
           {/* Location */}
-          {event.location && (
-            <div className="flex gap-3 min-w-0">
-              <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex-shrink-0">
-                <MapPin className="w-4 h-4 text-emerald-400" />
+          {event.location && (() => {
+            const loc = normalizeLocation(event.location);
+            const isUrl = loc.startsWith('http://') || loc.startsWith('https://');
+            return (
+              <div className="flex gap-3 min-w-0">
+                <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex-shrink-0">
+                  <MapPin className="w-4 h-4 text-emerald-400" />
+                </div>
+                <div className="space-y-1 min-w-0">
+                  <h4 className="font-medium text-gray-900">
+                    Location
+                  </h4>
+                  {isUrl ? (
+                    <a
+                      href={loc}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-xs sm:text-sm text-emerald-600 hover:text-emerald-700 underline underline-offset-2 cursor-pointer">
+                      Join Online Meeting
+                    </a>
+                  ) : (
+                    <p
+                      title={loc}
+                      className="text-xs sm:text-sm text-gray-700 truncate">
+                      {loc}
+                    </p>
+                  )}
+                </div>
               </div>
-              <div className="space-y-1 min-w-0">
-                <h4 className="font-medium text-gray-900">
-                  Location
-                </h4>
-                {event.location.startsWith('http://') ||
-                event.location.startsWith('https://') ? (
-                  <a
-                    href={event.location}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    className="text-xs sm:text-sm text-emerald-600 hover:text-emerald-700 underline underline-offset-2 cursor-pointer">
-                    Join Online Meeting
-                  </a>
-                ) : (
-                  <p
-                    title={event.location}
-                    className="text-xs sm:text-sm text-gray-700 truncate">
-                    {event.location}
-                  </p>
-                )}
-              </div>
-            </div>
-          )}
+            );
+          })()}
 
           {/* Category */}
           {event.category && (
