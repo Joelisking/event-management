@@ -33,12 +33,6 @@ export function BenefitsSection() {
             </ul>
           </CardContent>
         </Card>
-
-        <div className="p-4 rounded-2xl bg-gold-dark/5 border border-pfw-gold/30 backdrop-blur-sm">
-          <p className="text-xs text-center text-gray-600">
-            Join 50+ active students already using Campus Pulse
-          </p>
-        </div>
       </div>
     </div>
   );

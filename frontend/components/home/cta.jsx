@@ -15,9 +15,6 @@ function Cta() {
       <div className="relative max-w-4xl mx-auto text-center">
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 backdrop-blur-sm rounded-full mb-6">
           <Users className="w-4 h-4 text-pfw-gold" />
-          <span className="text-sm font-medium text-gray-900">
-            Join 50+ Active Students
-          </span>
         </div>
 
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-black mb-6 tracking-tight">
