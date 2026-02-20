@@ -70,14 +70,14 @@ export function EventSidebar({
                         </div>
                         <div className="text-gray-600 mt-0.5">
                           {new Date(
-                            `2000-01-01T${slot.startTime}`
+                            `2000-01-01T${slot.startTime}`,
                           ).toLocaleTimeString('en-US', {
                             hour: 'numeric',
                             minute: '2-digit',
                           })}
                           {' - '}
                           {new Date(
-                            `2000-01-01T${slot.endTime}`
+                            `2000-01-01T${slot.endTime}`,
                           ).toLocaleTimeString('en-US', {
                             hour: 'numeric',
                             minute: '2-digit',
@@ -97,17 +97,30 @@ export function EventSidebar({
 
           {/* Location */}
           {event.location && (
-            <div className="flex gap-3">
+            <div className="flex gap-3 min-w-0">
               <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex-shrink-0">
                 <MapPin className="w-4 h-4 text-emerald-400" />
               </div>
-              <div className="space-y-1">
+              <div className="space-y-1 min-w-0">
                 <h4 className="font-medium text-gray-900">
                   Location
                 </h4>
-                <p className="text-xs sm:text-sm text-gray-700">
-                  {event.location}
-                </p>
+                {/^https?:\/\//i.test(event.location) ? (
+                  <a
+                    href={event.location}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={event.location}
+                    className="text-xs sm:text-sm text-emerald-600 hover:text-emerald-700 underline underline-offset-2 block truncate">
+                    {event.location}
+                  </a>
+                ) : (
+                  <p
+                    title={event.location}
+                    className="text-xs sm:text-sm text-gray-700 truncate">
+                    {event.location}
+                  </p>
+                )}
               </div>
             </div>
           )}
