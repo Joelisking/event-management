@@ -88,9 +88,21 @@ export function EventHero({
                 {event.location && (
                   <div className="inline-flex items-center gap-2">
                     <MapPin className="w-4 h-4 text-white" />
-                    <span className="truncate max-w-xs">
-                      {event.location}
-                    </span>
+                    {event.location.startsWith('http://') ||
+                    event.location.startsWith('https://') ? (
+                      <a
+                        href={event.location}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="truncate max-w-xs underline underline-offset-2 hover:text-white/80">
+                        {event.location}
+                      </a>
+                    ) : (
+                      <span className="truncate max-w-xs">
+                        {event.location}
+                      </span>
+                    )}
                   </div>
                 )}
 
