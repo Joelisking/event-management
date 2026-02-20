@@ -100,6 +100,7 @@ export function EventSidebar({
           {event.location && (() => {
             const loc = normalizeLocation(event.location);
             const isUrl = loc.startsWith('http://') || loc.startsWith('https://');
+            const canJoin = isUrl && rsvpStatus === 'confirmed';
             return (
               <div className="flex gap-3 min-w-0">
                 <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex-shrink-0">
@@ -109,7 +110,7 @@ export function EventSidebar({
                   <h4 className="font-medium text-gray-900">
                     Location
                   </h4>
-                  {isUrl ? (
+                  {canJoin ? (
                     <a
                       href={loc}
                       target="_blank"
@@ -119,10 +120,8 @@ export function EventSidebar({
                       Join Online Meeting
                     </a>
                   ) : (
-                    <p
-                      title={loc}
-                      className="text-xs sm:text-sm text-gray-700 truncate">
-                      {loc}
+                    <p className="text-xs sm:text-sm text-gray-700 truncate">
+                      {isUrl ? 'Online Meeting' : loc}
                     </p>
                   )}
                 </div>

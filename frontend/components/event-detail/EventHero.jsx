@@ -14,6 +14,8 @@ export function EventHero({
   status,
   organizerName,
   formatEventDate,
+  rsvpStatus,
+  user,
 }) {
   const statusStyles = {
     upcoming: 'bg-gold-dark/90 text-white',
@@ -89,10 +91,11 @@ export function EventHero({
                 {event.location && (() => {
                   const loc = normalizeLocation(event.location);
                   const isUrl = loc.startsWith('http://') || loc.startsWith('https://');
+                  const canJoin = isUrl && rsvpStatus === 'confirmed';
                   return (
                     <div className="inline-flex items-center gap-2">
                       <MapPin className="w-4 h-4 text-white" />
-                      {isUrl ? (
+                      {canJoin ? (
                         <a
                           href={loc}
                           target="_blank"
@@ -102,7 +105,9 @@ export function EventHero({
                           Join Online Meeting
                         </a>
                       ) : (
-                        <span className="truncate max-w-xs">{loc}</span>
+                        <span className="truncate max-w-xs">
+                          {isUrl ? 'Online Meeting' : loc}
+                        </span>
                       )}
                     </div>
                   );
