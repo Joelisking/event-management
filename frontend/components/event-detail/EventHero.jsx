@@ -15,7 +15,7 @@ export function EventHero({
   formatEventDate,
 }) {
   const statusStyles = {
-    upcoming: 'bg-gold-dark/90 text-white ring-2 ring-blue-400/60',
+    upcoming: 'bg-gold-dark/90 text-white',
     ongoing:
       'bg-emerald-500/90 text-white ring-2 ring-emerald-400/60',
     past: 'bg-zinc-500/90 text-white ring-2 ring-zinc-400/60',
